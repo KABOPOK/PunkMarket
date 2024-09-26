@@ -16,7 +16,7 @@ class WelcomeScreen extends StatelessWidget {
             _buildTitle(),
             SizedBox(height: 50),
             _buildLoginButton(context),
-            SizedBox(height: 20),
+            SizedBox(height: 21),
             _buildRegistrationButton(context),
           ],
         ),

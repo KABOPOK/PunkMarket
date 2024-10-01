@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:postgres/postgres.dart';
-String ADDRESS = 'https://breezy-jokes-appear.loca.lt/';
+
+import 'package:punk/Global/Global.dart';
 class RegistrationForm extends StatefulWidget {
   const RegistrationForm({super.key});
 
@@ -45,9 +46,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
     try {
       // Create multipart request
-      var request = http.MultipartRequest('POST', Uri.parse('${ADDRESS}create-user'));
+      var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/create-user'));
       //var request1 = http.MultipartRequest('POST', Uri.parse('https://07f0-176-59-1-158.ngrok-free.app/users'));
-     // var request2 = http.MultipartRequest('GET', Uri.parse('https://07f0-176-59-1-158.ngrok-free.app/users'));
+      // var request2 = http.MultipartRequest('GET', Uri.parse('https://07f0-176-59-1-158.ngrok-free.app/users'));
       //var response1 = await request.send();
       //var response2 = await request.send();
 
@@ -79,7 +80,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Successfully registered')),
+          const SnackBar(content: Text('Successfully registered')),
         );
       } else {
         throw Exception('Failed to register user');
@@ -102,7 +103,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
           child: Form(
             child: Column(
               children: <Widget>[
-                SizedBox(height: 50),
+                const SizedBox(height: 50),
                 GestureDetector(
                   onTap: _pickImage,
                   child: CircleAvatar(
@@ -110,7 +111,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     backgroundColor: Colors.orange,
                     backgroundImage: _image != null ? FileImage(_image!) : null,
                     child: _image == null
-                        ? Icon(
+                        ? const Icon(
                       Icons.person,
                       size: 80,
                       color: Colors.black,
@@ -118,19 +119,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
                         : null,
                   ),
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
                     labelText: 'Имя',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.black,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your name';
@@ -138,12 +139,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'Пароль',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.black,
                     border: OutlineInputBorder(
@@ -151,7 +152,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     ),
                   ),
                   obscureText: true,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
@@ -159,12 +160,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _numberController,
                   decoration: InputDecoration(
                     labelText: 'Номер',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.black,
                     border: OutlineInputBorder(
@@ -172,7 +173,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     ),
                   ),
                   keyboardType: TextInputType.phone,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your number';
@@ -180,19 +181,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _telegramController,
                   decoration: InputDecoration(
                     labelText: 'Telegramm @ID',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.black,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your Telegram ID';
@@ -200,7 +201,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: <Widget>[
                     Checkbox(
@@ -211,24 +212,24 @@ class _RegistrationFormState extends State<RegistrationForm> {
                         });
                       },
                     ),
-                    Text(
+                    const Text(
                       'Погожев всегда прав',
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
-                SizedBox(height: 80),
+                const SizedBox(height: 80),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   onPressed: _registerUser,
-                  child: Text(
+                  child: const Text(
                     'зарегаться',
                     style: TextStyle(fontSize: 20),
                   ),
@@ -241,5 +242,4 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 }
-
 

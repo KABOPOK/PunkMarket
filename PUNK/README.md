@@ -1,6 +1,6 @@
-# punk_new_way
+# punk
 
-A new Flutter project.
+aap for students
 
 ## Getting Started
 

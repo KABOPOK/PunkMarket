@@ -14,9 +14,9 @@ class WelcomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildTitle(),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             _buildLoginButton(context),
-            SizedBox(height: 21),
+            const SizedBox(height: 21),
             _buildRegistrationButton(context),
           ],
         ),
@@ -25,7 +25,7 @@ class WelcomeScreen extends StatelessWidget {
   }
 
   Widget _buildTitle() {
-    return Column(
+    return const Column(
       children: [
         Text(
           'ПУНК',
@@ -51,7 +51,7 @@ class WelcomeScreen extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -59,10 +59,10 @@ class WelcomeScreen extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginForm()),
+          MaterialPageRoute(builder: (context) => const LoginForm()),
         );
       },
-      child: Text(
+      child: const Text(
         'ВОЙТИ',
         style: TextStyle(fontSize: 20),
       ),
@@ -74,7 +74,7 @@ class WelcomeScreen extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -82,10 +82,10 @@ class WelcomeScreen extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => RegistrationForm()),
+          MaterialPageRoute(builder: (context) => const RegistrationForm()),
         );
       },
-      child: Text(
+      child: const Text(
         'РЕГИСТРАЦИЯ',
         style: TextStyle(fontSize: 20),
       ),

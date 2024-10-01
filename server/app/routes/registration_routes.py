@@ -5,9 +5,9 @@ from ..db import connect_db
 from ..utils import allowed_file
 from flask import current_app
 
-user_bp = Blueprint('user', __name__)
+registration_bp = Blueprint('registration', __name__)
 
-@user_bp.route('/create-user', methods=['POST'])
+@registration_bp.route('/create-user', methods=['POST'])
 def create_user():
     data = request.form
     name = data.get('name')

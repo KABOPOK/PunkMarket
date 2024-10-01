@@ -170,7 +170,8 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'WelcomeScreen.dart';  // Import the WelcomeScreen
+import 'WelcomeScreen.dart';
+// Import the WelcomeScreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -192,4 +193,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

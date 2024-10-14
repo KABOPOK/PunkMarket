@@ -6,9 +6,10 @@ class User {
   String photoUrl;
   String location;
   List<String> chatUrls;
+  List<String> productsUrls;
 
   User(this.name, this.password, this.number, this.telegram, this.photoUrl,
-      this.location, this.chatUrls); //?
+      this.location, this.chatUrls, this.productsUrls); //?
 
   // Constructor
 
@@ -22,7 +23,8 @@ class User {
         telegram = '',
         photoUrl = '',
         location = '',
-        chatUrls = [];
+        chatUrls = [],
+      productsUrls = [];
 
   // Method to display user information
   void displayUser() {

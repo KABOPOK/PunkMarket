@@ -93,7 +93,7 @@ def create_table(app):
             location VARCHAR(30),
             telegramID VARCHAR(30)
         );
-
+        
         CREATE TABLE IF NOT EXISTS products (
             productID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
             price VARCHAR(10) NOT NULL,
@@ -125,5 +125,9 @@ def create_table(app):
             FOREIGN KEY (userID) REFERENCES users(userID)
         );
         """))
+        ##CREATE TABLE IF NOT EXISTS categories(
+            ## categoryID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          ##   category VARCHAR(30) UNIQUE NOT NULL,
+        ##);
         db.session.commit()
 

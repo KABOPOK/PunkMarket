@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+
+import '../Global/Global.dart';
+import '../clases/Product.dart';
 
 class MyProduct extends StatelessWidget {
   final String photoUrl;
@@ -13,6 +19,39 @@ class MyProduct extends StatelessWidget {
     required this.price,
     required this.owner,
   }) : super(key: key);
+
+
+  Future<void> _sendProduct(Product product, File? image, BuildContext context /*for show message about product sending*/) async {
+    try{
+      var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/create-product'));
+
+      // Add form fields
+      request.fields['product'] = jsonEncode(product.toJson());
+
+      // Add image file if available
+      if (image != null) {
+        request.files.add(await http.MultipartFile.fromPath('image', image!.path));
+      }
+
+      // Send the request
+      var response = await request.send();
+
+      // get response
+      var responseString = await response.stream.bytesToString();
+      if(response.statusCode == 200){
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully pushed')),
+        );
+      }else{
+        final errorData = json.decode(responseString);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['error'] ?? 'Unknown error')),
+        );
+      }
+    }catch(e){
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

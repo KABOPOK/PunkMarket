@@ -10,10 +10,12 @@ registration_bp = Blueprint('registration', __name__)
 @registration_bp.route('/create-user', methods=['POST'])
 def create_user():
     data = request.form
-    name = data.get('name')
-    password = data.get('password')
+    userID = data.get('userID')  # Assuming this is also part of the incoming JSON
     number = data.get('number')
-    telegram = data.get('telegram')
+    password = data.get('password')
+    user_name = data.get('userName')
+    location = data.get('location')
+    telegramID = data.get('telegramID')
 
     if 'image' not in request.files:
         return jsonify({"error": "No image file in the request"}), 400
@@ -25,7 +27,7 @@ def create_user():
         image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         image.save(image_path)
 
-        image_url = f"http://192.168.50.20:5000/uploads/{filename}"
+        photoUrl = f"http://192.168.50.20:5000/uploads/{filename}"
 
         conn = connect_db()
         if conn is None:
@@ -34,8 +36,8 @@ def create_user():
         cursor = conn.cursor()
         try:
             cursor.execute(
-                "INSERT INTO users (name, password, number, telegram, image_url) VALUES (%s, %s, %s, %s, %s)",
-                (name, password, number, telegram, image_url)
+                "INSERT INTO users (userID, number,password,  username, photoUrl, location, telegramID ) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (userID, number, password,user_name, photoUrl, location, telegramID)
             )
             conn.commit()
         except Exception as e:
@@ -45,6 +47,6 @@ def create_user():
             cursor.close()
             conn.close()
 
-        return jsonify({"message": "User created successfully!", "image_url": image_url})
+        return jsonify({"message": "User created successfully!", "photoUrl": photoUrl})
 
     return jsonify({"error": "Invalid image format"}), 400

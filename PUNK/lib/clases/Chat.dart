@@ -1,26 +1,47 @@
 class Chat {
-  String userID_1;
-  String userID_2;
   String chatID;
-  String photoUrl;
+  String otherName;
+  String otherPhotoUrl;
+  String otherChatID;
+  String userID;
 
-  Chat(this.userID_1, this.userID_2, this.chatID, this.photoUrl); //?
+  // Empty constructor
+  Chat({
+    this.chatID = '',
+    this.otherName = '',
+    this.otherPhotoUrl = '',
+    this.otherChatID = '',
+    this.userID = '',
+  });
 
-  // Constructor
+  // Method to convert Chat object to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'chatID': chatID,
+      'otherName': otherName,
+      'otherPhotoUrl': otherPhotoUrl,
+      'otherChatID': otherChatID,
+      'userID': userID,
+    };
+  }
 
+  // Method to create a Chat object from JSON
+  factory Chat.fromJson(Map<String, dynamic> json) {
+    return Chat(
+      chatID: json['chatID'] ?? '',
+      otherName: json['otherName'] ?? '',
+      otherPhotoUrl: json['otherPhotoUrl'] ?? '',
+      otherChatID: json['otherChatID'] ?? '',
+      userID: json['userID'] ?? '',
+    );
+  }
 
-  // Named constructor if you want an empty user
-
-  Chat.empty()
-      : userID_1 = '',
-        userID_2 = '',
-        chatID = '',
-        photoUrl = '';
-
-  // Method to display user information
-  void displayUser() {
-    print('Name: $userID_1');
-    print('Email: $userID_2');
-    print('Age: $chatID');
+  // Method to display chat details
+  String display() {
+    return 'Chat ID: $chatID\n'
+        'Other Name: $otherName\n'
+        'Other Photo URL: $otherPhotoUrl\n'
+        'Other Chat ID: $otherChatID\n'
+        'User ID: $userID';
   }
 }

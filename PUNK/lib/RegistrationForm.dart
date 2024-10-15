@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:postgres/postgres.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:punk/Global/Global.dart';
 class RegistrationForm extends StatefulWidget {
@@ -42,21 +43,17 @@ class _RegistrationFormState extends State<RegistrationForm> {
     final name = _nameController.text;
     final password = _passwordController.text;
     final number = _numberController.text;
-    final telegram = _telegramController.text;
+    final telegramID = _telegramController.text;
 
     try {
-      // Create multipart request
       var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/create-user'));
-      //var request1 = http.MultipartRequest('POST', Uri.parse('https://07f0-176-59-1-158.ngrok-free.app/users'));
-      // var request2 = http.MultipartRequest('GET', Uri.parse('https://07f0-176-59-1-158.ngrok-free.app/users'));
-      //var response1 = await request.send();
-      //var response2 = await request.send();
-
       // Add form fields (name, password, number, telegram)
-      request.fields['name'] = name;
-      request.fields['password'] = password;
+      request.fields['userID'] = Uuid().v4();
       request.fields['number'] = number;
-      request.fields['telegram'] = telegram;
+      request.fields['password'] = password;
+      request.fields['userName'] = name;
+      request.fields['location'] = 'location'; // feature should be add
+      request.fields['telegramID'] = telegramID;
 
       // Add image file if available
       if (_image != null) {
@@ -71,13 +68,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
         var jsonResponse = jsonDecode(responseBody.body);
 
         // Clear input fields after successful registration
-        _nameController.clear();
-        _passwordController.clear();
-        _numberController.clear();
-        _telegramController.clear();
-        setState(() {
-          _image = null;
-        });
+        // _nameController.clear();
+        // _passwordController.clear();
+        // _numberController.clear();
+        // _telegramController.clear();
+        // setState(() {
+        //   _image = null;
+        // });
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully registered')),

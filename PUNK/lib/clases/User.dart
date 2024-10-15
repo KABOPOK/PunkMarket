@@ -1,35 +1,56 @@
 class User {
-  String name;
-  String password;
+  String userID;
   String number;
-  String telegram;
+  String password;
+  String userName;
   String photoUrl;
   String location;
-  List<String> chatUrls;
-  List<String> productsUrls;
+  String telegramID;
 
-  User(this.name, this.password, this.number, this.telegram, this.photoUrl,
-      this.location, this.chatUrls, this.productsUrls); //?
+  // Empty constructor
+  User({
+    this.userID = '',
+    this.number = '',
+    this.password = '',
+    this.userName = '',
+    this.photoUrl = '',
+    this.location = '',
+    this.telegramID = '',
+  });
 
-  // Constructor
+  // Method to convert User object to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'userID': userID,
+      'number': number,
+      'password': password,
+      'userName': userName,
+      'photoUrl': photoUrl,
+      'location': location,
+      'telegramID': telegramID,
+    };
+  }
 
+  // Method to create a User object from JSON
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      userID: json['userID'] ?? '',
+      number: json['number'] ?? '',
+      password: json['password'] ?? '',
+      userName: json['userName'] ?? '',
+      photoUrl: json['photoUrl'] ?? '',
+      location: json['location'] ?? '',
+      telegramID: json['telegram'] ?? '',
+    );
+  }
 
-  // Named constructor if you want an empty user
-
-  User.empty()
-      : name = '',
-        password = '',
-        number = '',
-        telegram = '',
-        photoUrl = '',
-        location = '',
-        chatUrls = [],
-      productsUrls = [];
-
-  // Method to display user information
-  void displayUser() {
-    print('Name: $name');
-    print('Email: $password');
-    print('Age: $number');
+  // Method to display user details
+  String display() {
+    return 'User ID: $userID\n'
+        'Number: $number\n'
+        'User Name: $userName\n'
+        'Photo URL: $photoUrl\n'
+        'Location: $location\n'
+        'Telegram: $telegramID';
   }
 }

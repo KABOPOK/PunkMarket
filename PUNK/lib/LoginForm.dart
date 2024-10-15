@@ -5,6 +5,9 @@ import 'dart:convert';
 import 'package:punk/Global/Global.dart';
 import 'package:punk/MyNavigationBar.dart';
 
+import 'Online/Online.dart';
+import 'clases/User.dart';
+
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
 
@@ -42,6 +45,11 @@ class _LoginFormState extends State<LoginForm> {
         );
         switch(response.statusCode){
           case 200:
+            // Parse the response body
+            var jsonResponse = jsonDecode(response.body);
+            Online.user = User.fromJson(jsonResponse); // Create a User instance
+
+            // Show success message
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Login successful')),
             );

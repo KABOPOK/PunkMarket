@@ -20,13 +20,21 @@ def login_user():
 
     try:
         # Check if user exists
-        cur.execute("SELECT password FROM users WHERE number = %s", (number,))
+        cur.execute("SELECT * FROM users WHERE number = %s", (number,))
         user = cur.fetchone()
 
         if user:
             # Verify password
-            if(user[0] == password):
-                return jsonify({'user_exists': True}), 200
+            if(user[2] == password):
+                user_data = {
+                    'userID': user[0],  # Assuming userID is in the first column
+                    'number': user[1],  # Assuming number is in the second column
+                    'userName': user[3],  # Adjust indices based on your schema
+                    'photoUrl': user[4],
+                    'location': user[5],
+                    'telegram': user[6],
+                }
+                return jsonify(user_data), 200
             else:
                 return jsonify({'message': 'Incorrect password'}), 401
         else:

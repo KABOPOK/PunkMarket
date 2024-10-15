@@ -63,6 +63,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
       // Send the request
       var response = await request.send();
 
+      var responseString = await response.stream.bytesToString();
+
       if (response.statusCode == 200) {
         var responseBody = await http.Response.fromStream(response);
         var jsonResponse = jsonDecode(responseBody.body);
@@ -80,7 +82,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
           const SnackBar(content: Text('Successfully registered')),
         );
       } else {
-        throw Exception('Failed to register user');
+        // Handle error response
+        final errorData = json.decode(responseString);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['error'] ?? 'Unknown error')),
+        );
       }
     } catch (e) {
       print('Error: $e');

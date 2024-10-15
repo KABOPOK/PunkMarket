@@ -86,7 +86,7 @@ def create_table(app):
 
         CREATE TABLE IF NOT EXISTS users (
             userID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-            number VARCHAR(15) NOT NULL,
+            number VARCHAR(15) UNIQUE NOT NULL,
             password VARCHAR(30) NOT NULL,
             userName VARCHAR(30) NOT NULL,
             photoUrl VARCHAR(100),

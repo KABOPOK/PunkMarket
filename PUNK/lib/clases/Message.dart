@@ -30,7 +30,8 @@ class Message {
     return Message(
       messageID: json['messageID'] ?? '',
       text: json['text'] ?? '',
-      time: DateTime.parse(json['time'] ?? DateTime.now().toIso8601String()), // Parse ISO 8601 string
+      time: DateTime.parse(json['time'] ??
+          DateTime.now().toIso8601String()), // Parse ISO 8601 string
       chatID: json['chatID'] ?? '',
       userID: json['userID'] ?? '',
     );

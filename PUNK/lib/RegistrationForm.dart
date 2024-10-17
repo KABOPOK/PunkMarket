@@ -9,6 +9,7 @@ import 'package:punk/WelcomeScreen.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:punk/Global/Global.dart';
+
 class RegistrationForm extends StatefulWidget {
   const RegistrationForm({super.key});
 
@@ -67,7 +68,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
       var responseString = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
-
         // Clear input fields after successful registration
         // _nameController.clear();
         // _passwordController.clear();
@@ -100,9 +100,16 @@ class _RegistrationFormState extends State<RegistrationForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      //appBar: AppBar(
-      //  title: Text('Registration Form'),
-      //),
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context); // Pop the current screen off the navigation stack
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -248,4 +255,3 @@ class _RegistrationFormState extends State<RegistrationForm> {
     );
   }
 }
-

@@ -20,17 +20,19 @@ class MyProduct extends StatelessWidget {
     required this.owner,
   }) : super(key: key);
 
-
-  Future<void> _sendProduct(Product product, File? image, BuildContext context /*for show message about product sending*/) async {
-    try{
-      var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/create-product'));
+  Future<void> _sendProduct(Product product, File? image,
+      BuildContext context /*for show message about product sending*/) async {
+    try {
+      var request =
+          http.MultipartRequest('POST', Uri.parse('$HTTPS/create-product'));
 
       // Add form fields
       request.fields['product'] = jsonEncode(product.toJson());
 
       // Add image file if available
       if (image != null) {
-        request.files.add(await http.MultipartFile.fromPath('image', image!.path));
+        request.files
+            .add(await http.MultipartFile.fromPath('image', image!.path));
       }
 
       // Send the request
@@ -38,17 +40,17 @@ class MyProduct extends StatelessWidget {
 
       // get response
       var responseString = await response.stream.bytesToString();
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully pushed')),
         );
-      }else{
+      } else {
         final errorData = json.decode(responseString);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(errorData['error'] ?? 'Unknown error')),
         );
       }
-    }catch(e){
+    } catch (e) {
       print('Error: $e');
     }
   }
@@ -64,7 +66,8 @@ class MyProduct extends StatelessWidget {
           // Product Image
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(10)),
               child: Image.network(
                 photoUrl,
                 fit: BoxFit.cover,

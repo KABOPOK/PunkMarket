@@ -29,7 +29,8 @@ class WishlistCard extends StatelessWidget {
           // Product Image
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(10)),
               child: Image.network(
                 photoUrl,
                 fit: BoxFit.cover,

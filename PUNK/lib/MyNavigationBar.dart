@@ -35,10 +35,11 @@ class _NavigationBarState extends State<MyNavigationBar> {
             _screenIndex = newIndex;
           });
         },
-        backgroundColor: Colors.blue,             // Change background color
-        selectedItemColor: Colors.white,          // Change selected item color
-        unselectedItemColor: Colors.grey,         // Change unselected item color
-        type: BottomNavigationBarType.fixed,      // Ensure background color is applied
+        backgroundColor: Colors.blue, // Change background color
+        selectedItemColor: Colors.white, // Change selected item color
+        unselectedItemColor: Colors.grey, // Change unselected item color
+        type:
+            BottomNavigationBarType.fixed, // Ensure background color is applied
         items: const [
           BottomNavigationBarItem(
             label: 'Home',

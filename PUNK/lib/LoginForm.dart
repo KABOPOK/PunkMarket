@@ -21,7 +21,6 @@ class _LoginFormState extends State<LoginForm> {
   final _passwordController = TextEditingController();
   bool _agreementChecked = false;
 
-
   @override
   void dispose() {
     _numberController.dispose();
@@ -43,7 +42,7 @@ class _LoginFormState extends State<LoginForm> {
             'password': password,
           }),
         );
-        switch(response.statusCode){
+        switch (response.statusCode) {
           case 200:
             // Parse the response body
             var jsonResponse = jsonDecode(response.body);
@@ -58,7 +57,7 @@ class _LoginFormState extends State<LoginForm> {
               MaterialPageRoute(builder: (context) => const MyNavigationBar()),
             );
             break;
-          case 405:  // Assuming 404 for 'User not found'
+          case 405: // Assuming 404 for 'User not found'
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('User not found')),
             );
@@ -175,7 +174,8 @@ class _LoginFormState extends State<LoginForm> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),

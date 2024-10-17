@@ -1,1 +1,1 @@
-String HTTPS = 'https://floppy-pets-wear.loca.lt';
+String HTTPS = 'http://192.168.31.20:5000';

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:postgres/postgres.dart';
+import 'package:punk/WelcomeScreen.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:punk/Global/Global.dart';
@@ -66,8 +67,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
       var responseString = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
-        var responseBody = await http.Response.fromStream(response);
-        var jsonResponse = jsonDecode(responseBody.body);
 
         // Clear input fields after successful registration
         // _nameController.clear();
@@ -80,6 +79,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully registered')),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
         );
       } else {
         // Handle error response

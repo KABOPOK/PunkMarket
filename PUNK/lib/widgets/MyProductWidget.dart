@@ -9,7 +9,7 @@ import '../clases/Product.dart';
 class MyProduct extends StatelessWidget {
   final String photoUrl;
   final String title;
-  final double price;
+  final String price;
   final String owner;
 
   const MyProduct({
@@ -91,7 +91,7 @@ class MyProduct extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  '\$${price.toStringAsFixed(2)}',
+                  price,
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.grey,

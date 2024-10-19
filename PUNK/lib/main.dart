@@ -170,7 +170,7 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'WelcomeScreen.dart';
+import 'screens/WelcomeScreen.dart';
 // Import the WelcomeScreen
 
 void main() async {

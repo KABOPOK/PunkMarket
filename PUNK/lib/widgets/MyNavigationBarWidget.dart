@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:punk/screens/MyProductList.dart';
-import 'package:punk/screens/ProductList.dart';
+import 'package:punk/screens/MyProductListScreen.dart';
+import 'package:punk/screens/ProductListScreen.dart';
 
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({super.key});

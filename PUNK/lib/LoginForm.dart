@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:punk/Global/Global.dart';
-import 'package:punk/MyNavigationBar.dart';
+import 'package:punk/widgets/MyNavigationBarWidget.dart';
 
 import 'Online/Online.dart';
 import 'clases/User.dart';

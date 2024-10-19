@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:postgres/postgres.dart';
-import 'package:punk/WelcomeScreen.dart';
+import 'package:punk/screens/WelcomeScreen.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:punk/Global/Global.dart';

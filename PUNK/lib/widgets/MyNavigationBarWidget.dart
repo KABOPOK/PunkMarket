@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:punk/screens/MyProductListScreen.dart';
 import 'package:punk/screens/ProductListScreen.dart';
+import 'package:punk/screens/AddProductScreen.dart';
 
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({super.key});
@@ -15,11 +16,10 @@ class _NavigationBarState extends State<MyNavigationBar> {
   // List of widgets/screens for the navigation bar
   final List<Widget> _screens = [
     ProductListPage(), // Home Page
-    //const Icon(Icons.home), // Placeholder for Home screen
-    const Icon(Icons.question_answer_sharp), // Placeholder for Questions screen
+    const Icon(Icons.question_answer_sharp, color: Colors.deepOrangeAccent), // Placeholder for Questions screen
     MyProductListPage(), // My Products Page
-    const Icon(Icons.message), // Placeholder for Messages screen
-    const Icon(Icons.person), // Placeholder for Profile screen
+    const Icon(Icons.message, color: Colors.deepOrangeAccent), // Placeholder for Messages screen
+    const Icon(Icons.person, color: Colors.deepOrangeAccent), // Placeholder for Profile screen
   ];
 
   @override
@@ -35,33 +35,60 @@ class _NavigationBarState extends State<MyNavigationBar> {
             _screenIndex = newIndex;
           });
         },
-        backgroundColor: Colors.blue, // Change background color
-        selectedItemColor: Colors.white, // Change selected item color
-        unselectedItemColor: Colors.grey, // Change unselected item color
-        type:
-            BottomNavigationBarType.fixed, // Ensure background color is applied
-        items: const [
+        selectedItemColor: Colors.white, // Change selected icon color to white
+        unselectedItemColor: Colors.deepOrangeAccent, // Change unselected item color
+        type: BottomNavigationBarType.fixed, // Ensures fixed navigation bar type
+        items: [
           BottomNavigationBarItem(
             label: 'Home',
-            icon: Icon(Icons.home),
+            icon: _buildNavBarIcon(Icons.home, 0),
           ),
           BottomNavigationBarItem(
             label: 'Questions',
-            icon: Icon(Icons.question_answer_sharp),
+            icon: _buildNavBarIcon(Icons.question_answer_sharp, 1),
           ),
           BottomNavigationBarItem(
             label: 'Products',
-            icon: Icon(Icons.shopping_basket), // Show Products when clicked
+            icon: _buildNavBarIcon(Icons.shopping_basket, 2),
           ),
           BottomNavigationBarItem(
             label: 'Messages',
-            icon: Icon(Icons.message),
+            icon: _buildNavBarIcon(Icons.message, 3),
           ),
           BottomNavigationBarItem(
             label: 'Profile',
-            icon: Icon(Icons.person),
+            icon: _buildNavBarIcon(Icons.person, 4),
           ),
         ],
+      ),
+      floatingActionButton: _screenIndex == 2 // Display FAB only on MyProductListPage (index 2)
+          ? FloatingActionButton(
+        onPressed: () {
+          // Logic for the FAB button here
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProductAdditionScreen()), // Example: navigate to AddProductScreen
+          );
+        },
+        backgroundColor: Colors.deepOrangeAccent,
+        child: const Icon(Icons.add, color: Colors.white),
+      )
+          : null, // No FAB for other screens
+    );
+  }
+
+  Widget _buildNavBarIcon(IconData iconData, int index) {
+    bool isSelected = _screenIndex == index;
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: isSelected ? Colors.orange : Colors.transparent, // Set background color to orange when selected
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Icon(
+        iconData,
+        color: isSelected ? Colors.white : Colors.orangeAccent,
       ),
     );
   }

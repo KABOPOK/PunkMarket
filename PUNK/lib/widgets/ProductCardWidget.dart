@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ProductCard extends StatelessWidget {
   final String photoUrl;
   final String title;
-  final double price;
+  final String price;
   final String owner;
   final VoidCallback onAddToCart;
   final VoidCallback onAddToWishlist;
@@ -54,7 +54,7 @@ class ProductCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  '\$${price.toStringAsFixed(2)}',
+                  price,
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.grey,

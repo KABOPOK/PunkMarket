@@ -49,7 +49,6 @@ class MyProductListPage extends StatelessWidget {
           },
         ),
       ),
-      //bottomNavigationBar: MyNavigationBar(), // Use your custom navigation bar
     );
   }
 }

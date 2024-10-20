@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:punk/Supplies/product_list.dart'; 
+import 'package:punk/Supplies/product_list.dart';
+
+import '../widgets/ProductCardWidget.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -58,7 +60,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: searchQuery.isEmpty
           ? const SizedBox.shrink() // No products is shown when search query is empty
-          : (filteredProducts.isEmpty
+          : (filteredProducts.isEmpty)
           ? Center(
         child: 
         Column(
@@ -75,48 +77,38 @@ class _SearchPageState extends State<SearchPage> {
         
       )
           : GridView.builder(
-        padding: const EdgeInsets.all(8.0),
-        itemCount: filteredProducts.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Number of columns
-          crossAxisSpacing: 10.0,
-          mainAxisSpacing: 10.0,
-          childAspectRatio: 0.75, // Adjust to control card size
-        ),
-        itemBuilder: (context, index) {
-          final product = filteredProducts[index];
-          return Card(
-            elevation: 2.0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Image.network(
-                    product["imageUrl"],
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product["title"],
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+              itemCount: filteredProducts.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Number of columns
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+                childAspectRatio: 0.75, // Adjust to control card size
+              ),
+              itemBuilder: (context, index) {
+                final product = filteredProducts[index];
+                return ProductCard(
+                  photoUrl: product["imageUrl"],
+                  title: product["title"],
+                  price: product["price"],
+                  owner: product["owner"], // Pass owner to the product card
+                  onAddToCart: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${product["title"]} added to cart!'),
                       ),
-                      Text("Price: \$${product["price"]}"),
-                      Text("Owner: ${product["owner"]}"),
-                    ],
-                  ),
-                ),
-              ],
+                    );
+                  },
+                  onAddToWishlist: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${product["title"]} added to wishlist!'),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
-          );
-        },
-      )),
+
     );
   }
 }

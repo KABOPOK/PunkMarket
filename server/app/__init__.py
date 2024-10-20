@@ -3,9 +3,11 @@ import os
 from .routes import registration_bp, image_bp, login_bp, pushProduct_bp
 from .migration import create_table
 from .db import connect_db
+from .MinIO import initialize_storage
 def create_app():
     app = Flask(__name__)
     create_table(app)
+    initialize_storage()
     # Configuration for the app
     if os.name == 'nt':  # Windows
         UPLOAD_FOLDER = r'C:\\server_punk_\\uploads'

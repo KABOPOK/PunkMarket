@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:punk/Supplies/product_list.dart';
+import 'package:punk/supplies/product_list.dart';
 
 import '../widgets/ProductCardWidget.dart';
 

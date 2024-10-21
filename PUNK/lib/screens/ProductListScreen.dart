@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:punk/widgets/ProductCardWidget.dart';
 import 'package:punk/widgets/SearchBarWidget.dart';
-import 'package:punk/Supplies/product_list.dart';
+import 'package:punk/supplies/product_list.dart';
 
 class ProductListPage extends StatefulWidget {
   @override

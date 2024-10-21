@@ -33,8 +33,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
+      // if (pickedFile != null) {
+      //   _image = File(pickedFile.path);
+      // } else {
+      //   print('No image selected.');
+      // }
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
+        // Define the new file name
+        String newFileName = 'custom_name.jpg'; // Change this to your desired name
+        String newPath = '${pickedFile.path.substring(0, pickedFile.path.lastIndexOf('/'))}/$newFileName';
+
+        // Create a new file with the desired name
+        _image = File(newPath);
+        pickedFile.saveTo(newPath); // Save the original file to the new path
       } else {
         print('No image selected.');
       }

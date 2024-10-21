@@ -20,8 +20,7 @@ class MyProduct extends StatelessWidget {
     required this.owner,
   }) : super(key: key);
 
-  Future<void> _sendProduct(Product product, File? image,
-      BuildContext context /*for show message about product sending*/) async {
+  Future<void> _sendProduct(Product product, File? image, BuildContext context /*for show message about product sending*/) async {
     try {
       var request =
           http.MultipartRequest('POST', Uri.parse('$HTTPS/create-product'));

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="feature-image_picker_android">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/PUNK/build/image_picker_android/intermediates/merged_java_res/debug/feature-image_picker_android.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import this for input formatter
+import 'package:punk/Online/Online.dart';
 import 'package:punk/screens/AddProductMediaScreen.dart';
-import 'package:punk/screens/MyProductListScreen.dart';
+import '../clases/Product.dart';
 
 class ProductAdditionScreen extends StatefulWidget {
   @override
@@ -12,7 +13,51 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
   String? selectedCategory;
   String? selectedPaymentMethod;
   bool isNegotiable = false;
-  TextEditingController priceController = TextEditingController();
+  final Product product = Product();
+
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController productNameController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Dispose of the controllers when the widget is removed from the widget tree
+    priceController.dispose();
+    productNameController.dispose();
+    addressController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
+  void _addProduct() {
+    if (productNameController.text.isEmpty ||
+        selectedCategory == null ||
+        priceController.text.isEmpty ||
+        selectedPaymentMethod == null ||
+        addressController.text.isEmpty ||
+        descriptionController.text.isEmpty) {
+      // Show a snackbar or alert if any field is empty
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Пожалуйста, заполните все поля')),
+      );
+      return;
+    }
+
+    // Setting product properties
+    product.title = productNameController.text;
+    product.ownerName = Online.user.userName;
+    product.category = selectedCategory!;
+    product.price = priceController.text; // Assuming price is stored as a String
+    product.location = addressController.text;
+    product.description = descriptionController.text;
+    product.userID = Online.user.userID;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddProductMediaScreen(product: product)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +65,13 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
       appBar: AppBar(
         title: const Text(
           'Добавление товара',
-          style: TextStyle(
-            color: Colors.white, // Set text color to white
-            fontWeight: FontWeight.bold, // Set text to bold
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.orange, // Set AppBar color to orange
+        backgroundColor: Colors.orange,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white), // Make the icon white too
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context); // Return to the previous screen
+            Navigator.pop(context);
           },
         ),
       ),
@@ -40,8 +82,9 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
             child: Column(
               children: [
                 // Название товара input
-                const TextField(
-                  decoration: InputDecoration(
+                TextField(
+                  controller: productNameController,
+                  decoration: const InputDecoration(
                     labelText: 'Наименование товара',
                     border: OutlineInputBorder(),
                   ),
@@ -80,15 +123,13 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    // Custom logic to enforce max 1,000,000
                     TextInputFormatter.withFunction((oldValue, newValue) {
                       if (newValue.text.isEmpty) {
                         return newValue;
                       }
                       final intValue = int.tryParse(newValue.text) ?? 0;
                       if (intValue > 1000000) {
-                        return oldValue; // If greater than 1,000,000, keep old value
+                        return oldValue; // Keep old value if greater than 1,000,000
                       }
                       return newValue; // Otherwise, update value
                     })
@@ -130,15 +171,15 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
                           isNegotiable = index == 0;
                         });
                       },
-                      fillColor: Colors.orange, // Orange background when selected
-                      selectedColor: Colors.white, // White text on orange background
+                      fillColor: Colors.orange,
+                      selectedColor: Colors.white,
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
                             'да',
                             style: TextStyle(
-                              color: isNegotiable ? Colors.white : Colors.black, // White text if selected
+                              color: isNegotiable ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
@@ -147,7 +188,7 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
                           child: Text(
                             'нет',
                             style: TextStyle(
-                              color: !isNegotiable ? Colors.white : Colors.black, // White text if selected
+                              color: !isNegotiable ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
@@ -158,8 +199,9 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
                 const SizedBox(height: 10),
 
                 // Адрес Input
-                const TextField(
-                  decoration: InputDecoration(
+                TextField(
+                  controller: addressController,
+                  decoration: const InputDecoration(
                     labelText: 'Адрес',
                     border: OutlineInputBorder(),
                   ),
@@ -167,15 +209,16 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
                 const SizedBox(height: 10),
 
                 // Описание Input (align label to top)
-                const TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Описание', // aligned label
-                    alignLabelWithHint: true, // This aligns the label to the top
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Описание',
+                    alignLabelWithHint: true,
                     border: OutlineInputBorder(),
                   ),
-                  maxLines: 10, // increased max lines for larger text field
+                  maxLines: 10,
                 ),
-                const SizedBox(height: 80), // Added space to prevent overlap with button
+                const SizedBox(height: 80),
               ],
             ),
           ),
@@ -188,15 +231,9 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
               padding: const EdgeInsets.all(50.0),
               color: Colors.transparent,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddProductMediaScreen()), // Example: navigate to AddProductScreen
-                  );
-                },
+                onPressed: _addProduct,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange, // Set button color to orange
+                  backgroundColor: Colors.orange,
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 25),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0),
@@ -204,7 +241,7 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
                 ),
                 child: const Text(
                   'Добавить медиа',
-                  style: TextStyle(color: Colors.white, fontSize: 20), // Set button text color to white
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
             ),
@@ -214,5 +251,3 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
     );
   }
 }
-
-

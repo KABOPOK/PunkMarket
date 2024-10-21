@@ -27,10 +27,6 @@ def create_user():
         image = request.files['image']
 
     if image and image != 'null' and allowed_file(image.filename):
-        # filename = secure_filename(image.filename)
-        # image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-        # image.save(image_path)
-        # photoUrl = f"http://192.168.50.20:5000/uploads/{filename}"
         filename = secure_filename(image.filename)
         image_bytes = BytesIO(image.read())  # Read image into memory
 

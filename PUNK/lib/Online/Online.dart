@@ -1,5 +1,4 @@
 import '../clases/User.dart';
-
 class Online {
   static User user = User();
 

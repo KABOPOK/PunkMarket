@@ -99,7 +99,7 @@ def create_table(app):
             price VARCHAR(10) NOT NULL,
             title VARCHAR(30) NOT NULL,
             ownerName VARCHAR(30) NOT NULL,
-            photoUrl VARCHAR(100),
+            photoUrl TEXT,
             location VARCHAR(30),
             description VARCHAR(100),
             category VARCHAR(30),

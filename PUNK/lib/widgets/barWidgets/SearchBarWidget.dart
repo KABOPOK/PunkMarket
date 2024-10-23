@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/SearchPageScreen.dart';
+import '../../screens/navigationScreens/productListScreens/SearchPageScreen.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final Function(String) onSearch;  // A callback for the search query

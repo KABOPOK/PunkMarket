@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:punk/supplies/product_list.dart';
 
-import '../widgets/ProductCardWidget.dart';
+import '../../../widgets/cardWidgets/ProductCardWidget.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);

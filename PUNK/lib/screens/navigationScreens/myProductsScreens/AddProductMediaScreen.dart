@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:punk/Online/Online.dart';
-import 'package:punk/screens/MyProductListScreen.dart';
+import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
 import 'package:punk/Global/Global.dart';
-import '../clases/Product.dart';
+import '../../../../clases/Product.dart';
 
 class AddProductMediaScreen extends StatefulWidget {
   Product product;

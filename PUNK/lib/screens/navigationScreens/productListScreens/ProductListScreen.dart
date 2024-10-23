@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:punk/widgets/ProductCardWidget.dart';
-import 'package:punk/widgets/SearchBarWidget.dart';
+import 'package:punk/widgets/cardWidgets/ProductCardWidget.dart';
+import 'package:punk/widgets/barWidgets/SearchBarWidget.dart';
 import 'package:punk/supplies/product_list.dart';
 import 'package:http/http.dart' as http;
 
-import '../clases/Product.dart';
+import '../../../clases/Product.dart';
 import 'package:punk/Global/Global.dart';
 
 class ProductListPage extends StatefulWidget {

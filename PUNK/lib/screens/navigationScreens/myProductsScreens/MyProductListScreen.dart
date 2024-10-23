@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:punk/widgets/MyProductWidget.dart';
+import 'package:punk/widgets/cardWidgets/MyProductCardWidget.dart';
 import 'package:punk/supplies/product_list.dart';
-import 'package:punk/widgets/MyNavigationBarWidget.dart'; // Import your custom navigation bar
+import 'package:punk/widgets/barWidgets/MyNavigationBarWidget.dart'; // Import your custom navigation bar
 
 class MyProductListPage extends StatelessWidget {
   @override

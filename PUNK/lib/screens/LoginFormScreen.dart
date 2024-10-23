@@ -3,10 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:punk/Global/Global.dart';
-import 'package:punk/widgets/MyNavigationBarWidget.dart';
+import 'package:punk/widgets/barWidgets/MyNavigationBarWidget.dart';
 
-import 'Online/Online.dart';
-import 'clases/User.dart';
+import '../Online/Online.dart';
+import '../clases/User.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});

@@ -1,6 +1,6 @@
 from flask import Flask
 import os
-from .routes import registration_bp, image_bp, login_bp, pushProduct_bp
+from .routes import registration_bp, image_bp, login_bp, pushProduct_bp, mainProducts_bp
 from .migration import create_table
 from .db import connect_db
 from .MinIO import initialize_storage
@@ -20,5 +20,5 @@ def create_app():
     app.register_blueprint(login_bp)
     app.register_blueprint(image_bp)
     app.register_blueprint(pushProduct_bp)
-
+    app.register_blueprint(mainProducts_bp)
     return app

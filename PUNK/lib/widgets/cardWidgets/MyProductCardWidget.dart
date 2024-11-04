@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-import '../Global/Global.dart';
-import '../clases/Product.dart';
+import '../../Global/Global.dart';
+import '../../clases/Product.dart';
 
 class MyProduct extends StatelessWidget {
   final String photoUrl;

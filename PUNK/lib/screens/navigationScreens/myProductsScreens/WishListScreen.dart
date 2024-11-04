@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:punk/widgets/WishlistCardWidget.dart'; // Import the ProductCard widget
-import '../supplies/product_list.dart'; // Import the ProductCard widget
+import 'package:punk/widgets/cardWidgets/WishlistCardWidget.dart'; // Import the ProductCard widget
+import '../../../supplies/product_list.dart'; // Import the ProductCard widget
 
 class WishListPage extends StatelessWidget {
 

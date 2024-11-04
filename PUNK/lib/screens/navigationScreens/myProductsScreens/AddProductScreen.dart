@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import this for input formatter
 import 'package:punk/Online/Online.dart';
-import 'package:punk/screens/AddProductMediaScreen.dart';
-import '../clases/Product.dart';
+import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductMediaScreen.dart';
+import 'package:punk/clases/Product.dart';
 
 class ProductAdditionScreen extends StatefulWidget {
   @override

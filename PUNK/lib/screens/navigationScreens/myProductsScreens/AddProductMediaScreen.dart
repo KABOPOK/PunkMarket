@@ -28,40 +28,45 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
   final ImagePicker _picker = ImagePicker();
   Future<void> _sendProduct(Product product, List<File?> images, BuildContext context) async {
     try {
-      var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/create-product'));
+      // Create a multipart request to the specified endpoint
+      var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/api/products/create'));
 
-      // Add form fields
+      // Add product data as a JSON string to the request fields
       request.fields['product'] = jsonEncode(product.toJson());
 
-      // Add multiple image files if available
+      // Check and add image files to the request
       for (var image in images) {
         if (image != null) {
-          request.files.add(await http.MultipartFile.fromPath('images[]', image.path));
+          request.files.add(await http.MultipartFile.fromPath('images', image.path));
         }
       }
 
-      // Send the request
+      // Send the request and get the response
       var response = await request.send();
-
-      // Get the response
       var responseString = await response.stream.bytesToString();
+
+      // Handle the response
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Product created successfully')),
         );
       } else {
+        // Handle error responses
         final errorData = json.decode(responseString);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(errorData['error'] ?? 'Unknown error')),
         );
       }
     } catch (e) {
+      // Catch and log any exceptions
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error creating product')),
       );
     }
   }
+
+
 
 
   Future<void> _pickImage(bool isEnvelop, int number) async {
@@ -72,9 +77,9 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
         // Define the new file name
         String newFileName;
         if (isEnvelop == true) {
-          newFileName = '${Online.user.userID}_envelop.jpg';
+          newFileName = 'envelop.jpg';
         } else {
-          newFileName = '${Online.user.userID}_${number}.jpg';
+          newFileName = '${number}.jpg';
         }
 
         // Generate the new path for the image

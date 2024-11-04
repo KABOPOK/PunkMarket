@@ -22,15 +22,20 @@ class User {
   });
 
   // Method to convert User object to JSON
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toUserDTO() {
     return {
-      'userID': userID,
       'number': number,
       'password': password,
       'userName': userName,
-      'photoUrl': photoUrl,
       'location': location,
       'telegramID': telegramID,
+    };
+  }
+
+  Map<String, dynamic> toLogonDataDTO() {
+    return {
+      'number': number,
+      'password': password
     };
   }
 
@@ -46,6 +51,8 @@ class User {
       telegramID: json['telegram'] ?? '',
     );
   }
+  
+  
 
   // Method to display user details
   String display() {

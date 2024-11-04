@@ -56,12 +56,21 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ProductDTO'
+              type: object
+              properties:
+                product:
+                  $ref: '#/components/schemas/ProductDTO'
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
       responses:
         '200':
           description: Product created successfully
+
   /api/products/get_products:
     get:
       tags:
@@ -97,6 +106,9 @@ components:
     UserDTO:
       type: object
       properties:
+        userID:
+          type: string
+          readOnly: true
         number:
           type: string
           maxLength: 15
@@ -106,6 +118,9 @@ components:
         userName:
           type: string
           maxLength: 30
+        photoUrl:
+          type: string
+          readOnly: true
         location:
           type: string
           maxLength: 30
@@ -145,6 +160,7 @@ components:
         photoUrl:
           type: string
           description: URL of the product photo
+#          readOnly: true
         location:
           type: string
           description: Location of the product

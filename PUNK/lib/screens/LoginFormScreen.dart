@@ -30,17 +30,28 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> _loginUser() async {
     if (_formKey.currentState!.validate()) {
-      final number = _numberController.text;
-      final password = _passwordController.text;
+      if(_passwordController.text.isEmpty){
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('тут пароль может быть в 1 цифру')),
+        );
+        return;
+      }
+      if(_numberController.text.isEmpty){
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('номер дай, я продам втб, они будут тебе кредит втюхивать')),
+        );
+        return;
+      }
+      User user = User(
+          password : _passwordController.text,
+          number : _numberController.text,
+      );
 
       try {
         var response = await http.post(
-          Uri.parse('$HTTPS/login_user'),
+          Uri.parse('$HTTPS/api/users/authorization'),
           headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({
-            'number': number,
-            'password': password,
-          }),
+          body: jsonEncode(user.toLogonDataDTO()),
         );
         switch (response.statusCode) {
           case 200:
@@ -50,7 +61,7 @@ class _LoginFormState extends State<LoginForm> {
 
             // Show success message
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Login successful')),
+              const SnackBar(content: Text('здарова заебал')),
             );
             Navigator.push(
               context,

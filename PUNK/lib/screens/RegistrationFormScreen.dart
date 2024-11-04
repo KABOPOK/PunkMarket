@@ -10,6 +10,8 @@ import 'package:uuid/uuid.dart';
 
 import 'package:punk/Global/Global.dart';
 
+import '../clases/User.dart';
+
 class RegistrationForm extends StatefulWidget {
   const RegistrationForm({super.key});
 
@@ -53,25 +55,36 @@ class _RegistrationFormState extends State<RegistrationForm> {
   }
 
   Future<void> _registerUser() async {
-    final name = _nameController.text;
-    final password = _passwordController.text;
-    final number = _numberController.text;
-    final telegramID = _telegramController.text;
+    if(_nameController.text.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('кто ты, воин?')),
+      );
+      return;
+    }
+    if(_passwordController.text.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('тут пароль может быть в 1 цифру')),
+      );
+      return;
+    }
+    if(_numberController.text.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('номер дай, я продам втб, они будут тебе кредит втюхивать')),
+      );
+      return;
+    }
+    User user = User(
+      userName : _nameController.text,
+        password : _passwordController.text,
+        number : _numberController.text,
+        telegramID : _telegramController.text
+    );
 
     try {
       var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/api/users/create'));
 
-      // Create the UserDTO JSON object
-      Map<String, dynamic> userDTO = {
-        'userName': name,
-        'password': password,
-        'number': number,
-        'telegramID': telegramID,
-        'location': 'location', // Adjust as necessary
-      };
-
       // Add the user field as a JSON string
-      request.fields['user'] = json.encode(userDTO);
+      request.fields['user'] = json.encode(user.toUserDTO());
 
       // Add image file if available
       if (_image != null) {
@@ -83,15 +96,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
       var responseString = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
-        // Clear input fields after successful registration
-        _nameController.clear();
-        _passwordController.clear();
-        _numberController.clear();
-        _telegramController.clear();
-        setState(() {
-          _image = null;
-        });
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully registered')),
         );

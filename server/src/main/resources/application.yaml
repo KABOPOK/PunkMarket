@@ -1,0 +1,26 @@
+spring:
+  application:
+    name = server
+  datasource:
+    url: jdbc:postgresql://postgres:5433/postgres
+    username: postgres
+    password: 9
+    hikari:
+      schema: public
+      username: postgres
+      password: 9
+  jpa:
+    properties:
+      hibernate:
+        format_sql=true:
+        connection:
+          password: 9
+          username: postgres
+          url: jdbc:postgresql://localhost:5432/postgres
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+
+
+

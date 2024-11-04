@@ -59,14 +59,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
     final telegramID = _telegramController.text;
 
     try {
-      var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/create-user'));
-      // Add form fields (name, password, number, telegram)
-      request.fields['userID'] = Uuid().v4();
-      request.fields['number'] = number;
-      request.fields['password'] = password;
-      request.fields['userName'] = name;
-      request.fields['location'] = 'location'; // feature should be add
-      request.fields['telegramID'] = telegramID;
+      var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/api/users/create'));
+
+      // Create the UserDTO JSON object
+      Map<String, dynamic> userDTO = {
+        'userName': name,
+        'password': password,
+        'number': number,
+        'telegramID': telegramID,
+        'location': 'location', // Adjust as necessary
+      };
+
+      // Add the user field as a JSON string
+      request.fields['user'] = json.encode(userDTO);
 
       // Add image file if available
       if (_image != null) {
@@ -75,18 +80,17 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
       // Send the request
       var response = await request.send();
-
       var responseString = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
         // Clear input fields after successful registration
-        // _nameController.clear();
-        // _passwordController.clear();
-        // _numberController.clear();
-        // _telegramController.clear();
-        // setState(() {
-        //   _image = null;
-        // });
+        _nameController.clear();
+        _passwordController.clear();
+        _numberController.clear();
+        _telegramController.clear();
+        setState(() {
+          _image = null;
+        });
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Successfully registered')),
@@ -104,6 +108,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
       }
     } catch (e) {
       print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $e')),
+      );
     }
   }
 

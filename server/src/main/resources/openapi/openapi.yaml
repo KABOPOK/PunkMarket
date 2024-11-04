@@ -1,0 +1,160 @@
+openapi: 3.0.3
+info:
+  title: marketApi
+  description: marketApi
+  version: 1.0.0
+paths:
+  /api/users/create:
+    post:
+      tags:
+        - User
+      operationId: saveUser
+      summary: Create a new User
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                user:
+                  $ref: '#/components/schemas/UserDTO'
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: User ID created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdDTO'
+  /api/users/authorization:
+    post:
+      tags:
+        - User
+      operationId: getUser
+      summary: get user for authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDataDTO'
+      responses:
+        '200':
+          description: 'successful'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+  /api/products/create:
+    post:
+      tags:
+        - Product
+      operationId: createProduct
+      summary: Create a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDTO'
+      responses:
+        '200':
+          description: Product created successfully
+  /api/products/get_products:
+    get:
+      tags:
+        - Product
+      summary: Retrieve a paginated list of products
+      operationId: getProducts
+      parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: The number of products to retrieve per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductDTO'
+components:
+  schemas:
+    UserDTO:
+      type: object
+      properties:
+        number:
+          type: string
+          maxLength: 15
+        password:
+          type: string
+          maxLength: 30
+        userName:
+          type: string
+          maxLength: 30
+        location:
+          type: string
+          maxLength: 30
+        telegramID:
+          type: string
+          maxLength: 30
+    IdDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identification
+      required:
+        - id
+    LoginDataDTO:
+      type: object
+      properties:
+        number:
+          type: string
+          maxLength: 15
+        password:
+          type: string
+          maxLength: 30
+    ProductDTO:
+      type: object
+      properties:
+        price:
+          type: string
+          description: Price of the product
+        title:
+          type: string
+          description: Title of the product
+        ownerName:
+          type: string
+          description: Name of the owner
+        photoUrl:
+          type: string
+          description: URL of the product photo
+        location:
+          type: string
+          description: Location of the product
+        description:
+          type: string
+          description: Description of the product
+        category:
+          type: string
+          description: Category of the product
+        userID:
+          type: string
+          format: uuid
+          description: Identifier of the user who owns the product

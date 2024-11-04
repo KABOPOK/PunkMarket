@@ -41,7 +41,7 @@ class _ProductListPageState extends State<ProductListPage> {
     });
 
     // Replace this URL with your actual endpoint
-    final response = await http.get(Uri.parse('$HTTPS/main_products'));
+    final response = await http.get(Uri.parse('$HTTPS/api/products/get_products'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);

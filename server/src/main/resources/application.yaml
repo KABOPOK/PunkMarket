@@ -1,14 +1,4 @@
 spring:
-  application:
-    name = server
-  datasource:
-    url: jdbc:postgresql://postgres:5433/postgres
-    username: postgres
-    password: 9
-    hikari:
-      schema: public
-      username: postgres
-      password: 9
   jpa:
     properties:
       hibernate:
@@ -16,10 +6,21 @@ spring:
         connection:
           password: 9
           username: postgres
-          url: jdbc:postgresql://localhost:5432/postgres
+          url: jdbc:postgresql://localhost:5433/postgres
     hibernate:
       ddl-auto: none
     show-sql: true
+  flyway:
+    user: postgres
+    password: 9
+    url: jdbc:postgresql://localhost:5433/postgres
+    locations: classpath:db/migrations
+    schemas: public
+    table: flyway_schema_history
+    baseline-on-migrate: true
+#logging:
+#  level:
+#    org.flywaydb: DEBUG
 
 
 

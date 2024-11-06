@@ -1,13 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:punk/widgets/cardWidgets/ProductCardWidget.dart';
-import 'package:punk/widgets/barWidgets/SearchBarWidget.dart';
-import 'package:punk/supplies/product_list.dart';
-import 'package:http/http.dart' as http;
-
-import '../../../clases/Product.dart';
-import 'package:punk/Global/Global.dart';
+import 'package:punk/Supplies/product_list.dart';
+import '../../../widgets/barWidgets/SearchBarWidget.dart';
+import '../../../widgets/cardWidgets/ProductCardWidget.dart';
 
 class ProductListPage extends StatefulWidget {
   @override
@@ -15,54 +9,17 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> {
-  List<Product> products = [];
-  List<Product> filteredProducts = [];
-  int page = 1;
-  final int limit = 20;
-  bool isLoading = false;
-  bool hasMore = true; // To check if more products are available
-  final ScrollController _scrollController = ScrollController();
+  late List<Map<String, dynamic>> filteredProducts;
 
   @override
   void initState() {
     super.initState();
-    fetchProducts();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && hasMore) {
-        fetchProducts();
-      }
-    });
-  }
-
-  Future<void> fetchProducts() async {
-    if (isLoading) return;
-    setState(() {
-      isLoading = true;
-    });
-
-    // Replace this URL with your actual endpoint
-    final response = await http.get(Uri.parse('$HTTPS/api/products/get_products'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      List<Product> newProducts = data.map((json) => Product.fromJson(json)).toList();
-
-      setState(() {
-        products.addAll(newProducts);
-        filteredProducts = products; // Set initial filtered products
-        ++page;
-        hasMore = newProducts.length == limit; // Check if more products are available
-      });
-    }
-
-    setState(() {
-      isLoading = false;
-    });
+    filteredProducts = products;  // Using the global product list
   }
 
   void _filterProducts(String query) {
     final filtered = products.where((product) {
-      final titleLower = product.title.toLowerCase(); // Assuming Product has a title property
+      final titleLower = product['title'].toLowerCase();
       final searchLower = query.toLowerCase();
       return titleLower.contains(searchLower);
     }).toList();
@@ -72,52 +29,47 @@ class _ProductListPageState extends State<ProductListPage> {
     });
   }
 
-
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
+          // Pass _filterProducts to the SearchBar widget
           SearchBarWidget(onSearch: _filterProducts),
+          // The product grid below the SearchBar
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
-                controller: _scrollController,
-                itemCount: filteredProducts.length + (isLoading ? 1 : 0), // Add loading indicator at the end
+                itemCount: filteredProducts.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                  crossAxisCount: 2, // Number of columns
                   crossAxisSpacing: 10.0,
                   mainAxisSpacing: 10.0,
-                  childAspectRatio: 0.75,
+                  childAspectRatio: 0.75, // Adjust to control card size
                 ),
                 itemBuilder: (context, index) {
-                  if (index < filteredProducts.length) {
-                    final product = filteredProducts[index];
-                    return ProductCard(
-                      photoUrl: product.photoUrl, // Assuming Product has an imageUrl property
-                      title: product.title,
-                      price: product.price,
-                      owner: product.ownerName,
-                      onAddToCart: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${product.title} added to cart!'),
-                          ),
-                        );
-                      },
-                      onAddToWishlist: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${product.title} added to wishlist!'),
-                          ),
-                        );
-                      },
-                    );
-                  } else {
-                    return Center(child: CircularProgressIndicator()); // Show loading indicator
-                  }
+                  final product = filteredProducts[index];
+                  return ProductCard(
+                    photoUrl: product["imageUrl"],
+                    title: product["title"],
+                    price: product["price"],
+                    owner: product["owner"], // Pass owner to the product card
+                    onAddToCart: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${product["title"]} added to cart!'),
+                        ),
+                      );
+                    },
+                    onAddToWishlist: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${product["title"]} added to wishlist!'),
+                        ),
+                      );
+                    },
+                  );
                 },
               ),
             ),

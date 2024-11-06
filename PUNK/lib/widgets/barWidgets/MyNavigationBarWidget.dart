@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:punk/screens/navigationScreens/MyProfile.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/productListScreens/ProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductScreen.dart';
@@ -19,7 +20,8 @@ class _NavigationBarState extends State<MyNavigationBar> {
     const Icon(Icons.question_answer_sharp, color: Colors.deepOrangeAccent), // Placeholder for Questions screen
     MyProductListPage(), // My Products Page
     const Icon(Icons.message, color: Colors.deepOrangeAccent), // Placeholder for Messages screen
-    const Icon(Icons.person, color: Colors.deepOrangeAccent), // Placeholder for Profile screen
+    MyProfileScreen(),
+    //const Icon(Icons.person, color: Colors.deepOrangeAccent), // Placeholder for Profile screen
   ];
 
   @override

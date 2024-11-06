@@ -1,16 +1,13 @@
 package kabopok.server.controllers;
 
 import generated.kabopok.server.api.ProductApi;
-import generated.kabopok.server.api.model.IdDTO;
 import generated.kabopok.server.api.model.ProductDTO;
 import kabopok.server.entities.Product;
 import kabopok.server.mappers.ProductMapper;
 import kabopok.server.minio.StorageService;
 import kabopok.server.services.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

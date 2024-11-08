@@ -1,5 +1,6 @@
 services:
   postgres:
+    container_name: student-market-postgres
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
@@ -9,13 +10,14 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
-      interval: 2s
-      timeout: 10s
-      retries: 5
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready -U myuser -d mydatabase" ]
+#      interval: 2s
+#      timeout: 10s
+#      retries: 5
 
   minio:
+    container_name: student-market-minio
     image: minio/minio
     ports:
       - "9000:9000"   # MinIO API
@@ -26,6 +28,7 @@ services:
     command: server /data --console-address ":9001"
 
 #  app:
+#    container_name: student-market-server
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
@@ -34,6 +37,8 @@ services:
 #    depends_on:
 #      postgres:
 #        condition: service_healthy
+#    env_file:
+#      - .env
 
 
 

@@ -1,25 +1,23 @@
 server:
-  port: 8085
+  port: ${SERVER_PORT}
+
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST}:${PORT_DB}/${POSTGRESQL_DATABASE}
+    username: ${POSTGRESQL_USERNAME}
+    password: ${POSTGRESQL_PASSWORD}
   jpa:
     properties:
       hibernate:
-        format_sql=true:
-        connection:
-          password: 9
-          username: postgres
-          url: jdbc:postgresql://localhost:5433/postgres
-    hibernate:
-      ddl-auto: none
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
     show-sql: true
   flyway:
-    user: postgres
-    password: 9
-    url: jdbc:postgresql://localhost:5433/postgres
+    user: ${POSTGRESQL_USERNAME}
+    password: ${POSTGRESQL_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST}:${PORT_DB}/${POSTGRESQL_USERNAME}  # Updated to use the service name
     locations: classpath:db/migrations
     schemas: public
     table: flyway_schema_history
     baseline-on-migrate: true
-#logging:
-#  level:
-#    org.flywaydb: DEBUG

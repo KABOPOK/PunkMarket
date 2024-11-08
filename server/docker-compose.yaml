@@ -1,20 +1,18 @@
+version: '3.8'
+
 services:
   postgres:
     container_name: student-market-postgres
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 9
-      POSTGRES_DB: postgres
+    image: bitnami/postgresql:15
+    env_file:
+      - .env
     ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-#    healthcheck:
-#      test: [ "CMD-SHELL", "pg_isready -U myuser -d mydatabase" ]
-#      interval: 2s
-#      timeout: 10s
-#      retries: 5
+      - "5433:5432"  # Exposes port 5433 on the host
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 2s
+      timeout: 10s
+      retries: 5
 
   minio:
     container_name: student-market-minio
@@ -27,21 +25,17 @@ services:
       MINIO_SECRET_KEY: minioadmin      # Set your own secret key
     command: server /data --console-address ":9001"
 
-#  app:
-#    container_name: student-market-server
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8085:8080"
-#    depends_on:
-#      postgres:
-#        condition: service_healthy
-#    env_file:
-#      - .env
-
-
-
-volumes:
-  postgres_data:
-
+  app:
+    container_name: student-market-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"  # Exposes port 8085 on the host
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres  # Updated to the correct service name and port

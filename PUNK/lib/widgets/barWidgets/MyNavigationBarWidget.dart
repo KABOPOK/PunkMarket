@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:punk/screens/navigationScreens/MyProfile.dart';
+import 'package:punk/screens/navigationScreens/MyProfileScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/productListScreens/ProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductScreen.dart';

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../clases/User.dart';
-import '../../supplies/UserService.dart';
-import 'package:http/http.dart' as http;
+import '../../Online/Online.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
   @override
@@ -9,49 +7,40 @@ class ProfileSettingsScreen extends StatefulWidget {
 }
 
 class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
-  final UserService _userService = UserService();
-  User? user;
 
-  late TextEditingController fullNameController;
-  late TextEditingController phoneNumberController;
-  late TextEditingController telegramController;
-  late TextEditingController addressController;
+  final fullNameController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+  final telegramController = TextEditingController();
+  final addressController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+
+    // Initialize the TextEditingControllers with Online.user values
+    fullNameController.text = Online.user.userName ?? '';
+    phoneNumberController.text = Online.user.number ?? '';
+    telegramController.text = Online.user.telegramID ?? '';
+    addressController.text = Online.user.location ?? '';
   }
 
-  // Fetch user data based on the logged-in phone number
-  Future<void> _fetchUserData() async {
-    // Replace this with how you retrieve the logged-in user's phone number
-    String loggedInPhoneNumber = '7'; // Use the actual logged-in phone number
-
-    // Fetch user data from the backend based on the phone number
-    User? fetchedUser = await _userService.fetchUser(loggedInPhoneNumber, '7'); // Empty password for now
-
-    if (fetchedUser != null) {
-      setState(() {
-        user = fetchedUser;
-
-        // Initialize controllers with fetched user data
-        fullNameController = TextEditingController(text: user!.userName);
-        phoneNumberController = TextEditingController(text: user!.number);
-        telegramController = TextEditingController(text: user!.telegramID ?? '');
-        addressController = TextEditingController(text: user!.location ?? '');
-      });
-    }
-  }
-
-  // Save the changed settings (you can implement saving logic here)
+  // Save the changed settings
   void _changeSettings() {
     if (_formKey.currentState!.validate()) {
-      // Handle save logic, such as sending the updated data to the backend
+      setState(() {
+        Online.user.userName = fullNameController.text;
+        Online.user.number = phoneNumberController.text;
+        Online.user.telegramID = telegramController.text;
+        Online.user.location = addressController.text;
+      });
+
+      // Pop and return true to indicate that changes were made
+      Navigator.pop(context, true);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +49,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         backgroundColor: Colors.orange,
         title: Text("Profile Settings"),
       ),
-      body: user == null
+      body: Online.user == null
           ? Center(child: CircularProgressIndicator())
           : Padding(
         padding: const EdgeInsets.all(16.0),
@@ -71,30 +60,54 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
               CircleAvatar(
                 radius: 50,
                 backgroundColor: Colors.grey[300],
-                backgroundImage: user!.photoUrl != null
-                    ? NetworkImage(user!.photoUrl!)
+                backgroundImage: Online.user!.photoUrl != null
+                    ? NetworkImage(Online.user!.photoUrl!)
                     : null,
-                child: user!.photoUrl == null
+                child: Online.user!.photoUrl == null
                     ? Icon(Icons.person, size: 50, color: Colors.grey[700])
                     : null,
               ),
               SizedBox(height: 20),
-              TextFormField(
-                controller: fullNameController,
-                decoration: InputDecoration(labelText: 'Full Name'),
-              ),
-              TextFormField(
-                controller: phoneNumberController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
-                keyboardType: TextInputType.phone,
-              ),
-              TextFormField(
-                controller: telegramController,
-                decoration: InputDecoration(labelText: 'Telegram ID'),
-              ),
-              TextFormField(
-                controller: addressController,
-                decoration: InputDecoration(labelText: 'Location'),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 5,
+                        offset: Offset(2, 4),
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      // Full Name
+                      InfoRow(
+                        label: "Full Name",
+                        controller: fullNameController,
+                      ),
+                      SizedBox(height: 8),
+                      InfoRow(
+                        label: "Phone Number",
+                        controller: phoneNumberController,
+                      ),
+                      SizedBox(height: 8),
+                      InfoRow(
+                        label: "Telegram",
+                        controller: telegramController,
+                      ),
+                      SizedBox(height: 8),
+                      InfoRow(
+                        label: "Address",
+                        controller: addressController,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(height: 20),
               Row(
@@ -119,6 +132,71 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// Custom widget for rows with label and editable field
+class InfoRow extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+
+  InfoRow({required this.label, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // Label
+        Container(
+          width: 120,
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+        // Editable Text Field
+        Expanded(
+          child: TextFormField(
+            controller: controller,
+            style: TextStyle(fontSize: 16),
+            decoration: InputDecoration(
+              isDense: true, // Reduces the height of the TextFormField
+              contentPadding: EdgeInsets.symmetric(vertical: 8),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+class ProfileInfoRow extends StatelessWidget {
+  final String label;
+  final String? value;
+
+  ProfileInfoRow({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Text(
+              value ?? '',
+              textAlign: TextAlign.right,
+              style: TextStyle(color: Colors.grey[700]),
+            ),
+          ),
+        ],
       ),
     );
   }

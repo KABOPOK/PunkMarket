@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../Online/Online.dart';
+import '../../../Online/Online.dart';
 import 'ProfileSettingsScreen.dart';
 class MyProfileScreen extends StatefulWidget {
   @override

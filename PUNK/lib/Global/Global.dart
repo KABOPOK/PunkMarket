@@ -1,1 +1,1 @@
-String HTTPS = 'http://localhost:8080';
+String HTTPS = 'http://192.168.0.100:8080';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:punk/Supplies/product_list.dart';
+import 'package:punk/supplies/product_list.dart';
 import '../../../widgets/barWidgets/SearchBarWidget.dart';
 import '../../../widgets/cardWidgets/ProductCardWidget.dart';
 

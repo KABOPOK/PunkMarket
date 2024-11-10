@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:punk/screens/navigationScreens/messangerScreens/ChatScreen.dart';
+import 'package:punk/screens/navigationScreens/messangerScreens/ChatScreen.dart';
 import 'package:punk/screens/navigationScreens/profileScreens/MyProfileScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/productListScreens/ProductListScreen.dart';
@@ -23,8 +23,8 @@ class _NavigationBarState extends State<MyNavigationBar> {
     //ProductScreen(),// Home Page
     const Icon(Icons.question_answer_sharp, color: Colors.deepOrangeAccent), // Placeholder for Questions screen
     MyProductListPage(), // My Products Page
-    //ChatScreen(),
-    const Icon(Icons.message, color: Colors.deepOrangeAccent), // Placeholder for Messages screen
+    ChatScreen(),
+    //const Icon(Icons.message, color: Colors.deepOrangeAccent), // Placeholder for Messages screen
     MyProfileScreen(),
     //const Icon(Icons.person, color: Colors.deepOrangeAccent), // Placeholder for Profile screen
   ];

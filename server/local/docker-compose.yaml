@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: local-student-market-postgres
+    image: bitnami/postgresql:15
+    environment:
+      POSTGRESQL_DATABASE: postgres
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: 9
+    ports:
+      - "5421:5432"
+
+  minio:
+    container_name: local-student-market-minio
+    image: minio/minio
+    ports:
+      - "9005:9000"
+      - "9010:9001"
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    command: server /data --console-address ":9001"

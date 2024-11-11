@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:punk/screens/navigationScreens/messangerScreens/ChatScreen.dart';
 import 'package:punk/screens/navigationScreens/profileScreens/MyProfileScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/productListScreens/ProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductScreen.dart';
 
-//import '../../screens/navigationScreens/ProductDetailsScreen.dart';
+import '../../screens/navigationScreens/messangerScreens/MyChatsScreen.dart';
+
 
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({super.key});
@@ -23,7 +23,7 @@ class _NavigationBarState extends State<MyNavigationBar> {
     //ProductScreen(),// Home Page
     const Icon(Icons.question_answer_sharp, color: Colors.deepOrangeAccent), // Placeholder for Questions screen
     MyProductListPage(), // My Products Page
-    ChatScreen(),
+    MyChatsScreen(),
     //const Icon(Icons.message, color: Colors.deepOrangeAccent), // Placeholder for Messages screen
     MyProfileScreen(),
     //const Icon(Icons.person, color: Colors.deepOrangeAccent), // Placeholder for Profile screen

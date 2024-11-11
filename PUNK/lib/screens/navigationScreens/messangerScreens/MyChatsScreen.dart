@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../clases/Chat.dart';
 import '../../../supplies/chat_list.dart';
 
-// Dummy Chat data based on your Chat model
-
-
 class MyChatsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

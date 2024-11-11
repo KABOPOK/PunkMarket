@@ -43,7 +43,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
       if (pickedFile != null) {
         // Define the new file name
         String newFileName = 'custom_name.jpg'; // Change this to your desired name
-        String newPath = '${pickedFile.path.substring(0, pickedFile.path.lastIndexOf('/'))}/$newFileName';
+        String newPath = '${pickedFile.path.substring(0, pickedFile.path.lastIndexOf('\\'))}/$newFileName';
 
         // Create a new file with the desired name
         _image = File(newPath);

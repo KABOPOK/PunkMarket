@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:punk/screens/navigationScreens/MyProfile.dart';
+import 'package:punk/screens/navigationScreens/profileScreens/MyProfileScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/productListScreens/ProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductScreen.dart';
+
+import '../../screens/navigationScreens/messangerScreens/MyChatsScreen.dart';
+
 
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({super.key});
@@ -16,10 +19,12 @@ class _NavigationBarState extends State<MyNavigationBar> {
 
   // List of widgets/screens for the navigation bar
   final List<Widget> _screens = [
-    ProductListPage(), // Home Page
+    ProductListPage(),
+    //ProductScreen(),// Home Page
     const Icon(Icons.question_answer_sharp, color: Colors.deepOrangeAccent), // Placeholder for Questions screen
     MyProductListPage(), // My Products Page
-    const Icon(Icons.message, color: Colors.deepOrangeAccent), // Placeholder for Messages screen
+    MyChatsScreen(),
+    //const Icon(Icons.message, color: Colors.deepOrangeAccent), // Placeholder for Messages screen
     MyProfileScreen(),
     //const Icon(Icons.person, color: Colors.deepOrangeAccent), // Placeholder for Profile screen
   ];

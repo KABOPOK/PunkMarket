@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-
+import '../../../Online/Online.dart';
 import 'ProfileSettingsScreen.dart';
+class MyProfileScreen extends StatefulWidget {
+  @override
+  _MyProfileScreenState createState() => _MyProfileScreenState();
+}
 
-class MyProfileScreen extends StatelessWidget {
+class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange, // Top bar color
+        backgroundColor: Colors.orange,
         title: Text(
           'PUNK MARKET',
           style: TextStyle(
@@ -45,14 +49,19 @@ class MyProfileScreen extends StatelessWidget {
                 bottom: 0,
                 right: 0,
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                    // Await result from ProfileSettingsScreen
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ProfileSettingsScreen(),
                       ),
                     );
-                    },
+                    // If result is true, refresh the UI with setState
+                    if (result == true) {
+                      setState(() {});
+                    }
+                  },
                   child: CircleAvatar(
                     backgroundColor: Colors.orange,
                     radius: 18,
@@ -93,41 +102,11 @@ class MyProfileScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ProfileInfoRow(label: 'Full Name:', value: 'Name Surname'),
-                ProfileInfoRow(label: 'Phone Number:', value: '+7xxxxxxxxxx'),
-                ProfileInfoRow(label: 'Telegram:', value: '@username'),
-                ProfileInfoRow(label: 'Address:', value: 'xx dorm, xxx room'),
+                ProfileInfoRow(label: 'Full Name:', value: Online.user.userName),
+                ProfileInfoRow(label: 'Phone Number:', value: Online.user.number),
+                ProfileInfoRow(label: 'Telegram:', value: Online.user.telegramID),
+                ProfileInfoRow(label: 'Address:', value: Online.user.location),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ProfileInfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  ProfileInfoRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              style: TextStyle(color: Colors.grey[700]),
             ),
           ),
         ],

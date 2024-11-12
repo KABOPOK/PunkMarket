@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 import 'package:punk/Global/Global.dart';
 
 import '../clases/User.dart';
+import '../services/UserService.dart';
 
 class RegistrationForm extends StatefulWidget {
   const RegistrationForm({super.key});
@@ -54,69 +55,44 @@ class _RegistrationFormState extends State<RegistrationForm> {
     });
   }
 
-  Future<void> _registerUser() async {
+  bool _validateLoginForm() {
     if(_nameController.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('кто ты, воин?')),
       );
-      return;
+      return false;
     }
     if(_passwordController.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('тут пароль может быть в 1 цифру')),
       );
-      return;
+      return false;
     }
     if(_numberController.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('номер дай, я продам втб, они будут тебе кредит втюхивать')),
       );
-      return;
+      return false;
     }
+    return true;
+  }
+
+  Future<void> _registerUser() async {
+    if(_validateLoginForm == false) {return;}
     User user = User(
-      userName : _nameController.text,
-        password : _passwordController.text,
-        number : _numberController.text,
-        telegramID : _telegramController.text
+      userName: _nameController.text,
+      password: _passwordController.text,
+      number: _numberController.text,
+      telegramID: _telegramController.text,
     );
-
     try {
-      var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/api/users/create'));
-
-      // Add the user field as a JSON string
-      request.fields['user'] = json.encode(user.toUserDTO());
-
-      // Add image file if available
-      if (_image != null) {
-        request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
-      }
-
-      // Send the request
-      var response = await request.send();
-      var responseString = await response.stream.bytesToString();
-
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Successfully registered')),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-        );
-      } else {
-        // Handle error response
-        final errorData = json.decode(responseString);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorData['error'] ?? 'Unknown error')),
-        );
-      }
+      await UserService.registerUser(user, imagePath: _image?.path);
+      Navigator.push(context, MaterialPageRoute(builder: (_) => WelcomeScreen()));
     } catch (e) {
-      print('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

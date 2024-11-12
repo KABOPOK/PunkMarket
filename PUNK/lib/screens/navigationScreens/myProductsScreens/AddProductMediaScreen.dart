@@ -4,9 +4,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:punk/Global/Global.dart';
+import 'package:punk/services/UserService.dart';
 import '../../../../clases/Product.dart';
 import 'package:http_parser/http_parser.dart';
 import '../../../Online/Online.dart';
+import '../../../services/ProductService.dart';
 
 class AddProductMediaScreen extends StatefulWidget {
   final Product product;
@@ -25,52 +27,16 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
 
   _AddProductMediaScreenState({required this.product});
 
-  // Send product data and images to the server
   Future<void> _sendProduct(Product product, List<File?> images) async {
     try {
-      var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/api/products/create'));
-
-      request.fields['product'] = jsonEncode(product.toJson());
-
-      // Add multiple image files if available
-      for (var i = 0; i < images.length; i++) {
-        var image = images[i];
-        if (image != null) {
-          // Determine the MIME type based on the file extension
-          String mimeType = 'image/jpeg'; // Default to JPEG
-          if (image.path.endsWith('.png')) {
-            mimeType = 'image/png';
-          }
-
-          // Add the image file to the multipart request
-          request.files.add(
-            await http.MultipartFile.fromPath(
-              'images',  // The field name the server expects
-              image.path,
-              contentType: MediaType('image', mimeType.split('/')[1]), // Set the correct MIME type
-            ),
-          );
-        }
-      }
-
-      // Send the request and handle the response
-      var response = await request.send();
-      var responseString = await response.stream.bytesToString();
-
-      if (response.statusCode == 200) {
+      Future<int> responseCode = ProductService.sendProduct(product, images) ;
+      if (responseCode.toString() == "200") {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Product created successfully')),
         );
-      } else {
-        final errorData = json.decode(responseString);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorData['error'] ?? 'Unknown error')),
-        );
+        Navigator.pop(context);
+        Navigator.pop(context);
       }
-
-      // Navigate back after successful submission
-      Navigator.pop(context);
-      Navigator.pop(context);
     } catch (e) {
       // Catch any exceptions and display error message
       print('Error: $e');

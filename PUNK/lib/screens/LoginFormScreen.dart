@@ -7,6 +7,7 @@ import 'package:punk/widgets/barWidgets/MyNavigationBarWidget.dart';
 
 import '../Online/Online.dart';
 import '../clases/User.dart';
+import '../services/UserService.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -28,80 +29,45 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  bool _validateLoginForm() {
+    if (_passwordController.text.isEmpty) {
+      _showSnackBar('тут пароль может быть в 1 цифру');
+      return false;
+    }
+
+    if (_numberController.text.isEmpty) {
+      _showSnackBar('номер дай, я продам втб, они будут тебе кредит втюхивать');
+      return false;
+    }
+
+    return true;
+  }
+
   Future<void> _loginUser() async {
-    if (_formKey.currentState!.validate()) {
-      if(_passwordController.text.isEmpty){
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('тут пароль может быть в 1 цифру')),
-        );
-        return;
-      }
-      if(_numberController.text.isEmpty){
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('номер дай, я продам втб, они будут тебе кредит втюхивать')),
-        );
-        return;
-      }
-      User user = User(
-          password : _passwordController.text,
-          number : _numberController.text,
-      );
-
-      try {
-        var response = await http.post(
-          Uri.parse('$HTTPS/api/users/authorization'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(user.toLogonDataDTO()),
-        );
-        switch (response.statusCode) {
-          case 200:
-            // Parse the response body
-            var jsonResponse = jsonDecode(response.body);
-            Online.user = User.fromJson(jsonResponse); // Create a User instance
-
-            // Show success message
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('здарова заебал')),
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const MyNavigationBar()),
-            );
-            break;
-          case 405: // Assuming 404 for 'User not found'
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('User not found')),
-            );
-            break;
-          case 401:
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Incorrect password')),
-            );
-            break;
-          default:
-            throw Exception('The server is not responding');
-        }
-        // if (response.statusCode == 200) {
-        //   var jsonResponse = jsonDecode(response.body);
-        //   bool userExists = jsonResponse['user_exists'];
-        //
-        //   if (userExists) {
-        //     ScaffoldMessenger.of(context).showSnackBar(
-        //       SnackBar(content: Text('Login successful')),
-        //     );
-        //   } else {
-        //     ScaffoldMessenger.of(context).showSnackBar(
-        //       SnackBar(content: Text('User not found')),
-        //     );
-        //   }
-        // } else {
-        //   throw Exception('Failed to login');
-        // }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+    if (!_validateLoginForm()) return;
+    User user = User(
+      password: _passwordController.text,
+      number: _numberController.text,
+    );
+    try {
+      var response = await UserService.loginUser(user);
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        Online.user = User.fromJson(jsonResponse);
+        _showSnackBar('здарова заебал');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyNavigationBar()),
         );
       }
+    } catch (e) {
+      _showSnackBar('Error: $e');
     }
   }
 

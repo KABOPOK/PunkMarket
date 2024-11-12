@@ -54,7 +54,8 @@ class _ProductListPageState extends State<ProductListPage> {
                     photoUrl: product["imageUrl"],
                     title: product["title"],
                     price: product["price"],
-                    owner: product["owner"], // Pass owner to the product card
+                    owner: product["owner"],
+                    description: product["description"],// Pass owner to the product card
                     onAddToCart: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

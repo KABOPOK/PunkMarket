@@ -48,7 +48,7 @@ class User {
       userName: json['userName'] ?? '',
       photoUrl: json['photoUrl'] ?? '',
       location: json['location'] ?? '',
-      telegramID: json['telegram'] ?? '',
+      telegramID: json['telegramID'] ?? '',
     );
   }
   

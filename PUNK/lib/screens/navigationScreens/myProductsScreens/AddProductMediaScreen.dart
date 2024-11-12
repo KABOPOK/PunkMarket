@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:punk/Global/Global.dart';
 import '../../../../clases/Product.dart';
-import 'package:http_parser/http_parser.dart'; // To specify MIME types
+import 'package:http_parser/http_parser.dart';
+import '../../../Online/Online.dart';
 
 class AddProductMediaScreen extends StatefulWidget {
   final Product product;
@@ -13,22 +14,28 @@ class AddProductMediaScreen extends StatefulWidget {
   AddProductMediaScreen({required this.product});
 
   @override
-  _AddProductMediaScreenState createState() => _AddProductMediaScreenState();
+  _AddProductMediaScreenState createState() => _AddProductMediaScreenState(product: product);
 }
 
 class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
   final int _maxImages = 10;
-  List<File?> _productImages = [];
+  List<File?> _productImages = List<File?>.filled(11, null); // Index 0 for cover image
   final ImagePicker _picker = ImagePicker();
+  Product product;
+
+  _AddProductMediaScreenState({required this.product});
 
   // Send product data and images to the server
   Future<void> _sendProduct(Product product, List<File?> images) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/api/products/create'));
 
+      // Add form fields
       request.fields['product'] = jsonEncode(product.toJson());
 
-      for (var image in images) {
+      // Add multiple image files if available
+      for (var i = 0; i < images.length; i++) {
+        var image = images[i];
         if (image != null) {
           // Determine the MIME type based on the file extension
           String mimeType = 'image/jpeg'; // Default to JPEG
@@ -39,7 +46,7 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
           // Add the image file to the multipart request
           request.files.add(
             await http.MultipartFile.fromPath(
-              'images',  // The field name the server expects
+              i == 0 ? 'envelop' : 'images',  // Differentiate cover image
               image.path,
               contentType: MediaType('image', mimeType.split('/')[1]), // Set the correct MIME type
             ),
@@ -75,17 +82,31 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
   }
 
   // Pick an image from the gallery
-  Future<void> _pickImage(int index) async {
+  Future<void> _pickImage(bool isCoverImage, int index) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
-        // Add or update the image in the list
-        if (index >= 0 && index < _productImages.length) {
-          _productImages[index] = File(pickedFile.path);
+        String newFileName = isCoverImage
+            ? 'envelop.jpg'
+            : '${index}.jpg';
+
+        // Generate the new path for the image
+        String newPath = '${pickedFile.path.substring(0, pickedFile.path.lastIndexOf('/'))}/$newFileName';
+        File imageFile = File(newPath);
+
+        if (isCoverImage) {
+          _productImages[0] = imageFile;
         } else {
-          _productImages.add(File(pickedFile.path));
+          // Add product image in order without gaps
+          int insertIndex = _productImages.indexWhere((file) => file == null, 1);
+          if (insertIndex != -1) {
+            _productImages[insertIndex] = imageFile;
+          }
         }
+
+        // Save the picked file with the new name
+        pickedFile.saveTo(newPath);
       } else {
         print('No image selected.');
       }
@@ -105,7 +126,9 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
           },
         ),
       ),
+
       body: Column(
+        // Selecting Images
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
@@ -121,19 +144,42 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
               ),
               itemCount: _maxImages,
               itemBuilder: (context, index) {
+                int actualIndex = index + 1; // Skip index 0, as it's for cover
                 return GestureDetector(
-                  onTap: () => _pickImage(index),
+                  onTap: () => _pickImage(false, actualIndex),
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: _productImages.length > index && _productImages[index] != null
-                        ? Image.file(_productImages[index]!, fit: BoxFit.cover)
+                    child: _productImages[actualIndex] != null
+                        ? Image.file(_productImages[actualIndex]!, fit: BoxFit.cover)
                         : const Icon(Icons.add),
                   ),
                 );
               },
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Selecting Cover Image
+          const Text(
+            'Pick Cover Image',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          GestureDetector(
+            onTap: () => _pickImage(true, 0),
+            child: Container(
+              height: 100,
+              width: 100,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: _productImages[0] != null
+                  ? Image.file(_productImages[0]!, fit: BoxFit.cover)
+                  : const Icon(Icons.add),
             ),
           ),
           Center(

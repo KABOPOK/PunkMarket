@@ -31,11 +31,12 @@ public class ProductController implements ProductApi {
   @Override
   public void createProduct(ProductDTO productDTO, List<MultipartFile> images) {
     Product product = productMapper.map(productDTO);
-    productService.save(product);
+    UUID productId = productService.save(product);
+    product.setProductID(productId);
     for (MultipartFile image : images) {
       try (InputStream inputStream = image.getInputStream()) {
-        String objectName = product.getUserID() + "/" + image.getOriginalFilename();
-        storageService.uploadFile("photos", objectName, inputStream, image.getContentType());
+        String path = product.getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();
+        storageService.uploadFile("products", path, inputStream, image.getContentType());
       } catch (IOException e) {
         throw new RuntimeException("Failed to upload images: " + e.getMessage(), e);
       }
@@ -48,7 +49,8 @@ public class ProductController implements ProductApi {
     List<Product> productList = productService.getMyProducts(userId,page,limit);
     List<ProductDTO> productDTOList = new ArrayList<>();
     productList.forEach(product -> {
-      String url = storageService.generateImageUrl("photos", product.getUserID().toString() + "/" + "envelop.jpg",3600);
+      String path = product.getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";
+      String url = storageService.generateImageUrl("products", path,3600);
       product.setPhotoUrl(url);
       productDTOList.add(productMapper.map(product));
     });
@@ -60,7 +62,8 @@ public class ProductController implements ProductApi {
     List<Product> productList = productService.getProducts(page, limit);
     List<ProductDTO> productDTOList = new ArrayList<>();
     productList.forEach(product -> {
-      String url = storageService.generateImageUrl("photos", product.getUserID().toString() + "/" + "envelop.jpg",3600);
+      String path = product.getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";
+      String url = storageService.generateImageUrl("products", path,3600);
       product.setPhotoUrl(url);
       productDTOList.add(productMapper.map(product));
     });

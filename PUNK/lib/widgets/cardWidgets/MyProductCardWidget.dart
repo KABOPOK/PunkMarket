@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-
 import '../../Global/Global.dart';
 import '../../clases/Product.dart';
 
@@ -23,7 +22,7 @@ class MyProduct extends StatelessWidget {
   Future<void> _sendProduct(Product product, File? image, BuildContext context /*for show message about product sending*/) async {
     try {
       var request =
-          http.MultipartRequest('POST', Uri.parse('$HTTPS/create-product'));
+      http.MultipartRequest('POST', Uri.parse('$HTTPS/create-product'));
 
       // Add form fields
       request.fields['product'] = jsonEncode(product.toJson());
@@ -31,7 +30,7 @@ class MyProduct extends StatelessWidget {
       // Add image file if available
       if (image != null) {
         request.files
-            .add(await http.MultipartFile.fromPath('image', image!.path));
+            .add(await http.MultipartFile.fromPath('image', image.path));
       }
 
       // Send the request
@@ -66,12 +65,38 @@ class MyProduct extends StatelessWidget {
           Expanded(
             child: ClipRRect(
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(10)),
-              child: Image.network(
+              const BorderRadius.vertical(top: Radius.circular(10)),
+              child: photoUrl.isNotEmpty
+                  ? Image.network(
                 photoUrl,
                 fit: BoxFit.cover,
                 width: double.infinity,
-              ),
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                            (loadingProgress.expectedTotalBytes ?? 1)
+                            : null,
+                      ),
+                    );
+                  }
+                },
+                errorBuilder: (BuildContext context, Object error,
+                    StackTrace? stackTrace) {
+                  return Center(
+                    child: Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
+                  );
+                },
+              )
+                  : Center(child: Icon(Icons.image, color: Colors.grey)),
             ),
           ),
           Padding(

@@ -108,6 +108,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ProfileInfoRow(label: 'Phone Number:', value: Online.user.number),
                 ProfileInfoRow(label: 'Telegram:', value: Online.user.telegramID),
                 ProfileInfoRow(label: 'Address:', value: Online.user.location),
+                ProfileInfoRow(label: 'PhotoUrl:', value: Online.user.photoUrl),
               ],
             ),
           ),

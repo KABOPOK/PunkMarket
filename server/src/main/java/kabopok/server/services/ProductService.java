@@ -19,10 +19,11 @@ import java.util.UUID;
 public class ProductService {
 
   private final ProductRepository productRepository;
-  public void save(Product product) {
+  public UUID save(Product product) {
     UUID productID = UUID.randomUUID();
     product.setProductID(productID);
     productRepository.save(product);
+    return productID;
   }
 
   public List<Product> getProducts(Integer page, Integer limit) {

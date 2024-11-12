@@ -13,7 +13,6 @@ import java.util.UUID;
 public class Product {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "product_id", columnDefinition = "UUID")
   private UUID productID; // UUID for unique identification
 

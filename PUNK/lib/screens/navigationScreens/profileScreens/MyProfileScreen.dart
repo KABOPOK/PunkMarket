@@ -10,6 +10,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.orange,
         title: Text(
@@ -106,6 +107,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ProfileInfoRow(label: 'Phone Number:', value: Online.user.number),
                 ProfileInfoRow(label: 'Telegram:', value: Online.user.telegramID),
                 ProfileInfoRow(label: 'Address:', value: Online.user.location),
+                ProfileInfoRow(label: 'PhotoUrl:', value: Online.user.photoUrl),
               ],
             ),
           ),

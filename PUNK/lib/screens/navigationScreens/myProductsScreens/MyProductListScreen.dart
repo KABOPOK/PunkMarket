@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:punk/clases/Product.dart';
 import 'package:punk/widgets/cardWidgets/MyProductCardWidget.dart';
 import 'package:punk/Online/Online.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +13,7 @@ class MyProductListPage extends StatefulWidget {
 }
 
 class _MyProductListPageState extends State<MyProductListPage> {
-  List<Map<String, dynamic>> _myProducts = [];
+  List<Product> _myProducts = [];
   bool _isLoading = true;
   String _errorMessage = "";
   int _page = 1;
@@ -40,11 +41,15 @@ class _MyProductListPageState extends State<MyProductListPage> {
         try {
           // Parse and validate the JSON response
           final List<dynamic> productData = json.decode(response.body);
+          List<Product> products = [];
+          for (int i = 0; i < productData.length; ++i) {
+            products.add(Product.fromJson(productData[i]));
+          }
 
           // Check if the response is empty or if products were found
           if (productData.isNotEmpty) {
             setState(() {
-              _myProducts = List<Map<String, dynamic>>.from(productData);
+              _myProducts = products;
               _isLoading = false;
             });
           } else {
@@ -79,6 +84,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text(
           "МОИ ТОВАРЫ",
@@ -119,10 +125,10 @@ class _MyProductListPageState extends State<MyProductListPage> {
           itemBuilder: (context, index) {
             final product = _myProducts[index];
             return MyProduct(
-              photoUrl: product["photoUrl"],
-              title: product["title"],
-              price: product["price"],
-              owner: product["ownerName"],
+              photoUrl: _myProducts[index].photoUrl,
+              title: _myProducts[index].title,
+              price: _myProducts[index].price,
+              owner: _myProducts[index].ownerName,
             );
           },
         ),

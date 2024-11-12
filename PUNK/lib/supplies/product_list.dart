@@ -6,6 +6,7 @@ final List<Map<String, dynamic>> products = [
     "title": "Отец",
     "price": "29.99",
     "owner": "Скуф",
+    "description": " Dumbledore había convencido a Harry de que no buscara otra vez el espejo de Oesed, y durante el resto de las vacaciones de Navidad la capa invisible permaneció doblada en el fondo de su baúl."
   },
   {
     "imageUrl":
@@ -13,6 +14,8 @@ final List<Map<String, dynamic>> products = [
     "title": "BitchSlaaay",
     "price": "99.99",
     "owner": "Альтушка",
+    "description": " Dumbledore había convencido a Harry de que no buscara otra vez el espejo de Oesed, y durante el resto de las vacaciones de Navidad la capa invisible permaneció doblada en el fondo de su baúl."
+
   },
   {
     "imageUrl":
@@ -20,6 +23,8 @@ final List<Map<String, dynamic>> products = [
     "title": "SpiderWeb",
     "price": "59.99",
     "owner": "Том Бой",
+    "description": " Dumbledore había convencido a Harry de que no buscara otra vez el espejo de Oesed, y durante el resto de las vacaciones de Navidad la capa invisible permaneció doblada en el fondo de su baúl."
+
   },
   {
     "imageUrl":
@@ -27,6 +32,8 @@ final List<Map<String, dynamic>> products = [
     "title": "Fckng Coding",
     "price": "10.99",
     "owner": "Real Life",
+    "description": " Dumbledore había convencido a Harry de que no buscara otra vez el espejo de Oesed, y durante el resto de las vacaciones de Navidad la capa invisible permaneció doblada en el fondo de su baúl."
+
   },
   {
     "imageUrl":
@@ -34,6 +41,8 @@ final List<Map<String, dynamic>> products = [
     "title": "Quokka",
     "price": "1000.0",
     "owner": "Fake Eyes Open",
+    "description": " Dumbledore había convencido a Harry de que no buscara otra vez el espejo de Oesed, y durante el resto de las vacaciones de Navidad la capa invisible permaneció doblada en el fondo de su baúl."
+
   },
   {
     "imageUrl":
@@ -41,6 +50,8 @@ final List<Map<String, dynamic>> products = [
     "title": "Facts",
     "price": "100.0",
     "owner": "I'm the owner of this house",
+    "description": " Dumbledore había convencido a Harry de que no buscara otra vez el espejo de Oesed, y durante el resto de las vacaciones de Navidad la capa invisible permaneció doblada en el fondo de su baúl."
+
   },
   {
     "imageUrl":
@@ -48,6 +59,8 @@ final List<Map<String, dynamic>> products = [
     "title": "Cool T-Shirt",
     "price": "899.0",
     "owner": "Sad Person",
+    "description": " Dumbledore había convencido a Harry de que no buscara otra vez el espejo de Oesed, y durante el resto de las vacaciones de Navidad la capa invisible permaneció doblada en el fondo de su baúl."
+
   },
   {
     "imageUrl":
@@ -55,6 +68,8 @@ final List<Map<String, dynamic>> products = [
     "title": "Boots",
     "price": "3400.0",
     "owner": "Boots Shop",
+    "description": " Dumbledore había convencido a Harry de que no buscara otra vez el espejo de Oesed, y durante el resto de las vacaciones de Navidad la capa invisible permaneció doblada en el fondo de su baúl."
+
   },
 ];
 

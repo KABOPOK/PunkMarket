@@ -4,6 +4,7 @@ import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListSc
 import 'package:punk/screens/navigationScreens/productListScreens/ProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductScreen.dart';
 
+import '../../screens/navigationScreens/messangerScreens/ChatScreen.dart';
 import '../../screens/navigationScreens/messangerScreens/MyChatsScreen.dart';
 
 
@@ -21,7 +22,8 @@ class _NavigationBarState extends State<MyNavigationBar> {
   final List<Widget> _screens = [
     ProductListPage(),
     //ProductScreen(),// Home Page
-    const Icon(Icons.question_answer_sharp, color: Colors.deepOrangeAccent), // Placeholder for Questions screen
+    ChatScreen(),
+    //const Icon(Icons.question_answer_sharp, color: Colors.deepOrangeAccent), // Placeholder for Questions screen
     MyProductListPage(), // My Products Page
     MyChatsScreen(),
     //const Icon(Icons.message, color: Colors.deepOrangeAccent), // Placeholder for Messages screen

@@ -29,5 +29,9 @@ public class ProductService {
     Pageable pageable = PageRequest.of(page - 1, limit); // Page number is zero-based in Pageable
     return productRepository.findAll(pageable).getContent();
   }
+  public List<Product> getMyProducts(UUID userId, Integer page, Integer limit) {
+    Pageable pageable = PageRequest.of(page - 1, limit); // Page number is zero-based in Pageable
+    return productRepository.findAllByUserID(userId, pageable);
+  }
 
 }

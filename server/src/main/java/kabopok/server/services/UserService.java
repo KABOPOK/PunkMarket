@@ -43,4 +43,8 @@ public class UserService {
     return current;
   }
 
+  public User findById(UUID userId){
+    return userRepository.findById(userId).orElseThrow((()-> new RuntimeException("User not found")));
+  }
+
 }

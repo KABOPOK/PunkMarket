@@ -70,7 +70,6 @@ paths:
       responses:
         '200':
           description: Product created successfully
-
   /api/products/get_products:
     get:
       tags:
@@ -92,6 +91,43 @@ paths:
           schema:
             type: integer
             default: 20
+      responses:
+        '200':
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductDTO'
+  /api/products/get_my_products:
+    get:
+      tags:
+        - Product
+      summary: Retrieve a paginated list of products
+      operationId: getMyProducts
+      parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: The number of products to retrieve per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: userId
+          in: query
+          description: The user Id
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
           description: A list of products

@@ -18,7 +18,7 @@ services:
     container_name: student-market-minio
     image: minio/minio
     ports:
-      - "9000:9000"   # MinIO API
+      - "9005:9000"   # MinIO API
       - "9001:9001"   # MinIO Console
     environment:
       MINIO_ACCESS_KEY: minioadmin     # Set your own access key

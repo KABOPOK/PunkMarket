@@ -11,7 +11,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+        #format_sql: true
     show-sql: true
   flyway:
     user: ${POSTGRESQL_USERNAME}
@@ -21,3 +21,9 @@ spring:
     schemas: public
     table: flyway_schema_history
     baseline-on-migrate: true
+
+#  web:
+#    locale: en
+#    locale-resolver: fixed
+minio:
+  url : http://localhost:9005

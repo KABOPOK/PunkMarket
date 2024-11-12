@@ -15,9 +15,10 @@ services:
     container_name: local-student-market-minio
     image: minio/minio
     ports:
-      - "9005:9000"
+      - "9009:9000"
       - "9010:9001"
     environment:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
+      MINIO_PROMETHEUS_AUTH_TYPE: "public"
     command: server /data --console-address ":9001"

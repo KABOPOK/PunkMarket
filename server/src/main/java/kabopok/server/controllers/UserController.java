@@ -32,6 +32,8 @@ public class UserController implements UserApi {
   @Override
   public UserDTO getUser(LoginDataDTO loginDataDTO) {
     User user = userService.findByNumber(loginDataDTO);
+    String url = storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg",3600);
+    user.setPhotoUrl(url);
     return userMapper.map(user);
   }
 
@@ -48,7 +50,7 @@ public class UserController implements UserApi {
     User user = userMapper.map(userDTO);
     userService.save(user);
     try (InputStream inputStream = image.getInputStream()) {
-      storageService.uploadFile("users", user.getUserID().toString(), inputStream, image.getContentType());
+      storageService.uploadFile("users", user.getUserID().toString() + ".jpg", inputStream, image.getContentType());
     } catch (IOException e) {
       throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
     }

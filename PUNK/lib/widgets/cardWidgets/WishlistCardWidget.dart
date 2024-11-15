@@ -85,7 +85,7 @@ class WishlistCard extends StatelessWidget {
                     ),
                     // Add to Wishlist button
                     IconButton(
-                      icon: const Icon(Icons.favorite_border),
+                      icon: const Icon(Icons.favorite),
                       color: Colors.red,
                       onPressed: onAddToWishlist,
                     ),

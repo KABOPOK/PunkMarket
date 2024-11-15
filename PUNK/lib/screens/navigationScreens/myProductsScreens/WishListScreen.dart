@@ -1,12 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:punk/widgets/cardWidgets/WishlistCardWidget.dart'; // Import the ProductCard widget
 import '../../../Global/Global.dart';
 import '../../../Online/Online.dart';
 import 'package:http/http.dart' as http;
 import '../../../supplies/product_list.dart';
-import 'MyProductListScreen.dart'; // Import the ProductCard widget
+import '../productListScreens/ProductDetailsScreen.dart';
+import 'MyProductListScreen.dart';
 
 class WishListPage extends StatefulWidget {
   @override
@@ -177,14 +177,39 @@ class _WishListPageState extends State<WishListPage> {
                 ),
                 itemBuilder: (context, index) {
                   final product = _myProducts[index];
-                  return WishlistCard(
-                    photoUrl: product["photoUrl"],
-                    title: product["title"],
-                    price: product["price"],
-                    owner: product["ownerName"],
-                    description: product["description"],
-                    onAddToCart: () {  },
-                    onAddToWishlist: () {  },
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProductScreen(
+                                title: product["title"],
+                                photoUrl: product["imageUrl"],
+                                price: product["price"],
+                                owner: product["owner"],
+                                description: product["description"],
+                              ),
+                        ),
+                      );
+                    },
+                    child: WishlistCard(
+                      photoUrl: product["photoUrl"],
+                      title: product["title"],
+                      price: product["price"],
+                      owner: product["ownerName"],
+                      description: product["description"],
+                      onAddToCart: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${product["title"]} added to cart!'),
+                          ),
+                        );
+                      },
+                      onAddToWishlist: () {
+
+                      },
+                    ),
                   );
                 },
               ),

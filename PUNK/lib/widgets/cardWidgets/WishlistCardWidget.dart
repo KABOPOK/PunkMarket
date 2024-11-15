@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class WishlistCard extends StatelessWidget {
   final String photoUrl;
   final String title;
-  final double price;
+  final String price;
+  final String description;
   final String owner;
   final VoidCallback onAddToCart;
   final VoidCallback onAddToWishlist;
@@ -13,6 +14,7 @@ class WishlistCard extends StatelessWidget {
     required this.photoUrl,
     required this.title,
     required this.price,
+    required this.description,
     required this.owner,
     required this.onAddToCart,
     required this.onAddToWishlist,
@@ -54,7 +56,7 @@ class WishlistCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  '\$${price.toStringAsFixed(2)}',
+                  price,
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -83,7 +85,7 @@ class WishlistCard extends StatelessWidget {
                     ),
                     // Add to Wishlist button
                     IconButton(
-                      icon: const Icon(Icons.favorite_border),
+                      icon: const Icon(Icons.favorite),
                       color: Colors.red,
                       onPressed: onAddToWishlist,
                     ),

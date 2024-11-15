@@ -1,5 +1,20 @@
 import 'package:flutter/material.dart';
+
 class ProductScreen extends StatelessWidget {
+  final String title;
+  final String photoUrl;
+  final String price;
+  final String owner;
+  final String description;
+
+  ProductScreen({
+    required this.title,
+    required this.photoUrl,
+    required this.price,
+    required this.owner,
+    required this.description,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,9 +37,11 @@ class ProductScreen extends StatelessWidget {
             Center(
               child: Stack(
                 children: [
-                  Image.asset(
-                    '../../supplies/arkadiy.png', // Replace with actual image asset path
+                  Image.network(
+                    photoUrl,
                     height: 200,
+                    errorBuilder: (context, error, stackTrace) =>
+                        Image.asset('assets/placeholder.png', height: 200),
                   ),
                   Positioned(
                     right: 8,
@@ -41,13 +58,13 @@ class ProductScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
-                  'Манекен Аркадий',
+                  title,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '120 р',
+                  price,
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.green,
@@ -62,22 +79,20 @@ class ProductScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
-            const Text(
-              'Приобретался на авито, б/у, использовался HK24. Имеет некоторые следы использования. Зовут Аркадий.',
+            Text(
+              description,
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 16),
             const Divider(),
-            buildInfoRow('Общежитие', '13 общ.'),
-            buildInfoRow('Владелец', 'Организатор НК'),
-            buildInfoRow('Торг', 'Уместен'),
+            buildInfoRow('Владелец', owner),
             buildInfoRow('Состояние', 'б.у.'),
-            buildInfoRow('Способ оплаты', 'перевод'),
             const Spacer(),
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32), backgroundColor: Colors.orange,
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                  backgroundColor: Colors.orange,
                 ),
                 onPressed: () {
                   // Contact seller functionality
@@ -85,7 +100,6 @@ class ProductScreen extends StatelessWidget {
                 child: const Text(
                   'Связаться с продавцом',
                   style: TextStyle(fontSize: 18, color: Colors.white),
-
                 ),
               ),
             ),

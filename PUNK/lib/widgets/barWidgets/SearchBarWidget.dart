@@ -19,8 +19,9 @@ class SearchBarWidget extends StatelessWidget {
       child: Container(
         height: 35,  // Height of the search bar
         decoration: BoxDecoration(
+          color: Colors.white,
           border: Border.all(
-            color: Colors.lightBlue,  // Border color
+            color: Colors.orangeAccent,  // Border color
             width: 1.4,
           ),
           borderRadius: BorderRadius.circular(15),  // Border radius
@@ -47,7 +48,7 @@ class SearchBarWidget extends StatelessWidget {
             ),
             Container(
               decoration: BoxDecoration(
-                color: Colors.lightBlue,  // Background color of search button
+                color: Colors.white,  // Background color of search button
                 borderRadius: BorderRadius.circular(25),
               ),
               height: 32,
@@ -56,7 +57,7 @@ class SearchBarWidget extends StatelessWidget {
                 child: Text(
                   'Search',
                   style: TextStyle(
-                    color: Colors.white,  // Text color
+                    color: Colors.orangeAccent,  // Text color
                   ),
                 ),
               ),

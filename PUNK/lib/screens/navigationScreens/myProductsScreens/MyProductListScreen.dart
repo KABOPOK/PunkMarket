@@ -6,6 +6,7 @@ import 'package:punk/Online/Online.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../Global/Global.dart';
+import 'WishListScreen.dart';
 
 class MyProductListPage extends StatefulWidget {
   @override
@@ -84,54 +85,111 @@ class _MyProductListPageState extends State<MyProductListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: const Text(
-          "МОИ ТОВАРЫ",
-          style: TextStyle(color: Colors.orange),
-        ),
-        backgroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search, color: Colors.orange),
-            onPressed: () {
-              // Handle search action
-            },
+      body: CustomScrollView(
+        slivers: [
+          // Top Bar Switcher
+          SliverAppBar(
+            pinned: true,
+            floating: false,
+            backgroundColor: Colors.orange,
+            flexibleSpace: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    child: Container(
+                      color: Colors.orangeAccent,
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      child: Icon(Icons.shopping_cart, color: Colors.white),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WishListPage()), // Example: navigate to AddProductScreen
+                      );
+                    },
+                    child: Container(
+                      color: Colors.orange,
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Icon(Icons.favorite, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          IconButton(
-            icon: Icon(Icons.filter_list, color: Colors.orange),
-            onPressed: () {
-              // Handle filter action
-            },
+
+          // Title and Actions Row (scrolls with content)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "МОИ ТОВАРЫ",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.search, color: Colors.black),
+                        onPressed: () {
+                          // Handle search action
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.filter_list, color: Colors.black),
+                        onPressed: () {
+                          // Handle filter action
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Main Content
+          SliverFillRemaining(
+            child: _isLoading
+                ? Center(child: CircularProgressIndicator())
+                : _errorMessage.isNotEmpty
+                ? Center(child: Text(_errorMessage))
+                : _myProducts.isEmpty
+                ? Center(child: Text('No products found'))
+                : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GridView.builder(
+                itemCount: _myProducts.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: 0.75,
+                ),
+                itemBuilder: (context, index) {
+                  final product = _myProducts[index];
+                  return MyProduct(
+                    photoUrl: _myProducts[index].photoUrl,
+                    title: _myProducts[index].title,
+                    price: _myProducts[index].price,
+                    owner: _myProducts[index].ownerName,
+                  );
+                },
+              ),
+            ),
           ),
         ],
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _errorMessage.isNotEmpty
-          ? Center(child: Text(_errorMessage))
-          : _myProducts.isEmpty
-          ? Center(child: Text('No products found'))
-          : Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          itemCount: _myProducts.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
-            childAspectRatio: 0.75,
-          ),
-          itemBuilder: (context, index) {
-            final product = _myProducts[index];
-            return MyProduct(
-              photoUrl: _myProducts[index].photoUrl,
-              title: _myProducts[index].title,
-              price: _myProducts[index].price,
-              owner: _myProducts[index].ownerName,
-            );
-          },
-        ),
       ),
     );
   }

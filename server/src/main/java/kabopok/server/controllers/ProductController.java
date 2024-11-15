@@ -26,21 +26,21 @@ public class ProductController implements ProductApi {
   private final ProductService productService;
   private final ProductMapper productMapper;
   private final StorageService storageService;
-
   private final UserService userService;
+
   @Override
   public void createProduct(ProductDTO productDTO, List<MultipartFile> images) {
     Product product = productMapper.map(productDTO);
     UUID productId = productService.save(product);
     product.setProductID(productId);
-    for (MultipartFile image : images) {
-      try (InputStream inputStream = image.getInputStream()) {
-        String path = product.getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();
-        storageService.uploadFile("products", path, inputStream, image.getContentType());
-      } catch (IOException e) {
-        throw new RuntimeException("Failed to upload images: " + e.getMessage(), e);
-      }
-    }
+    storageService.uploadFiles("products", product, images);
+  }
+
+  @Override
+  public void deleteProduct(UUID productId) {
+    Product product = productService.deleteProduct(productId);
+    String path = product.getUserID() + "/" + product.getProductID();
+    storageService.deleteFolder("products",path);
   }
 
   @Override
@@ -68,6 +68,15 @@ public class ProductController implements ProductApi {
       productDTOList.add(productMapper.map(product));
     });
     return productDTOList;
+  }
+
+  @Override
+  public void updateProduct(UUID productId, ProductDTO productDTO, List<MultipartFile> images) {
+    Product updatedProduct = productMapper.map(productDTO);
+    updatedProduct = productService.updateProduct(productId, updatedProduct);
+    String path = updatedProduct.getUserID() + "/" + updatedProduct.getProductID();
+    storageService.deleteFolder("products",path);
+    storageService.uploadFiles("products", updatedProduct, images);
   }
 
 }

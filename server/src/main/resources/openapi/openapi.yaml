@@ -47,6 +47,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDTO'
+  /api/users/delete:
+    delete:
+      tags:
+        - User
+      operationId: deleteUser
+      summary: Delete a user by userId
+      description: Deletes a user by its unique `userId`.
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID (UUID) of the user to delete.
+      responses:
+        '200':
+          description: User successfully deleted
+  /api/users/update:
+    put:
+      tags:
+        - User
+      operationId: updateUser
+      summary: Update user information by userId
+      description: Updates the details of an existing user specified by its `userId`.
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID (UUID) of the user to update.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                userDTO:
+                  $ref: '#/components/schemas/UserDTO'
+                image:
+                  type: string
+                  format: binary
+                  description: The image file (profile picture) of the user.
+      responses:
+        '200':
+          description: User successfully updated
+
   /api/products/create:
     post:
       tags:
@@ -70,6 +120,57 @@ paths:
       responses:
         '200':
           description: Product created successfully
+  /api/products/delete:
+    delete:
+      tags:
+        - Product
+      operationId: deleteProduct
+      summary: Delete Product by productId
+      description: Deletes a product by its unique identifier (productId).
+      parameters:
+        - in: query
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID of the product to delete.
+      responses:
+        '200':
+          description: Product successfully deleted
+  /api/products/update:
+    put:
+      tags:
+        - Product
+      operationId: updateProduct
+      summary: Update an existing product by id
+      description: Updates the details of an existing product specified by its `id`.
+      parameters:
+        - in: query
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID of the product to update.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                productDTO:
+                  $ref: '#/components/schemas/ProductDTO'
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: List of images associated with the product.
+      responses:
+        '200':
+          description: Product successfully updated
   /api/products/get_products:
     get:
       tags:
@@ -137,6 +238,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ProductDTO'
+
 components:
   schemas:
     UserDTO:

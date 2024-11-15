@@ -35,8 +35,55 @@ class _ProductListPageState extends State<ProductListPage> {
       backgroundColor: Colors.black,
       body: Column(
         children: [
-          // Pass _filterProducts to the SearchBar widget
-          SearchBarWidget(onSearch: _filterProducts),
+          // Top bar with logo, title, and search bar
+
+          Container(
+            color: Colors.orange, // Background color for top bar
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        // Placeholder for Logo
+                        CircleAvatar(
+                          radius: 20.0,
+                          backgroundColor: Colors.black,
+                          child: Text(
+                            "Logo",
+                            style: TextStyle(color: Colors.white, fontSize: 10),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        // Market Name
+                        Text(
+                          "PUNK MARKET",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // Filter Icon
+                    IconButton(
+                      icon: Icon(Icons.filter_list, color: Colors.white),
+                      onPressed: () {
+                        // Define filter action
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8.0),
+                // Search Bar below the title and logo
+                SearchBarWidget(onSearch: _filterProducts),
+              ],
+            ),
+          ),
+
           // The product grid below the SearchBar
           Expanded(
             child: Padding(

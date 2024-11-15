@@ -1,13 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:punk/Global/Global.dart';
-import 'package:punk/services/UserService.dart';
 import '../../../../clases/Product.dart';
-import 'package:http_parser/http_parser.dart';
-import '../../../Online/Online.dart';
 import '../../../services/ProductService.dart';
 
 class AddProductMediaScreen extends StatefulWidget {

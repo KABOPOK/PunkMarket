@@ -1,7 +1,12 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../Global/Global.dart';
+import '../Online/Online.dart';
 import '../clases/User.dart';
+import '../common_functions/Functions.dart';
+import '../widgets/barWidgets/MyNavigationBarWidget.dart';
 
 class UserService {
 
@@ -17,13 +22,22 @@ class UserService {
     }
   }
 
-  static Future<http.Response> loginUser(User user) async {
+  static Future<void> loginUser(User user, BuildContext context) async {
     final url = Uri.parse('$HTTPS/api/users/authorization');
-    return await http.post(
+    http.Response response =  await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(user.toLogonDataDTO()),
     );
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      Online.user = User.fromJson(jsonResponse);
+      Functions.showSnackBar('здарова заебал', context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyNavigationBar()),
+      );
+    }
   }
 
 }

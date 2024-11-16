@@ -7,6 +7,7 @@ import 'package:punk/widgets/barWidgets/MyNavigationBarWidget.dart';
 
 import '../Online/Online.dart';
 import '../clases/User.dart';
+import '../common_functions/Functions.dart';
 import '../services/UserService.dart';
 
 class LoginForm extends StatefulWidget {
@@ -29,20 +30,14 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-
   bool _validateLoginForm() {
     if (_passwordController.text.isEmpty) {
-      _showSnackBar('тут пароль может быть в 1 цифру');
+      Functions.showSnackBar('тут пароль может быть в 1 цифру',context);
       return false;
     }
 
     if (_numberController.text.isEmpty) {
-      _showSnackBar('номер дай, я продам втб, они будут тебе кредит втюхивать');
+      Functions.showSnackBar('номер дай, я продам втб, они будут тебе кредит втюхивать',context);
       return false;
     }
 
@@ -56,18 +51,9 @@ class _LoginFormState extends State<LoginForm> {
       number: _numberController.text,
     );
     try {
-      var response = await UserService.loginUser(user);
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body);
-        Online.user = User.fromJson(jsonResponse);
-        _showSnackBar('здарова заебал');
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const MyNavigationBar()),
-        );
-      }
+      await UserService.loginUser(user, context);
     } catch (e) {
-      _showSnackBar('Error: $e');
+       Functions.showSnackBar('Error: $e', context);
     }
   }
 

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:punk/clases/Product.dart';
+import 'package:punk/services/ProductService.dart';
+import 'package:punk/services/UserService.dart';
 import 'package:punk/widgets/cardWidgets/MyProductCardWidget.dart';
 import 'package:punk/Online/Online.dart';
 import 'package:http/http.dart' as http;
@@ -31,54 +33,17 @@ class _MyProductListPageState extends State<MyProductListPage> {
       _isLoading = true;
       _errorMessage = "";
     });
-
     try {
-      final userId = Online.user.userID;  // Ensure Online.user.userID contains the correct logged-in user ID
-      final response = await http.get(
-        Uri.parse('$HTTPS/api/products/get_my_products?userId=$userId&page=$_page&limit=$_limit'),
-      );
-
-      if (response.statusCode == 200) {
-        try {
-          // Parse and validate the JSON response
-          final List<dynamic> productData = json.decode(response.body);
-          List<Product> products = [];
-          for (int i = 0; i < productData.length; ++i) {
-            products.add(Product.fromJson(productData[i]));
-          }
-
-          // Check if the response is empty or if products were found
-          if (productData.isNotEmpty) {
-            setState(() {
-              _myProducts = products;
-              _isLoading = false;
-            });
-          } else {
-            setState(() {
-              _errorMessage = "No products found for this user.";
-              _isLoading = false;
-            });
-          }
-        } catch (e) {
-          setState(() {
-            _errorMessage = "Error parsing product data.";
-            _isLoading = false;
-          });
-          print("JSON Parsing Error: $e");
-        }
-      } else {
-        setState(() {
-          _errorMessage = "Failed to load products. Status code: ${response.statusCode}";
-          _isLoading = false;
-        });
-        print("Server Response Error: ${response.statusCode} - ${response.body}");
-      }
-    } catch (e) {
+      List<Product> products = await ProductService.fetchUserProducts(_page, _limit);
       setState(() {
-        _errorMessage = "Network error: $e";
+        _myProducts = products;
         _isLoading = false;
       });
-      print("Network Error: $e");
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Error: $e";
+        _isLoading = false;
+      });
     }
   }
 

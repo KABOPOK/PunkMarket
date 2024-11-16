@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../clases/Product.dart';
+import '../../../common_functions/Functions.dart';
 import '../../../services/ProductService.dart';
 
 class AddProductMediaScreen extends StatefulWidget {
@@ -23,27 +24,15 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
 
   Future<void> _sendProduct(Product product, List<File?> images) async {
     try {
-      Future<int> responseCode = ProductService.sendProduct(product, images) ;
-      if (responseCode.toString() == "200") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Product created successfully')),
-        );
-        Navigator.pop(context);
-        Navigator.pop(context);
-      }
+     ProductService.sendProduct(product, images, context) ;
+      Navigator.pop(context);
+      Navigator.pop(context);
     } catch (e) {
-      // Catch any exceptions and display error message
-      print('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error creating product')),
-      );
+      Functions.showSnackBar('Error creating product', context);
     }
   }
-
-  // Pick an image from the gallery
   Future<void> _pickImage(int index) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
     setState(() {
       if (pickedFile != null) {
         String customFileName;

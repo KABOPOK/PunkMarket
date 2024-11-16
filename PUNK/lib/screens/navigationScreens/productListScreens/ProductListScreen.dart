@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-//import 'package:punk/supplies/product_list.dart';
+import 'package:punk/services/ProductService.dart';
 import '../../../Global/Global.dart';
 import '../../../Online/Online.dart';
+import '../../../clases/Product.dart';
 import '../../../clases/Wishlist.dart';
 import '../../../widgets/barWidgets/SearchBarWidget.dart';
 import '../../../widgets/cardWidgets/ProductCardWidget.dart';
@@ -10,16 +11,17 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../../services/WishlistService.dart';
 
-
 class ProductListPage extends StatefulWidget {
   @override
   _ProductListPageState createState() => _ProductListPageState();
 }
 
 class _ProductListPageState extends State<ProductListPage> {
-  late List<Map<String, dynamic>> filteredProducts = [];
-  bool isLoading = true;  // To track loading state
-  String errorMessage = '';  // To show error messages if the fetch fails
+  late List<Product> filteredProducts = [];
+  bool isLoading = true;
+  String errorMessage = '';
+  int _page = 1;
+  final int _limit = 20;
 
   @override
   void initState() {
@@ -28,25 +30,15 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   Future<void> _fetchProducts() async {
-    final url =  Uri.parse('$HTTPS/api/products/get_products');
-
     try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final List<dynamic> productData = json.decode(response.body);
-        setState(() {
-          filteredProducts = List<Map<String, dynamic>>.from(productData);
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          errorMessage = 'Failed to load products. Please try again later.';
-          isLoading = false;
-        });
-      }
+      List<Product> products = await ProductService.fetchProducts(_page,_limit);
+      setState(() {
+        filteredProducts = products;
+        isLoading = false;
+      });
     } catch (e) {
       setState(() {
-        errorMessage = 'An error occurred: $e';
+        errorMessage = 'Error: $e';
         isLoading = false;
       });
     }
@@ -54,7 +46,7 @@ class _ProductListPageState extends State<ProductListPage> {
 
   void _filterProducts(String query) {
     final filtered = filteredProducts.where((product) {
-      final titleLower = product['title'].toLowerCase();
+      final titleLower = product.title.toLowerCase();
       final searchLower = query.toLowerCase();
       return titleLower.contains(searchLower);
     }).toList();
@@ -135,51 +127,51 @@ class _ProductListPageState extends State<ProductListPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProductScreen(
-                            title: product["title"]?? '',
-                            photoUrl: product["photoUrl"]?? '',
-                            price: product["price"]?? '',
-                            owner: product["owner"]?? '',
-                            description: product["description"]?? '',
+                            title: product.title,
+                            photoUrl: product.photoUrl,
+                            price: product.price,
+                            owner: product.ownerName,
+                            description: product.description,
                           ),
                         ),
                       );
                     },
                     child: ProductCard(
-                      productID: product["productID"] ?? '',
-                      photoUrl: product["photoUrl"]?? '',
-                      title: product["title"]?? '',
-                      price: product["price"]?? '',
-                      owner: product["owner"]?? '',
-                      description: product["description"]?? '',
+                      productID: product.productID,
+                      photoUrl: product.photoUrl,
+                      title: product.title,
+                      price: product.price,
+                      owner: product.ownerName,
+                      description: product.description,
                       onAddToCart: () {
                         Wishlist wishlistItem = Wishlist(
                           userID: Online.user.userID,
-                          productID: product["productID"],
+                          productID: product.productID,
                         );
-                        _addToWishlist(wishlistItem, product["title"]);
+                        _addToWishlist(wishlistItem, product.title);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('${product["title"]} added to cart!'),
+                            content: Text('${product.title} added to cart!'),
                           ),
                         );
                       },
                       onAddToWishlist: () {
                         if (Online.user.userID == null) {
                           print("User ID is null");
-                        } else if (product["productID"] == null) {
+                        } else if (product.productID == null) {
                           print("Product ID is null");
-                        } else if (product["title"] == null) {
+                        } else if (product.title == null) {
                           print("Product title is null");
                         } else {
                           Wishlist wishlistItem = Wishlist(
                             userID: Online.user.userID,
-                            productID: product["productID"],
+                            productID: product.productID,
                           );
-                          _addToWishlist(wishlistItem, product["title"]);
+                          _addToWishlist(wishlistItem, product.title);
                         }
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('${product["title"]} added to wishlist!'),
+                            content: Text('${product.title} added to wishlist!'),
                           ),
                         );
                       },
@@ -198,9 +190,9 @@ class _ProductListPageState extends State<ProductListPage> {
     final url = Uri.parse('$HTTPS/api/wishlist/add');
 
     try {
-      Future<int> response = WishlistService.addToWishlist(wishlist);
+      int response = await WishlistService.addToWishlist(wishlist);
 
-      if (response.toString() == '200') {
+      if (response == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('$title added to wishlist!')),
         );
@@ -216,4 +208,3 @@ class _ProductListPageState extends State<ProductListPage> {
     }
   }
 }
-

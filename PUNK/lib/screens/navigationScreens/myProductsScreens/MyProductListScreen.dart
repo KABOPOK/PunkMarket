@@ -35,7 +35,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
     try {
       final userId = Online.user.userID;  // Ensure Online.user.userID contains the correct logged-in user ID
       final response = await http.get(
-        Uri.parse('$HTTPS/api/products/get_products?userId=$userId&page=$_page&limit=$_limit'),
+        Uri.parse('$HTTPS/api/products/get_my_products?userId=$userId&page=$_page&limit=$_limit'),
       );
 
       if (response.statusCode == 200) {
@@ -109,7 +109,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => WishListPage()), // Example: navigate to AddProductScreen
+                            builder: (context) => WishListPage(wishlist: [],)), // Example: navigate to AddProductScreen
                       );
                     },
                     child: Container(

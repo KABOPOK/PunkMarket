@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ProductCard extends StatelessWidget {
+  final String productID;
   final String photoUrl;
   final String title;
   final String price;
@@ -11,6 +12,7 @@ class ProductCard extends StatelessWidget {
 
   const ProductCard({
     Key? key,
+    required this.productID,
     required this.photoUrl,
     required this.title,
     required this.price,

@@ -87,6 +87,7 @@ class _SearchPageState extends State<SearchPage> {
               itemBuilder: (context, index) {
                 final product = filteredProducts[index];
                 return ProductCard(
+                  productID: product["productID"],
                   photoUrl: product["imageUrl"],
                   title: product["title"],
                   price: product["price"],

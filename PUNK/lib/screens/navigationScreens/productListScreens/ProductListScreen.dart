@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:punk/supplies/product_list.dart';
+//import 'package:punk/supplies/product_list.dart';
+import '../../../Global/Global.dart';
+import '../../../Online/Online.dart';
+import '../../../clases/Wishlist.dart';
 import '../../../widgets/barWidgets/SearchBarWidget.dart';
 import '../../../widgets/cardWidgets/ProductCardWidget.dart';
 import 'ProductDetailsScreen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../../../services/WishlistService.dart';
+
 
 class ProductListPage extends StatefulWidget {
   @override
@@ -10,16 +17,43 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> {
-  late List<Map<String, dynamic>> filteredProducts;
+  late List<Map<String, dynamic>> filteredProducts = [];
+  bool isLoading = true;  // To track loading state
+  String errorMessage = '';  // To show error messages if the fetch fails
 
   @override
   void initState() {
     super.initState();
-    filteredProducts = products;  // Using the global product list
+    _fetchProducts();
+  }
+
+  Future<void> _fetchProducts() async {
+    final url =  Uri.parse('$HTTPS/api/products/get_products');
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> productData = json.decode(response.body);
+        setState(() {
+          filteredProducts = List<Map<String, dynamic>>.from(productData);
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          errorMessage = 'Failed to load products. Please try again later.';
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'An error occurred: $e';
+        isLoading = false;
+      });
+    }
   }
 
   void _filterProducts(String query) {
-    final filtered = products.where((product) {
+    final filtered = filteredProducts.where((product) {
       final titleLower = product['title'].toLowerCase();
       final searchLower = query.toLowerCase();
       return titleLower.contains(searchLower);
@@ -36,9 +70,54 @@ class _ProductListPageState extends State<ProductListPage> {
       backgroundColor: Colors.black,
       body: Column(
         children: [
-          SearchBarWidget(onSearch: _filterProducts),
+          Container(
+            color: Colors.orange,
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20.0,
+                          backgroundColor: Colors.black,
+                          child: Text(
+                            "Logo",
+                            style: TextStyle(color: Colors.white, fontSize: 10),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          "PUNK MARKET",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.filter_list, color: Colors.white),
+                      onPressed: () {
+                        // Define filter action
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8.0),
+                SearchBarWidget(onSearch: _filterProducts),
+              ],
+            ),
+          ),
           Expanded(
-            child: Padding(
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : errorMessage.isNotEmpty
+                ? Center(child: Text(errorMessage, style: TextStyle(color: Colors.red)))
+                : Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
                 itemCount: filteredProducts.length,
@@ -56,22 +135,28 @@ class _ProductListPageState extends State<ProductListPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProductScreen(
-                            title: product["title"],
-                            photoUrl: product["imageUrl"],
-                            price: product["price"],
-                            owner: product["owner"],
-                            description: product["description"],
+                            title: product["title"]?? '',
+                            photoUrl: product["photoUrl"]?? '',
+                            price: product["price"]?? '',
+                            owner: product["owner"]?? '',
+                            description: product["description"]?? '',
                           ),
                         ),
                       );
                     },
                     child: ProductCard(
-                      photoUrl: product["imageUrl"],
-                      title: product["title"],
-                      price: product["price"],
-                      owner: product["owner"],
-                      description: product["description"],
+                      productID: product["productID"] ?? '',
+                      photoUrl: product["photoUrl"]?? '',
+                      title: product["title"]?? '',
+                      price: product["price"]?? '',
+                      owner: product["owner"]?? '',
+                      description: product["description"]?? '',
                       onAddToCart: () {
+                        Wishlist wishlistItem = Wishlist(
+                          userID: Online.user.userID,
+                          productID: product["productID"],
+                        );
+                        _addToWishlist(wishlistItem, product["title"]);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('${product["title"]} added to cart!'),
@@ -79,6 +164,19 @@ class _ProductListPageState extends State<ProductListPage> {
                         );
                       },
                       onAddToWishlist: () {
+                        if (Online.user.userID == null) {
+                          print("User ID is null");
+                        } else if (product["productID"] == null) {
+                          print("Product ID is null");
+                        } else if (product["title"] == null) {
+                          print("Product title is null");
+                        } else {
+                          Wishlist wishlistItem = Wishlist(
+                            userID: Online.user.userID,
+                            productID: product["productID"],
+                          );
+                          _addToWishlist(wishlistItem, product["title"]);
+                        }
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('${product["title"]} added to wishlist!'),
@@ -95,4 +193,27 @@ class _ProductListPageState extends State<ProductListPage> {
       ),
     );
   }
+
+  Future<void> _addToWishlist(Wishlist wishlist, String title) async {
+    final url = Uri.parse('$HTTPS/api/wishlist/add');
+
+    try {
+      Future<int> response = WishlistService.addToWishlist(wishlist);
+
+      if (response.toString() == '200') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$title added to wishlist!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add $title to wishlist')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: Could not add to wishlist')),
+      );
+    }
+  }
 }
+

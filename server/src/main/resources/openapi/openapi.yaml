@@ -47,6 +47,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDTO'
+  /api/users/delete:
+    delete:
+      tags:
+        - User
+      operationId: deleteUser
+      summary: Delete a user by userId
+      description: Deletes a user by its unique `userId`.
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID (UUID) of the user to delete.
+      responses:
+        '200':
+          description: User successfully deleted
+  /api/users/update:
+    put:
+      tags:
+        - User
+      operationId: updateUser
+      summary: Update user information by userId
+      description: Updates the details of an existing user specified by its `userId`.
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID (UUID) of the user to update.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                userDTO:
+                  $ref: '#/components/schemas/UserDTO'
+                image:
+                  type: string
+                  format: binary
+                  description: The image file (profile picture) of the user.
+      responses:
+        '200':
+          description: User successfully updated
+
+
+
   /api/products/create:
     post:
       tags:
@@ -70,73 +122,192 @@ paths:
       responses:
         '200':
           description: Product created successfully
-  /api/products/get_products:
-    get:
+  /api/products/delete:
+    delete:
       tags:
         - Product
-      summary: Retrieve a paginated list of products
-      operationId: getProducts
+      operationId: deleteProduct
+      summary: Delete Product by productId
+      description: Deletes a product by its unique identifier (productId).
       parameters:
-        - name: page
-          in: query
-          description: The page number to retrieve
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - name: limit
-          in: query
-          description: The number of products to retrieve per page
-          required: false
-          schema:
-            type: integer
-            default: 20
-      responses:
-        '200':
-          description: A list of products
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProductDTO'
-  /api/products/get_my_products:
-    get:
-      tags:
-        - Product
-      summary: Retrieve a paginated list of products
-      operationId: getMyProducts
-      parameters:
-        - name: page
-          in: query
-          description: The page number to retrieve
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - name: limit
-          in: query
-          description: The number of products to retrieve per page
-          required: false
-          schema:
-            type: integer
-            default: 20
-        - name: userId
-          in: query
-          description: The user Id
+        - in: query
+          name: productId
           required: true
           schema:
             type: string
             format: uuid
+          description: The unique ID of the product to delete.
       responses:
         '200':
-          description: A list of products
+          description: Product successfully deleted
+  /api/products/update:
+    put:
+      tags:
+        - Product
+      operationId: updateProduct
+      summary: Update an existing product by id
+      description: Updates the details of an existing product specified by its `id`.
+      parameters:
+        - in: query
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID of the product to update.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                productDTO:
+                  $ref: '#/components/schemas/ProductDTO'
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: List of images associated with the product.
+      responses:
+        '200':
+          description: Product successfully updated
+  /api/products/get_products:
+      get:
+        tags:
+          - Product
+        summary: Retrieve a paginated list of products
+        operationId: getProducts
+        parameters:
+          - name: page
+            in: query
+            description: The page number to retrieve
+            required: false
+            schema:
+              type: integer
+              default: 1
+          - name: limit
+            in: query
+            description: The number of products to retrieve per page
+            required: false
+            schema:
+              type: integer
+              default: 20
+        responses:
+          '200':
+            description: A list of products
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProductDTO'
+  /api/products/get_my_products:
+      get:
+        tags:
+          - Product
+        summary: Retrieve a paginated list of products
+        operationId: getMyProducts
+        parameters:
+          - name: page
+            in: query
+            description: The page number to retrieve
+            required: false
+            schema:
+              type: integer
+              default: 1
+          - name: limit
+            in: query
+            description: The number of products to retrieve per page
+            required: false
+            schema:
+              type: integer
+              default: 20
+          - name: userId
+            in: query
+            description: The user Id
+            required: true
+            schema:
+              type: string
+              format: uuid
+        responses:
+          '200':
+            description: A list of products
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProductDTO'
+  /api/products/get_fav_products:
+    get:
+      tags:
+        - Product
+      summary: Retrieve user's wishlist
+      operationId: getWishlist
+      parameters:
+        - name: userId
+          in: query
+          description: Unique identifier for the user
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: query
+          description: Unique identifier for a specific product
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: The page number to retrieve
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: The number of products to retrieve per page
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Successfully retrieved wishlist
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/ProductDTO'
+
+  /api/wishlist/add:
+    post:
+      tags:
+        - Wishlist
+      operationId: saveToWishlist
+      summary: Add a product to the user's wishlist
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the user
+        - name: productId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the product to add
+      responses:
+        '200':
+          description: Successfully added to wishlist
+
 components:
   schemas:
     UserDTO:
@@ -210,3 +381,4 @@ components:
           type: string
           format: uuid
           description: Identifier of the user who owns the product
+

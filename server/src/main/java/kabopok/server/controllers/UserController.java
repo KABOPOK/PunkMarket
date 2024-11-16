@@ -30,20 +30,17 @@ public class UserController implements UserApi {
   private final MinioClient minioClient;
 
   @Override
+  public void deleteUser(UUID userId) {
+    User user = userService.deleteUser(userId);
+    storageService.deleteFile("users", user.getUserID().toString() + ".jpg");
+  }
+
+  @Override
   public UserDTO getUser(LoginDataDTO loginDataDTO) {
     User user = userService.findByNumber(loginDataDTO);
     String url = storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg",3600);
     user.setPhotoUrl(url);
     return userMapper.map(user);
-  }
-
-  @PostMapping("/test")
-  public void registerUser(
-          @RequestParam("user") String userJson,
-          @RequestPart(value = "image", required = false) MultipartFile image) {
-    // Deserialize the JSON string into UserDTO
-    DeserializationContext objectMapper = null;
-    System.out.println(userJson);
   }
 
   public IdDTO saveUser(UserDTO userDTO, MultipartFile image) {
@@ -57,5 +54,17 @@ public class UserController implements UserApi {
     return new IdDTO(user.getUserID());
   }
 
+  @Override
+  public void updateUser(UUID userId, UserDTO userDTO, MultipartFile image) {
+    User updatedUser = userService.updateUser(userId,userMapper.map(userDTO));
+    if(image != null){
+      storageService.deleteFile("users", updatedUser.getUserID().toString() + ".jpg");
+      try (InputStream inputStream = image.getInputStream()) {
+        storageService.uploadFile("users", updatedUser.getUserID().toString() + ".jpg", inputStream, image.getContentType());
+      } catch (IOException e) {
+        throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
+      }
+    }
+  }
 
 }

@@ -4,6 +4,7 @@ import generated.kabopok.server.api.model.LoginDataDTO;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
+import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
 import kabopok.server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +21,12 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService extends DefaultService {
 
   private final UserRepository userRepository;
   private final JdbcTemplate jdbcTemplate;
   private final MinioClient minioClient;
-  public UUID save(User user){
+  public UUID save(User user) {
     UUID userID = UUID.randomUUID();
     user.setUserID(userID);
     user.setPhotoUrl(userID.toString());
@@ -34,9 +35,7 @@ public class UserService {
   }
 
   public User findByNumber(LoginDataDTO loginDataDTO){
-    User current = userRepository.findByNumber(loginDataDTO.getNumber()).orElseThrow(
-            (()-> new RuntimeException("User not found"))
-    );
+    User current = getOrThrow(loginDataDTO.getNumber(),userRepository::findByNumber);
     if(!current.getPassword().equals(loginDataDTO.getPassword())){
       throw new RuntimeException("Wrong answer");
     }
@@ -44,7 +43,20 @@ public class UserService {
   }
 
   public User findById(UUID userId){
-    return userRepository.findById(userId).orElseThrow((()-> new RuntimeException("User not found")));
+    return getOrThrow(userId, userRepository::findById);
+  }
+
+  public User deleteUser(UUID userId){
+    User deletedUser = getOrThrow(userId, userRepository::findById);
+    userRepository.delete(deletedUser);
+    return  deletedUser;
+  }
+
+  public User updateUser(UUID userId, User updatedUser){
+    User user = getOrThrow(userId, userRepository::findById);
+    updatedUser.setUserID(user.getUserID());
+    userRepository.save(updatedUser);
+    return updatedUser;
   }
 
 }

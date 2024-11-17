@@ -149,6 +149,8 @@ class _MyProductListPageState extends State<MyProductListPage> {
                     title: _myProducts[index].title,
                     price: _myProducts[index].price,
                     owner: _myProducts[index].ownerName,
+                    description: _myProducts[index].description,
+                    productID: _myProducts[index].productID,
                   );
                 },
               ),

@@ -10,6 +10,8 @@ class MyProduct extends StatelessWidget {
   final String title;
   final String price;
   final String owner;
+  final String description;
+  final String productID;
 
   const MyProduct({
     Key? key,
@@ -17,6 +19,8 @@ class MyProduct extends StatelessWidget {
     required this.title,
     required this.price,
     required this.owner,
+    required this.description,
+    required this.productID,
   }) : super(key: key);
 
   Future<void> _sendProduct(Product product, File? image, BuildContext context /*for show message about product sending*/) async {
@@ -52,53 +56,154 @@ class MyProduct extends StatelessWidget {
       print('Error: $e');
     }
   }
+  Future<void> _deleteProduct(String productId, BuildContext context) async {
+    final String url = '$HTTPS/api/products/delete?productId=$productId';
 
+    try {
+      // Sending the DELETE request
+      final response = await http.delete(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Successfully deleted
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Product successfully deleted')),
+        );
+
+        // Optionally, you can trigger UI updates or navigation here
+      } else {
+        // Error response
+        final errorData = json.decode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['error'] ?? 'Failed to delete the product')),
+        );
+      }
+    } catch (e) {
+      // Exception handling
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
+  void _handleMenuSelection(
+      String choice, String product, BuildContext context) {
+    switch (choice) {
+      case 'edit':
+      // Placeholder for Edit Option
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('EDIT')),
+        );
+        break;
+      case 'reserve':
+      //  Placeholder for Reserve Option
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('RESERVE')),
+        );
+        break;
+      case 'delete':
+      // Confirm delete action
+        _confirmDelete(product, context);
+        break;
+    }
+  }
+
+  void _confirmDelete(String product, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Подтверждение удаления'),
+          content: const Text('Вы точно хотите удалить этот товар?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Нет'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _deleteProduct(product, context); // Call delete
+              },
+              child: const Text('Да'),
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final imageHeight = screenWidth * 0.5; // Adjust image height based on screen width
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Product Image
-          Expanded(
-            child: ClipRRect(
-              borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(10)),
-              child: photoUrl.isNotEmpty
-                  ? Image.network(
-                photoUrl,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                            (loadingProgress.expectedTotalBytes ?? 1)
-                            : null,
-                      ),
-                    );
-                  }
-                },
-                errorBuilder: (BuildContext context, Object error,
-                    StackTrace? stackTrace) {
-                  return Center(
-                    child: Icon(
-                      Icons.error,
-                      color: Colors.red,
+          // Product Image with options menu
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                child: Image.network(
+                  photoUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: imageHeight, // Dynamic height based on screen size
+                ),
+              ),
+              // Menu PopUp
+              Positioned(
+                  top: 10,
+                  right: 10,
+                  child: PopupMenuButton<String>(
+                    icon: const Icon(
+                      Icons.more_horiz_rounded,
+                      color: Colors.white,
                     ),
-                  );
-                },
-              )
-                  : Center(child: Icon(Icons.image, color: Colors.grey)),
-            ),
+                    onSelected: (choice) => _handleMenuSelection(choice, productID, context),
+                    itemBuilder: (BuildContext context)=><PopupMenuEntry<String>>[
+                      const PopupMenuItem<String>(
+                          value: 'edit',
+                          child: Text('Редактировать')
+                      ),
+                      const PopupMenuItem<String>(
+                          value: 'reserve',
+                          child: Text('Забронировать')
+                      ),
+                      const PopupMenuItem<String>(
+                          value: 'delete',
+                          child: Text('Удалить')
+                      ),
+                    ],
+                  )
+              ),
+              //Price tag
+              Positioned(
+                bottom: 10,
+                left: 10,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    price,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -115,7 +220,7 @@ class MyProduct extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  price,
+                  owner,
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -123,15 +228,40 @@ class MyProduct extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  owner,
+                  description,
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
                   ),
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
+                // Menu PopUp
+                Positioned(
+                    top: 10,
+                    right: 10,
+                    child: PopupMenuButton<String>(
+                      icon: const Icon(
+                        Icons.more_horiz_rounded,
+                        color: Colors.black,
+                      ),
+                      onSelected: (choice) => _handleMenuSelection(choice, productID, context),
+                      itemBuilder: (BuildContext context)=><PopupMenuEntry<String>>[
+                        const PopupMenuItem<String>(
+                            value: 'edit',
+                            child: Text('Редактировать')
+                        ),
+                        const PopupMenuItem<String>(
+                            value: 'reserve',
+                            child: Text('Забронировать')
+                        ),
+                        const PopupMenuItem<String>(
+                            value: 'delete',
+                            child: Text('Удалить')
+                        ),
+                      ],
+                    )
+                ),
               ],
             ),
           ),

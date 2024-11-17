@@ -355,6 +355,11 @@ components:
     ProductDTO:
       type: object
       properties:
+        productID:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Identifier of the product
         price:
           type: string
           description: Price of the product

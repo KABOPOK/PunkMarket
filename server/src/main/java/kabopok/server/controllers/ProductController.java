@@ -77,6 +77,9 @@ public class ProductController implements ProductApi {
     List<Product> productList = productService.getMyFavProducts(productsIdList,page,limit);
     List<ProductDTO> productDTOList = new ArrayList<>();
     productList.forEach(product -> {
+      String path = product.getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";
+      String url = storageService.generateImageUrl("products", path,3600);
+      product.setPhotoUrl(url);
       productDTOList.add(productMapper.map(product));
     });
     return productDTOList;

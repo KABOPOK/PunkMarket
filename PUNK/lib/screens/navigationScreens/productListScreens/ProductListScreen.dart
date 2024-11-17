@@ -144,11 +144,7 @@ class _ProductListPageState extends State<ProductListPage> {
                       owner: product.ownerName,
                       description: product.description,
                       onAddToCart: () {
-                        Wishlist wishlistItem = Wishlist(
-                          userID: Online.user.userID,
-                          productID: product.productID,
-                        );
-                        _addToWishlist(wishlistItem, product.title);
+                        _addToWishlist(product.productID, product.title);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('${product.title} added to cart!'),
@@ -163,11 +159,7 @@ class _ProductListPageState extends State<ProductListPage> {
                         } else if (product.title == null) {
                           print("Product title is null");
                         } else {
-                          Wishlist wishlistItem = Wishlist(
-                            userID: Online.user.userID,
-                            productID: product.productID,
-                          );
-                          _addToWishlist(wishlistItem, product.title);
+                          _addToWishlist(product.productID, product.title);
                         }
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -186,12 +178,13 @@ class _ProductListPageState extends State<ProductListPage> {
     );
   }
 
-  Future<void> _addToWishlist(Wishlist wishlist, String title) async {
-    final url = Uri.parse('$HTTPS/api/wishlist/add');
+  Future<void> _addToWishlist(String productID, String title) async {
+    //final url = Uri.parse('$HTTPS/api/wishlist/add');
 
     try {
-      int response = await WishlistService.addToWishlist(wishlist);
+      await WishlistService.saveToWishlist(Online.user.userID, productID);
 
+      /*
       if (response == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('$title added to wishlist!')),
@@ -200,7 +193,7 @@ class _ProductListPageState extends State<ProductListPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to add $title to wishlist')),
         );
-      }
+      }*/
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: Could not add to wishlist')),

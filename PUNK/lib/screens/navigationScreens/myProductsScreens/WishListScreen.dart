@@ -1,29 +1,56 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:punk/widgets/cardWidgets/WishlistCardWidget.dart';
-import '../../../supplies/product_list.dart';
-import '../productListScreens/ProductDetailsScreen.dart';
-import 'MyProductListScreen.dart';
+import 'package:punk/clases/Product.dart';
+import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
+import 'package:punk/services/ProductService.dart';
+import '../../../widgets/cardWidgets/WishlistCardWidget.dart';
+
 
 class WishListPage extends StatefulWidget {
-  final List<Map<String, dynamic>> wishlist;  // Accept wishlist products as input
-
-  WishListPage({Key? key, required this.wishlist}) : super(key: key);
-
   @override
   _WishListPageState createState() => _WishListPageState();
 }
 
 class _WishListPageState extends State<WishListPage> {
+  List<Product> _myProducts = [];
+  bool _isLoading = true;
+  String _errorMessage = "";
+  int _page = 1;
+  final int _limit = 20;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchWishlistProducts();
+  }
+
+  Future<void> _fetchWishlistProducts() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = "";
+    });
+    try {
+      List<Product> products = await ProductService.fetchWishlistProducts(_page, _limit);
+      setState(() {
+        _myProducts = products;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Error: $e";
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // Top Bar with clickable sides
+          // Top Bar Switcher
           SliverAppBar(
-            pinned: false,
-            floating: true,
+            pinned: true,
+            floating: false,
             backgroundColor: Colors.orange,
             flexibleSpace: Row(
               children: [
@@ -33,12 +60,12 @@ class _WishListPageState extends State<WishListPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MyProductListPage(),
-                        ),
+                            builder: (context) => MyProductListPage()), // Example: navigate to AddProductScreen
                       );
                     },
                     child: Container(
                       color: Colors.orange,
+                      padding: EdgeInsets.symmetric(vertical: 10),
                       child: Icon(Icons.shopping_cart, color: Colors.white),
                     ),
                   ),
@@ -55,7 +82,8 @@ class _WishListPageState extends State<WishListPage> {
               ],
             ),
           ),
-          // Title and Actions Row
+
+          // Title and Actions Row (scrolls with content)
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -63,7 +91,7 @@ class _WishListPageState extends State<WishListPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "ОТЛОЖЕННЫЕ",
+                    "МОИ ТОВАРЫ",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -90,14 +118,19 @@ class _WishListPageState extends State<WishListPage> {
               ),
             ),
           ),
-          // Wishlist Content
+
+          // Main Content
           SliverFillRemaining(
-            child: widget.wishlist.isEmpty
-                ? Center(child: Text('No products in wishlist'))
+            child: _isLoading
+                ? Center(child: CircularProgressIndicator())
+                : _errorMessage.isNotEmpty
+                ? Center(child: Text(_errorMessage))
+                : _myProducts.isEmpty
+                ? Center(child: Text('No products found'))
                 : Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
-                itemCount: widget.wishlist.length,
+                itemCount: _myProducts.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 10.0,
@@ -105,46 +138,16 @@ class _WishListPageState extends State<WishListPage> {
                   childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
-                  final product = widget.wishlist[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductScreen(
-                            title: product["title"],
-                            photoUrl: product["imageUrl"],
-                            price: product["price"],
-                            owner: product["owner"],
-                            description: product["description"],
-                          ),
-                        ),
-                      );
-                    },
-                    child: WishlistCard(
-                      photoUrl: product["photoUrl"],
-                      title: product["title"],
-                      price: product["price"],
-                      owner: product["ownerName"],
-                      description: product["description"],
-                      onAddToCart: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${product["title"]} added to cart!'),
-                          ),
-                        );
-                      },
-                      onAddToWishlist: () {
-                        setState(() {
-                          widget.wishlist.remove(product);  // Remove from wishlist
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${product["title"]} removed from wishlist!'),
-                          ),
-                        );
-                      },
-                    ),
+                  final product = _myProducts[index];
+                  return WishlistCard(
+                    productID: _myProducts[index].productID,
+                    photoUrl: _myProducts[index].photoUrl,
+                    title: _myProducts[index].title,
+                    price: _myProducts[index].price,
+                    owner: _myProducts[index].ownerName,
+                    description: _myProducts[index].description,
+                    onAddToCart: () {  },
+                    onAddToWishlist: () {  },
                   );
                 },
               ),

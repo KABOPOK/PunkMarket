@@ -74,7 +74,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => WishListPage(wishlist: [],)), // Example: navigate to AddProductScreen
+                            builder: (context) => WishListPage()), // Example: navigate to AddProductScreen
                       );
                     },
                     child: Container(

@@ -7,8 +7,8 @@ import 'package:punk/widgets/cardWidgets/MyProductCardWidget.dart';
 import 'package:punk/Online/Online.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../Global/Global.dart';
-import 'WishListScreen.dart';
+import '../../../widgets/ProductContent/MyProductsContent.dart';
+import '../../../widgets/ProductContent/WishlistContent.dart';
 
 class MyProductListPage extends StatefulWidget {
   @override
@@ -17,15 +17,22 @@ class MyProductListPage extends StatefulWidget {
 
 class _MyProductListPageState extends State<MyProductListPage> {
   List<Product> _myProducts = [];
+  List<Product> _wishlistProducts = [];
   bool _isLoading = true;
+  bool _isWishlistLoading = true;
   String _errorMessage = "";
-  int _page = 1;
+  String _wishlistErrorMessage = "";
+  int _currentPage = 0;
+
   final int _limit = 20;
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: 0);
     _fetchUserProducts();
+    _fetchWishlistProducts();
   }
 
   Future<void> _fetchUserProducts() async {
@@ -34,7 +41,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
       _errorMessage = "";
     });
     try {
-      List<Product> products = await ProductService.fetchUserProducts(_page, _limit);
+      List<Product> products = await ProductService.fetchUserProducts(1, _limit);
       setState(() {
         _myProducts = products;
         _isLoading = false;
@@ -47,12 +54,38 @@ class _MyProductListPageState extends State<MyProductListPage> {
     }
   }
 
+  Future<void> _fetchWishlistProducts() async {
+    setState(() {
+      _isWishlistLoading = true;
+      _wishlistErrorMessage = "";
+    });
+    try {
+      List<Product> products = await ProductService.fetchWishlistProducts(1, _limit);
+      setState(() {
+        _wishlistProducts = products;
+        _isWishlistLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _wishlistErrorMessage = "Error: $e";
+        _isWishlistLoading = false;
+      });
+    }
+  }
+
+  void _onTabChanged(int pageIndex) {
+    setState(() {
+      _currentPage = pageIndex;
+    });
+    _pageController.jumpToPage(pageIndex);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // Top Bar Switcher
+          // Single SliverAppBar
           SliverAppBar(
             pinned: true,
             floating: false,
@@ -61,26 +94,23 @@ class _MyProductListPageState extends State<MyProductListPage> {
               children: [
                 Expanded(
                   child: GestureDetector(
+                    onTap: () => _onTabChanged(0),
                     child: Container(
-                      color: Colors.orangeAccent,
+                      color: _currentPage == 0 ? Colors.orangeAccent : Colors.orange,
                       padding: EdgeInsets.symmetric(vertical: 14),
-                      child: Icon(Icons.shopping_cart, color: Colors.white),
+                      child: Icon(Icons.shopping_cart,
+                          color: _currentPage == 0 ? Colors.white : Colors.white70),
                     ),
                   ),
                 ),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => WishListPage()), // Example: navigate to AddProductScreen
-                      );
-                    },
+                    onTap: () => _onTabChanged(1),
                     child: Container(
-                      color: Colors.orange,
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Icon(Icons.favorite, color: Colors.white),
+                      color: _currentPage == 1 ? Colors.orangeAccent : Colors.orange,
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      child: Icon(Icons.favorite,
+                          color: _currentPage == 1 ? Colors.white : Colors.white70),
                     ),
                   ),
                 ),
@@ -88,72 +118,27 @@ class _MyProductListPageState extends State<MyProductListPage> {
             ),
           ),
 
-          // Title and Actions Row (scrolls with content)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "МОИ ТОВАРЫ",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.search, color: Colors.black),
-                        onPressed: () {
-                          // Handle search action
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.filter_list, color: Colors.black),
-                        onPressed: () {
-                          // Handle filter action
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Main Content
+          // PageView Content
           SliverFillRemaining(
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : _errorMessage.isNotEmpty
-                ? Center(child: Text(_errorMessage))
-                : _myProducts.isEmpty
-                ? Center(child: Text('No products found'))
-                : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridView.builder(
-                itemCount: _myProducts.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 0.75,
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (pageIndex) {
+                setState(() {
+                  _currentPage = pageIndex;
+                });
+              },
+              children: [
+                MyProductsContent(
+                  isLoading: _isLoading,
+                  errorMessage: _errorMessage,
+                  myProducts: _myProducts,
                 ),
-                itemBuilder: (context, index) {
-                  final product = _myProducts[index];
-                  return MyProduct(
-                    photoUrl: _myProducts[index].photoUrl,
-                    title: _myProducts[index].title,
-                    price: _myProducts[index].price,
-                    owner: _myProducts[index].ownerName,
-                    description: _myProducts[index].description,
-                    productID: _myProducts[index].productID,
-                  );
-                },
-              ),
+                WishlistContent(
+                  isLoading: _isWishlistLoading,
+                  errorMessage: _wishlistErrorMessage,
+                  myProducts: _wishlistProducts,
+                ),
+              ],
             ),
           ),
         ],

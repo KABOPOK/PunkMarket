@@ -3,12 +3,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.nio.file.attribute.UserDefinedFileAttributeView;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -39,4 +41,7 @@ public class User {
 
   @Column(name = "telegram_id", length = 30)
   private String telegramID;
+
+  @OneToMany(mappedBy = "user")
+  private List<Product> products;
 }

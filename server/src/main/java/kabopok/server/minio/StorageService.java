@@ -103,7 +103,7 @@ public class StorageService {
   public void uploadFiles(String bucketName, Product product, List<MultipartFile> images){
     for (MultipartFile image : images) {
       try (InputStream inputStream = image.getInputStream()) {
-        String path = product.getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();
+        String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();
         uploadFile("products", path, inputStream, image.getContentType());
       } catch (IOException e) {
         throw new RuntimeException("Failed to upload images: " + e.getMessage(), e);

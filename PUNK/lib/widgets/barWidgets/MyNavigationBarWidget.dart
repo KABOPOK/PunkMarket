@@ -9,7 +9,7 @@ import '../../screens/navigationScreens/messangerScreens/MyChatsScreen.dart';
 
 
 class MyNavigationBar extends StatefulWidget {
-  const MyNavigationBar({super.key});
+  const MyNavigationBar({Key? key}) : super(key: key);
 
   @override
   State<MyNavigationBar> createState() => _NavigationBarState();
@@ -18,18 +18,25 @@ class MyNavigationBar extends StatefulWidget {
 class _NavigationBarState extends State<MyNavigationBar> {
   int _screenIndex = 0;
 
+  // ValueNotifier to track the product content
+  final ValueNotifier<String> _currentProductContent = ValueNotifier<String>("MyProducts");
+
   // List of widgets/screens for the navigation bar
-  final List<Widget> _screens = [
-    ProductListPage(),
-    //ProductScreen(),// Home Page
-    ChatScreen(),
-    //const Icon(Icons.question_answer_sharp, color: Colors.deepOrangeAccent), // Placeholder for Questions screen
-    MyProductListPage(), // My Products Page
-    MyChatsScreen(),
-    //const Icon(Icons.message, color: Colors.deepOrangeAccent), // Placeholder for Messages screen
-    MyProfileScreen(),
-    //const Icon(Icons.person, color: Colors.deepOrangeAccent), // Placeholder for Profile screen
-  ];
+  final List<Widget> _screens = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize screens
+    _screens.addAll([
+      ProductListPage(),
+      ChatScreen(),
+      MyProductListPage(),
+      MyChatsScreen(),
+      MyProfileScreen(),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +51,9 @@ class _NavigationBarState extends State<MyNavigationBar> {
             _screenIndex = newIndex;
           });
         },
-        selectedItemColor: Colors.white, // Change selected icon color to white
-        unselectedItemColor: Colors.deepOrangeAccent, // Change unselected item color
-        type: BottomNavigationBarType.fixed, // Ensures fixed navigation bar type
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.deepOrangeAccent,
+        type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
             label: 'Home',
@@ -70,20 +77,28 @@ class _NavigationBarState extends State<MyNavigationBar> {
           ),
         ],
       ),
-      floatingActionButton: _screenIndex == 2 // Display FAB only on MyProductListPage (index 2)
-          ? FloatingActionButton(
-        onPressed: () {
-          // Logic for the FAB button here
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ProductAdditionScreen()), // Example: navigate to AddProductScreen
-          );
+      // FAB is only visible on MyProductListPage with "MyProducts" content
+      floatingActionButton: (_screenIndex == 2)
+          ? ValueListenableBuilder<String>(
+        valueListenable: _currentProductContent,
+        builder: (context, content, child) {
+          return content == "MyProducts"
+              ? FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductAdditionScreen(),
+                ),
+              );
+            },
+            backgroundColor: Colors.deepOrangeAccent,
+            child: const Icon(Icons.add, color: Colors.white),
+          )
+              : Container(); // Return an empty widget when FAB is not needed
         },
-        backgroundColor: Colors.deepOrangeAccent,
-        child: const Icon(Icons.add, color: Colors.white),
       )
-          : null, // No FAB for other screens
+          : null,
     );
   }
 
@@ -92,7 +107,7 @@ class _NavigationBarState extends State<MyNavigationBar> {
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.orange : Colors.transparent, // Set background color to orange when selected
+        color: isSelected ? Colors.orange : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Icon(

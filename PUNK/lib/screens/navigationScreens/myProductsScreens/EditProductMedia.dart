@@ -36,7 +36,22 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        newImages[index] = File(pickedFile.path);
+        if (pickedFile != null) {
+          String customFileName;
+          if(index == 0){
+            customFileName = 'envelop.jpg';
+          } else {
+            customFileName = '${index}.jpg';
+          }
+          File customFile = File(pickedFile.path).renameSync(pickedFile.path.replaceAll(pickedFile.name, customFileName));
+          if (index >= 0 && index < newImages.length) {
+            newImages[index] = customFile;
+          } else {
+            newImages.add(customFile);
+          }
+        } else {
+          print('No image selected.');
+        }
       });
     }
   }
@@ -53,7 +68,7 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
       // Call the updateProduct service with all data
       await ProductService.updateProduct(
         product.productID,
-        product.toJson(),
+        product,
         context,
         newImages.where((image) => image != null).toList(),
       );

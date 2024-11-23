@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../Online/Online.dart';
+
 @freezed
 class Product {
   String productID;
@@ -36,7 +38,7 @@ class Product {
       'location': location,
       'description': description,
       'category': category,
-      'userID': userID,
+      'userID': Online.user.userID,
     };
   }
 

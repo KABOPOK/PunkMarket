@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:punk/clases/Product.dart';
+import '../../../Online/Online.dart';
 import '../../../services/ProductService.dart';
 import 'EditProductMedia.dart';
 
@@ -59,6 +60,7 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
     product.price = priceController.text;
     product.location = addressController.text;
     product.description = descriptionController.text;
+    product.userID = Online.user.userID;
 
     Navigator.push(
       context,

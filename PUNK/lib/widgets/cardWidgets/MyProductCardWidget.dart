@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:punk/services/ProductService.dart';
 import 'package:uuid/uuid.dart';
 import '../../Global/Global.dart';
 import '../../clases/Product.dart';
@@ -27,67 +28,6 @@ class MyProduct extends StatelessWidget {
     required this.userID,
   }) : super(key: key);
 
-  Future<void> _sendProduct(Product product, File? image, BuildContext context /*for show message about product sending*/) async {
-    try {
-      var request =
-      http.MultipartRequest('POST', Uri.parse('$HTTPS/create-product'));
-
-      // Add form fields
-      request.fields['product'] = jsonEncode(product.toJson());
-
-      // Add image file if available
-      if (image != null) {
-        request.files
-            .add(await http.MultipartFile.fromPath('image', image.path));
-      }
-
-      // Send the request
-      var response = await request.send();
-
-      // get response
-      var responseString = await response.stream.bytesToString();
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Successfully pushed')),
-        );
-      } else {
-        final errorData = json.decode(responseString);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorData['error'] ?? 'Unknown error')),
-        );
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-  Future<void> _deleteProduct(String productId, BuildContext context) async {
-    final String url = '$HTTPS/api/products/delete?productId=$productId';
-
-    try {
-      // Sending the DELETE request
-      final response = await http.delete(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        // Successfully deleted
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Product successfully deleted')),
-        );
-
-        // Optionally, you can trigger UI updates or navigation here
-      } else {
-        // Error response
-        final errorData = json.decode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorData['error'] ?? 'Failed to delete the product')),
-        );
-      }
-    } catch (e) {
-      // Exception handling
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
-      );
-    }
-  }
   void _handleMenuSelection(String choice, String productId, BuildContext context) {
     switch (choice) {
       case 'edit':
@@ -141,7 +81,7 @@ class MyProduct extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
-                _deleteProduct(product, context); // Call delete
+                ProductService.deleteProduct(product, context); // Call delete
               },
               child: const Text('Да'),
             ),

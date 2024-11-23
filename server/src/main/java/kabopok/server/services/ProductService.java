@@ -37,11 +37,6 @@ public class ProductService extends DefaultService {
     return productRepository.findAllByUser(user, pageable);
   }
 
-  public List<Product> getMyFavProducts(List<UUID> productsIdList, Integer page, Integer limit){
-    Pageable pageable = PageRequest.of(page - 1, limit);
-    return productRepository.findByProductIdList(productsIdList,pageable);
-  }
-
   public Product deleteProduct(UUID productId) {
     Product deletedProduct = getOrThrow(productId, productRepository::findById);
     productRepository.delete(deletedProduct);

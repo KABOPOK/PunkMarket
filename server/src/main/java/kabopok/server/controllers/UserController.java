@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import generated.kabopok.server.api.UserApi;
 import generated.kabopok.server.api.model.IdDTO;
 import generated.kabopok.server.api.model.LoginDataDTO;
+import generated.kabopok.server.api.model.ProductDTO;
 import generated.kabopok.server.api.model.UserDTO;
 import io.minio.MinioClient;
+import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
+import kabopok.server.mappers.ProductMapper;
 import kabopok.server.mappers.UserMapper;
 import kabopok.server.minio.StorageService;
 import kabopok.server.services.UserService;
@@ -18,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,6 +32,7 @@ public class UserController implements UserApi {
   private final UserService userService;
   private final StorageService storageService;
   private final UserMapper userMapper;
+  private final ProductMapper productMapper;
   private final MinioClient minioClient;
 
   @Override
@@ -41,6 +47,11 @@ public class UserController implements UserApi {
     String url = storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg",3600);
     user.setPhotoUrl(url);
     return userMapper.map(user);
+  }
+
+  @Override
+  public void saveToWishlist(UUID userId, UUID productId) {
+    userService.addToWishList(userId, productId);
   }
 
   public IdDTO saveUser(UserDTO userDTO, MultipartFile image) {
@@ -65,6 +76,19 @@ public class UserController implements UserApi {
         throw new RuntimeException("Failed to upload image: " + e.getMessage(), e);
       }
     }
+  }
+
+  @Override
+  public List<ProductDTO> getWishlist(String userId) {
+    List<Product> productList = userService.getMyFavProducts(UUID.fromString(userId));
+    List<ProductDTO> productDTOList = new ArrayList<>();
+    productList.forEach(product -> {
+      String path = product.getUser().getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";
+      String url = storageService.generateImageUrl("products", path,3600);
+      product.setPhotoUrl(url);
+      productDTOList.add(productMapper.map(product));
+    });
+    return productDTOList;
   }
 
 }

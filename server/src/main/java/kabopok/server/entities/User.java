@@ -11,7 +11,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.HashSet;
@@ -24,6 +26,8 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "productsWish")
+@EqualsAndHashCode(exclude = {"productsWish"})
 public class User {
 
   @Id
@@ -51,11 +55,11 @@ public class User {
   @OneToMany(mappedBy = "user")
   private List<Product> products;
 
-//  @ManyToMany
-//  @JoinTable(
-//          name = "users_products",
-//          joinColumns = {@JoinColumn(name = "user_id")},
-//          inverseJoinColumns =  {@JoinColumn(name = "product_id")}
-//  )
-//  Set<Product> productsWish = new HashSet<>();
+  @ManyToMany
+  @JoinTable(
+          name = "users_products",
+          joinColumns = {@JoinColumn(name = "user_id")},
+          inverseJoinColumns =  {@JoinColumn(name = "product_id")}
+  )
+  Set<Product> productsWish = new HashSet<>();
 }

@@ -2,7 +2,9 @@ package kabopok.server.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +16,8 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "usersWishedBy")
+@EqualsAndHashCode(exclude = {"usersWishedBy"})
 public class Product {
 
   @Id
@@ -45,7 +49,7 @@ public class Product {
   @JoinColumn(name = "user_id", referencedColumnName = "user_id")
   private User user;
 
-//  @ManyToMany(mappedBy = "productsWish")
-//  private Set<User> usersWishedBy = new HashSet<>();
+  @ManyToMany(mappedBy = "productsWish")
+  private Set<User> usersWishedBy = new HashSet<>();
 
 }

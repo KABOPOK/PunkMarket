@@ -36,17 +36,10 @@ CREATE TABLE IF NOT EXISTS messages (
                                         user_id UUID NOT NULL,
                                         FOREIGN KEY (user_id) REFERENCES users(user_id)
     );
-CREATE TABLE IF NOT EXISTS wishlists (
-                                        wishlist_id UUID PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS users_products (
                                         user_id UUID NOT NULL,
                                         product_id UUID NOT NULL,
+                                        primary key (user_id, product_id),
                                         FOREIGN KEY (user_id) REFERENCES users(user_id),
                                         FOREIGN KEY (product_id) REFERENCES products(product_id)
     );
--- -- CREATE TABLE IF NOT EXISTS users_products (
--- -- --                                         user_id UUID NOT NULL,
--- -- --                                         product_id UUID NOT NULL,
--- -- --                                         primary key (user_id, product_id),
--- -- --                                         FOREIGN KEY (user_id) REFERENCES users(user_id),
--- -- --                                         FOREIGN KEY (product_id) REFERENCES products(product_id)
--- -- --     );

@@ -9,7 +9,6 @@ import kabopok.server.mappers.ProductMapper;
 import kabopok.server.minio.StorageService;
 import kabopok.server.services.ProductService;
 import kabopok.server.services.UserService;
-import kabopok.server.services.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +24,6 @@ public class ProductController implements ProductApi {
   private final ProductService productService;
   private final ProductMapper productMapper;
   private final StorageService storageService;
-  private final WishlistService wishlistService;
 
   private final UserService userService;
 
@@ -61,20 +59,6 @@ public class ProductController implements ProductApi {
   @Override
   public List<ProductDTO> getProducts(Integer page, Integer limit) {
     List<Product> productList = productService.getProducts(page, limit);
-    List<ProductDTO> productDTOList = new ArrayList<>();
-    productList.forEach(product -> {
-      String path = product.getUser().getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";
-      String url = storageService.generateImageUrl("products", path,3600);
-      product.setPhotoUrl(url);
-      productDTOList.add(productMapper.map(product));
-    });
-    return productDTOList;
-  }
-
-  @Override
-  public List<ProductDTO> getWishlist(@NotNull String userId, @NotNull String productId, Integer page, Integer limit) {
-    List<UUID> productsIdList =  wishlistService.getWishlist(UUID.fromString(userId), UUID.fromString(productId));
-    List<Product> productList = productService.getMyFavProducts(productsIdList,page,limit);
     List<ProductDTO> productDTOList = new ArrayList<>();
     productList.forEach(product -> {
       String path = product.getUser().getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";

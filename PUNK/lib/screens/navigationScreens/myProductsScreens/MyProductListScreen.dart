@@ -60,7 +60,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
       _wishlistErrorMessage = "";
     });
     try {
-      List<Product> products = await ProductService.fetchWishlistProducts(1, _limit);
+      List<Product> products = await UserService.fetchWishlistProducts(1, _limit);
       setState(() {
         _wishlistProducts = products;
         _isWishlistLoading = false;

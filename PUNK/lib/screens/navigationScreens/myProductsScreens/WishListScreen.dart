@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:punk/clases/Product.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
 import 'package:punk/services/ProductService.dart';
+import '../../../services/UserService.dart';
 import '../../../widgets/cardWidgets/WishlistCardWidget.dart';
 
 
@@ -29,7 +30,7 @@ class _WishListPageState extends State<WishListPage> {
       _errorMessage = "";
     });
     try {
-      List<Product> products = await ProductService.fetchWishlistProducts(_page, _limit);
+      List<Product> products = await UserService.fetchWishlistProducts(_page, _limit);
       setState(() {
         _myProducts = products;
         _isLoading = false;

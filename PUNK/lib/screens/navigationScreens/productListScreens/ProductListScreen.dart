@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:punk/services/ProductService.dart';
-import '../../../Global/Global.dart';
+import 'package:punk/services/UserService.dart';
 import '../../../Online/Online.dart';
 import '../../../clases/Product.dart';
-import '../../../clases/Wishlist.dart';
 import '../../../widgets/barWidgets/SearchBarWidget.dart';
 import '../../../widgets/cardWidgets/ProductCardWidget.dart';
 import 'ProductDetailsScreen.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../../../services/WishlistService.dart';
 
 class ProductListPage extends StatefulWidget {
   @override
@@ -54,6 +50,16 @@ class _ProductListPageState extends State<ProductListPage> {
     setState(() {
       filteredProducts = filtered;
     });
+  }
+
+  Future<void> _addToWishlist(String productID) async {
+    try {
+      await UserService.saveToWishlist(Online.user.userID, productID);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: Could not add to wishlist')),
+      );
+    }
   }
 
   @override
@@ -176,13 +182,5 @@ class _ProductListPageState extends State<ProductListPage> {
     );
   }
 
-  Future<void> _addToWishlist(String productID) async {
-    try {
-      await WishlistService.saveToWishlist(Online.user.userID, productID);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: Could not add to wishlist')),
-      );
-    }
-  }
+
 }

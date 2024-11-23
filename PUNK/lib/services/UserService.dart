@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../Global/Global.dart';
 import '../Online/Online.dart';
+import '../clases/Product.dart';
 import '../clases/User.dart';
 import '../common_functions/Functions.dart';
 import '../widgets/barWidgets/MyNavigationBarWidget.dart';
@@ -39,5 +40,32 @@ class UserService {
       );
     }
   }
+  static Future<void> saveToWishlist( String userId,String productId) async {
+    http.Response response = await http.post(
+      Uri.parse('$HTTPS/api/users/add_to_wishlist?userId=$userId&productId=$productId'),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to add to wishlist');
+    }
+  }
+  static Future<List<Product>> fetchWishlistProducts(int page, int limit) async {
+    final userId = Online.user.userID;
+    final productId = Online.user.userID;
+    List<Product> products = [];
+    final response = await http.get(
+      Uri.parse('$HTTPS/api/users/get_fav_products?userId=$userId'),
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> productData = json.decode(response.body);
+      for (int i = 0; i < productData.length; ++i) {
+        products.add(Product.fromJson(productData[i]));
+      }
+    }
+    else {
+      throw ErrorHint("Error : ${response.statusCode}");
+    }
+    return products;
+  }
+
 
 }

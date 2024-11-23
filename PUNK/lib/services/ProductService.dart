@@ -98,24 +98,6 @@ class ProductService{
     }
     return products;
   }
-  static Future<List<Product>> fetchWishlistProducts(int page, int limit) async {
-    final userId = Online.user.userID;
-    final productId = Online.user.userID;
-    List<Product> products = [];
-    final response = await http.get(
-      Uri.parse('$HTTPS/api/products/get_fav_products?userId=$userId&productId=$productId&page=$page&limit=$limit'),
-    );
-    if (response.statusCode == 200) {
-      final List<dynamic> productData = json.decode(response.body);
-      for (int i = 0; i < productData.length; ++i) {
-        products.add(Product.fromJson(productData[i]));
-      }
-    }
-    else {
-      throw ErrorHint("Error : ${response.statusCode}");
-    }
-    return products;
-  }
   static Future<List<Product>> fetchProducts(int page, int limit) async {
     final userId = Online.user.userID;
     List<Product> products = [];

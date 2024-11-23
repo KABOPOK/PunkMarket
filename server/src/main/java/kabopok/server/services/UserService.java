@@ -6,6 +6,7 @@ import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
+import kabopok.server.repositories.ProductRepository;
 import kabopok.server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,6 +26,7 @@ import java.util.UUID;
 public class UserService extends DefaultService {
 
   private final UserRepository userRepository;
+  private final ProductRepository productRepository;
   private final JdbcTemplate jdbcTemplate;
   private final MinioClient minioClient;
   public UUID save(User user) {
@@ -57,6 +60,18 @@ public class UserService extends DefaultService {
     updatedUser.setUserID(user.getUserID());
     userRepository.save(updatedUser);
     return updatedUser;
+  }
+
+  public void addToWishList(UUID userId, UUID productId) {
+    User user = getOrThrow(userId, userRepository::findById);
+    Product product = getOrThrow(productId, productRepository::findById);
+    user.getProductsWish().add(product);
+    userRepository.save(user);
+  }
+
+  public List<Product> getMyFavProducts(UUID userId){
+    User user = getOrThrow(userId,userRepository::findById);
+    return user.getProductsWish().stream().toList();
   }
 
 }

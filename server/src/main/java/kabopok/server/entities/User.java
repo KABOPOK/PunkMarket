@@ -2,13 +2,23 @@ package kabopok.server.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.nio.file.attribute.UserDefinedFileAttributeView;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +26,8 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "productsWish")
+@EqualsAndHashCode(exclude = {"productsWish"})
 public class User {
 
   @Id
@@ -39,4 +51,15 @@ public class User {
 
   @Column(name = "telegram_id", length = 30)
   private String telegramID;
+
+  @OneToMany(mappedBy = "user")
+  private List<Product> products;
+
+  @ManyToMany
+  @JoinTable(
+          name = "users_products",
+          joinColumns = {@JoinColumn(name = "user_id")},
+          inverseJoinColumns =  {@JoinColumn(name = "product_id")}
+  )
+  Set<Product> productsWish = new HashSet<>();
 }

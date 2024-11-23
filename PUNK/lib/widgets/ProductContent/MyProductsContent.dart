@@ -43,6 +43,7 @@ class MyProductsContent extends StatelessWidget {
               owner: product.ownerName,
               description: product.description,
               productID: product.productID,
+              userID: product.userID,
             );
           },
         ),

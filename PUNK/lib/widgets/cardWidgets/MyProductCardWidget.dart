@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import '../../Global/Global.dart';
 import '../../clases/Product.dart';
+import '../../screens/navigationScreens/myProductsScreens/EditProduct.dart';
 
 class MyProduct extends StatelessWidget {
   final String photoUrl;
@@ -12,6 +14,7 @@ class MyProduct extends StatelessWidget {
   final String owner;
   final String description;
   final String productID;
+  final String userID;
 
   const MyProduct({
     Key? key,
@@ -21,6 +24,7 @@ class MyProduct extends StatelessWidget {
     required this.owner,
     required this.description,
     required this.productID,
+    required this.userID,
   }) : super(key: key);
 
   Future<void> _sendProduct(Product product, File? image, BuildContext context /*for show message about product sending*/) async {
@@ -84,27 +88,41 @@ class MyProduct extends StatelessWidget {
       );
     }
   }
-  void _handleMenuSelection(
-      String choice, String product, BuildContext context) {
+  void _handleMenuSelection(String choice, String productId, BuildContext context) {
     switch (choice) {
       case 'edit':
-      // Placeholder for Edit Option
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('EDIT')),
+      // Navigate to the Edit Product Screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductEditingScreen(
+              product: Product(
+                productID: productID,
+                title: title,
+                price: price,
+                ownerName: owner,
+                description: description,
+                userID: userID,
+                photoUrl: photoUrl,
+                //category: null, // Use the actual category if available
+                location: '', // Use the actual location if available
+                //paymentMethod: null, // Use the actual payment method if available
+              ),
+            ),
+          ),
         );
         break;
       case 'reserve':
-      //  Placeholder for Reserve Option
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('RESERVE')),
         );
         break;
       case 'delete':
-      // Confirm delete action
-        _confirmDelete(product, context);
+        _confirmDelete(productId, context);
         break;
     }
   }
+
 
   void _confirmDelete(String product, BuildContext context) {
     showDialog(

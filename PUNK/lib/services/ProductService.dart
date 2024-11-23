@@ -30,6 +30,33 @@ class ProductService{
       }
       //var responseString = await response.stream.bytesToString();;
   }
+  static Future<void> updateProduct(
+      String productId,
+      Map<String, dynamic> productDTO,
+      BuildContext context,
+      List<File?> images,
+      ) async {
+    final uri = Uri.parse('$HTTPS/api/products/update?productId=$productId');
+    final request = http.MultipartRequest('PUT', uri);
+
+    // Add product data
+    request.fields.addAll(productDTO.map((key, value) => MapEntry(key, value.toString())));
+
+    // Add images
+    for (var image in images) {
+      if (image != null) {
+        final stream = http.ByteStream(image.openRead());
+        final length = await image.length();
+        final multipartFile = http.MultipartFile('images', stream, length, filename: image.path.split('/').last);
+        request.files.add(multipartFile);
+      }
+    }
+
+    final response = await request.send();
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update product');
+    }
+  }
 
   static Future<List<Product>> fetchUserProducts(int page, int limit) async {
     final userId = Online.user.userID;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../Online/Online.dart';
+import '../../../services/UserService.dart';
 import 'ProfileSettingsScreen.dart';
 
 class MyProfileScreen extends StatefulWidget {
@@ -13,6 +14,51 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileScreenState extends State<MyProfileScreen> {
 
   _MyProfileScreenState();
+  void _handleMenuSelection(String choice, BuildContext context) {
+    switch (choice) {
+      case 'settings':
+      // Navigate to settings screen
+        break;
+      case 'log_out':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Logging Out...')),
+        );
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        break;
+      case 'delete':
+        _confirmDelete(Online.user.userID, context);
+        break;
+    }
+  }
+  void _confirmDelete(String userId, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Подтверждение удаления'),
+          content: const Text('Вы точно хотите удалить свой аккаунт?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Нет'),
+            ),
+            TextButton(
+              onPressed: () {
+                //Navigator.of(context).pop(); // Close the dialog
+                UserService.deleteUser(userId, context); // Call delete
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Да'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
 
   @override
@@ -38,6 +84,30 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ),
           ),
         ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(
+              Icons.more_horiz_rounded,
+              color: Colors.white,
+              size: 30,
+            ),
+            onSelected: (choice) => _handleMenuSelection(choice, context),
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'settings',
+                child: Text('Настройки'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'log_out',
+                child: Text('Выйти из аккаунта'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'delete',
+                child: Text('Удалить Аккаунт'),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -63,7 +133,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProfileSettingsScreen(user: Online.user,),
+                        builder: (context) => ProfileSettingsScreen(
+                          user: Online.user,
+                        ),
                       ),
                     );
                     // If result is true, refresh the UI with setState
@@ -72,14 +144,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     }
                   },
                   child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.grey[300],
-                    backgroundImage: Online.user!.photoUrl != null
-                        ? NetworkImage(Online.user!.photoUrl!)
-                        : null,
-                    child: Online.user!.photoUrl == null
-                        ? Icon(Icons.person, size: 50, color: Colors.grey[700])
-                        : null,
+                    backgroundColor: Colors.orange,
+                    radius: 18,
+                    child: Icon(
+                      Icons.settings,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
                 ),
               ),
@@ -124,4 +195,5 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       ),
     );
   }
+
 }

@@ -79,6 +79,33 @@ class UserService {
       throw Exception('Failed to update user');
     }
   }
+  static Future<void> deleteUser(String userId, BuildContext context) async {
+    final String url = '$HTTPS/api/users/delete?userId=$userId';
+
+    try {
+      // Sending the DELETE request
+      final response = await http.delete(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Successfully deleted
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User successfully deleted')),
+        );
+
+      } else {
+        // Error response
+        final errorData = json.decode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['error'] ?? 'Failed to delete user')),
+        );
+      }
+    } catch (e) {
+      // Exception handling
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
 
 
 }

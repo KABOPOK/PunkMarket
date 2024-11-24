@@ -1,26 +1,10 @@
 package kabopok.server.minio;
 
-import io.minio.BucketExistsArgs;
-import io.minio.GetObjectArgs;
-import io.minio.GetPresignedObjectUrlArgs;
-import io.minio.ListObjectsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
-import io.minio.Result;
-import io.minio.errors.ErrorResponseException;
-import io.minio.errors.InsufficientDataException;
-import io.minio.errors.InternalException;
-import io.minio.errors.InvalidResponseException;
+import io.minio.*;
 import io.minio.errors.MinioException;
-import io.minio.errors.ServerException;
-import io.minio.errors.XmlParserException;
 import io.minio.messages.Item;
 import kabopok.server.entities.Product;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -104,7 +88,7 @@ public class StorageService {
     for (MultipartFile image : images) {
       try (InputStream inputStream = image.getInputStream()) {
         String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();
-        uploadFile("products", path, inputStream, image.getContentType());
+        uploadFile(bucketName, path, inputStream, image.getContentType());
       } catch (IOException e) {
         throw new RuntimeException("Failed to upload images: " + e.getMessage(), e);
       }

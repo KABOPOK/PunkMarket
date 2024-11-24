@@ -46,7 +46,7 @@ public class ProductService extends DefaultService {
   public Product updateProduct(UUID productId, Product updatedProduct) {
     Product product  = getOrThrow(productId, productRepository::findById);
     updatedProduct.setProductID(product.getProductID());
-    updatedProduct.getUser().setUserID(product.getUser().getUserID());
+    updatedProduct.setUser(product.getUser());
     productRepository.save(updatedProduct);
     return updatedProduct;
   }

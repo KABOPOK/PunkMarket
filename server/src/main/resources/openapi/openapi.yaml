@@ -162,7 +162,7 @@ paths:
             schema:
               type: object
               properties:
-                productDTO:
+                product:
                   $ref: '#/components/schemas/ProductDTO'
                 images:
                   type: array
@@ -352,7 +352,7 @@ components:
         photoUrl:
           type: string
           description: URL of the product photo
-#          readOnly: true
+          readOnly: true
         location:
           type: string
           description: Location of the product

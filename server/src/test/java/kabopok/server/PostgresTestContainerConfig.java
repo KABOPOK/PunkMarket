@@ -39,12 +39,11 @@ public class PostgresTestContainerConfig {
     public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
       var postgreSQLContainer = getPostgreSQLContainer();
       TestPropertyValues.of(
-              "DB_URL: " + postgreSQLContainer.getJdbcUrl(),
-              "POSTGRESQL_USERNAME: " + postgreSQLContainer.getUsername(),
-              "POSTGRESQL_PASSWORD: " + postgreSQLContainer.getPassword()
+              "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
+              "spring.datasource.username=" + postgreSQLContainer.getUsername(),
+              "spring.datasource.password=" + postgreSQLContainer.getPassword()
       ).applyTo(configurableApplicationContext.getEnvironment());
     }
-
   }
 
 }

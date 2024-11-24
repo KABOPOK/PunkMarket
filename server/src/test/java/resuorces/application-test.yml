@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+minio:
+  url: ${minio.url}
+  accessKey: ${minio.accessKey}
+  secretKey: ${minio.secretKey}

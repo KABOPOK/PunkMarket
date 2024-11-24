@@ -6,10 +6,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(initializers = PostgresTestContainerConfig.Initializer.class)
 @ActiveProfiles("test")
 @EnableAutoConfiguration(exclude = FlywayAutoConfiguration.class)
-@SpringBootTest(classes = ServerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(initializers = {
+        PostgresTestContainerConfig.Initializer.class,
+        MinioTestContainerConfig.Initializer.class
+})
+@SpringBootTest(classes = ServerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public abstract class AbstractTest {
-
 }

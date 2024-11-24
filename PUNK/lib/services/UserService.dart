@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +23,6 @@ class UserService {
       throw Exception('Failed to register user');
     }
   }
-
   static Future<void> loginUser(User user, BuildContext context) async {
     final url = Uri.parse('$HTTPS/api/users/authorization');
     http.Response response =  await http.post(
@@ -40,6 +40,7 @@ class UserService {
       );
     }
   }
+
   static Future<void> saveToWishlist( String userId,String productId) async {
     http.Response response = await http.post(
       Uri.parse('$HTTPS/api/users/add_to_wishlist?userId=$userId&productId=$productId'),
@@ -65,6 +66,18 @@ class UserService {
       throw ErrorHint("Error : ${response.statusCode}");
     }
     return products;
+  }
+
+  static Future<void> updateUser(String userId, User user, BuildContext context, {String? imagePath}) async {
+    var request = http.MultipartRequest('PUT', Uri.parse('$HTTPS/api/users/update?userId=$userId'));
+    request.fields['user'] = json.encode(user.toJson());
+    if (imagePath != null) {
+      request.files.add(await http.MultipartFile.fromPath('image', imagePath));
+    }
+    var response = await request.send();
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update user');
+    }
   }
 
 

@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import '../../../Online/Online.dart';
 import 'ProfileSettingsScreen.dart';
+
 class MyProfileScreen extends StatefulWidget {
+
+  MyProfileScreen();
+
   @override
   _MyProfileScreenState createState() => _MyProfileScreenState();
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
+
+  _MyProfileScreenState();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +63,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProfileSettingsScreen(),
+                        builder: (context) => ProfileSettingsScreen(user: Online.user,),
                       ),
                     );
                     // If result is true, refresh the UI with setState
@@ -64,13 +72,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     }
                   },
                   child: CircleAvatar(
-                    backgroundColor: Colors.orange,
-                    radius: 18,
-                    child: Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                    radius: 50,
+                    backgroundColor: Colors.grey[300],
+                    backgroundImage: Online.user!.photoUrl != null
+                        ? NetworkImage(Online.user!.photoUrl!)
+                        : null,
+                    child: Online.user!.photoUrl == null
+                        ? Icon(Icons.person, size: 50, color: Colors.grey[700])
+                        : null,
                   ),
                 ),
               ),

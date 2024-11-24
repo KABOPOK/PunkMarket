@@ -1,13 +1,32 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../Online/Online.dart';
+import '../../../clases/User.dart';
+import '../../../common_functions/Functions.dart';
+import '../../../services/UserService.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
+  final User user;
+
+  ProfileSettingsScreen({required this.user});
+
   @override
-  _ProfileSettingsScreenState createState() => _ProfileSettingsScreenState();
+  _ProfileSettingsScreenState createState() => _ProfileSettingsScreenState(user: user);
 }
 
 class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
 
+  final ImagePicker _picker = ImagePicker();
+  String existingImageUrl = '';
+  File? newImage;
+
+  User user;
+
+  _ProfileSettingsScreenState({required this.user});
+
+  // Update user details
   final fullNameController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final telegramController = TextEditingController();
@@ -25,19 +44,53 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
     telegramController.text = Online.user.telegramID ?? '';
     addressController.text = Online.user.location ?? '';
   }
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    phoneNumberController.dispose();
+    addressController.dispose();
+    telegramController.dispose();
+    super.dispose();
+  }
 
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        newImage = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+  Future<void> _updateUser() async {
+    try {
+      user.userName = fullNameController.text;
+      user.number = phoneNumberController.text;
+      user.telegramID = telegramController.text;
+      user.location= addressController.text;
+      user.password = Online.user.password;
+      // Call the updateProduct service with all data
+      await UserService.updateUser(
+        Online.user.userID,
+        user,
+        context,
+        imagePath: newImage?.path,
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      Functions.showSnackBar('Error updating user: $e', context);
+    }
+  }
   // Save the changed settings
   void _changeSettings() {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        Online.user.userName = fullNameController.text;
-        Online.user.number = phoneNumberController.text;
-        Online.user.telegramID = telegramController.text;
-        Online.user.location = addressController.text;
-      });
-
+      _updateUser();
       // Pop and return true to indicate that changes were made
       Navigator.pop(context, true);
+    }else{
+      Functions.showSnackBar("Please, fill all fields", context);
     }
   }
 
@@ -45,9 +98,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.orange,
         title: Text("Profile Settings"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Online.user == null
           ? Center(child: CircularProgressIndicator())
@@ -57,16 +117,20 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
           key: _formKey,
           child: Column(
             children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.grey[300],
-                backgroundImage: Online.user!.photoUrl != null
-                    ? NetworkImage(Online.user!.photoUrl!)
-                    : null,
-                child: Online.user!.photoUrl == null
-                    ? Icon(Icons.person, size: 50, color: Colors.grey[700])
-                    : null,
+              GestureDetector(
+                onTap: _pickImage,
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.grey[300],
+                  backgroundImage: Online.user!.photoUrl != null
+                      ? NetworkImage(Online.user!.photoUrl!)
+                      : null,
+                  child: Online.user!.photoUrl == null
+                      ? Icon(Icons.person, size: 50, color: Colors.grey[700])
+                      : null,
+                ),
               ),
+
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),

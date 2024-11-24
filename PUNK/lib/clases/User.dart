@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../Online/Online.dart';
+
 @freezed
 class User {
   String userID;
@@ -36,6 +38,19 @@ class User {
     return {
       'number': number,
       'password': password
+    };
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'userID': Online.user.userID,
+      'photoUrl': photoUrl,
+      'location': location,
+      'telegramID': telegramID,
+      'userName': userName,
+      'number': number,
+      'password': password,
+
     };
   }
 

@@ -57,8 +57,8 @@ public class ProductController implements ProductApi {
   }
 
   @Override
-  public List<ProductDTO> getProducts(Integer page, Integer limit) {
-    List<Product> productList = productService.getProducts(page, limit);
+  public List<ProductDTO> getProducts(Integer page, Integer limit, String query) {
+    List<Product> productList = productService.getProducts(page, limit, query);
     List<ProductDTO> productDTOList = new ArrayList<>();
     productList.forEach(product -> {
       String path = product.getUser().getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";

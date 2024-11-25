@@ -4,7 +4,6 @@ import '../../../services/UserService.dart';
 import 'ProfileSettingsScreen.dart';
 
 class MyProfileScreen extends StatefulWidget {
-
   MyProfileScreen();
 
   @override
@@ -12,8 +11,8 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-
   _MyProfileScreenState();
+
   void _handleMenuSelection(String choice, BuildContext context) {
     switch (choice) {
       case 'settings':
@@ -31,6 +30,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         break;
     }
   }
+
   void _confirmDelete(String userId, BuildContext context) {
     showDialog(
       context: context,
@@ -47,7 +47,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ),
             TextButton(
               onPressed: () {
-                //Navigator.of(context).pop(); // Close the dialog
                 UserService.deleteUser(userId, context); // Call delete
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
@@ -59,7 +58,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -118,18 +116,22 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               CircleAvatar(
                 radius: 50,
                 backgroundColor: Colors.grey[300],
-                child: Icon(
+                backgroundImage: Online.user.photoUrl != null
+                    ? NetworkImage(Online.user.photoUrl!) // Load photo from URL
+                    : null,
+                child: Online.user.photoUrl == null
+                    ? Icon(
                   Icons.person,
                   size: 50,
                   color: Colors.grey[700],
-                ),
+                )
+                    : null,
               ),
               Positioned(
                 bottom: 0,
                 right: 0,
                 child: GestureDetector(
                   onTap: () async {
-                    // Await result from ProfileSettingsScreen
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -138,7 +140,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ),
                       ),
                     );
-                    // If result is true, refresh the UI with setState
                     if (result == true) {
                       setState(() {});
                     }
@@ -158,7 +159,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           ),
           SizedBox(height: 10),
           Text(
-            'ACCOUNT NAME',
+            Online.user.userName ?? 'ACCOUNT NAME',
             style: TextStyle(
               fontSize: 18,
               color: Colors.orange,
@@ -187,7 +188,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ProfileInfoRow(label: 'Phone Number:', value: Online.user.number),
                 ProfileInfoRow(label: 'Telegram:', value: Online.user.telegramID),
                 ProfileInfoRow(label: 'Address:', value: Online.user.location),
-                ProfileInfoRow(label: 'PhotoUrl:', value: Online.user.photoUrl),
               ],
             ),
           ),
@@ -195,5 +195,4 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       ),
     );
   }
-
 }

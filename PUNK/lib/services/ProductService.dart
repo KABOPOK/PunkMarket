@@ -27,7 +27,7 @@ class ProductService{
       }
       var response = await request.send();
       if (response.statusCode == 200) {
-        Functions.showSnackBar('Product created successfully', context);
+        //Functions.showSnackBar('Product created successfully', context);
       }
       //var responseString = await response.stream.bytesToString();;
   }
@@ -98,11 +98,11 @@ class ProductService{
     }
     return products;
   }
-  static Future<List<Product>> fetchProducts(int page, int limit) async {
+  static Future<List<Product>> fetchProducts(int page, int limit, String query) async {
     final userId = Online.user.userID;
     List<Product> products = [];
     final response = await http.get(
-      Uri.parse('$HTTPS/api/products/get_products?page=$page&limit=$limit'),
+      Uri.parse('$HTTPS/api/products/get_products?page=$page&limit=$limit&query=$query'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> productData = json.decode(response.body);

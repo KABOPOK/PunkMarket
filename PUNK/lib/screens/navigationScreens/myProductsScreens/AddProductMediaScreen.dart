@@ -25,8 +25,8 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
   Future<void> _sendProduct(Product product, List<File?> images) async {
     try {
      ProductService.sendProduct(product, images, context) ;
-      Navigator.pop(context);
-      Navigator.pop(context);
+      //Navigator.pop(context);
+      //Navigator.pop(context);
     } catch (e) {
       Functions.showSnackBar('Error creating product', context);
     }

@@ -31,7 +31,7 @@ public class PostgresTestContainerConfig {
         // Manually trigger Flyway migrations
         Flyway flyway = Flyway.configure()
                 .dataSource(postgreSQLContainer.getJdbcUrl(), postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword())
-                .locations("classpath:db/migrations") // Specify your migration location here
+                .locations("classpath:db/migrations")
                 .load();
 
         flyway.migrate();

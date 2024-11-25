@@ -11,11 +11,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -52,20 +58,13 @@ public class UserTest extends AbstractTest {
     user.setPhotoUrl("halo");
     return user;
   }
-  public <T> ResponseEntity<T> sendMultipartPostRequest(Object userDTO, File imageFile, String url, Class<T> responseType) throws IOException {
-    // Create headers
+  public <T> ResponseEntity<T> sendMultipartPostRequest(Object userDTO, Resource resource, String url, Class<T> responseType){
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-    // Build multipart request body
     MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-    body.add("user", userDTO); // Assuming `userDTO` can be serialized correctly
-    body.add("image", new FileSystemResource(imageFile));
-
-    // Create HttpEntity with headers and body
+    body.add("user", userDTO);
+    body.add("image", resource);
     HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
-
-    // Send POST request
     return testRestTemplate.exchange(
             url,
             HttpMethod.POST,
@@ -78,18 +77,17 @@ public class UserTest extends AbstractTest {
 
   @Test
   @Transactional
-  public void createUserTest() throws IOException {
+  public void createUserTest() {
     // Having
     User user = createSampleUser();
-    ClassLoader classLoader = UserTest.class.getClassLoader();
-    File file = new File("D:\\Projects\\PunkMarket\\server\\src\\test\\java\\resources\\images\\photo.jpg");
-    String imageRelativePath = "src/test/resources/images/photo.jpg";
-    Path imagePath = Paths.get(imageRelativePath).toAbsolutePath(); // Resolves the relative path to absolute
-    File imageFile = imagePath.toFile();
+    Resource resource = new ClassPathResource("images/photo.jpg");
     // When
     UserDTO userDTO = userMapper.map(user);
     String url = "/api/users/create";
-    ResponseEntity<IdDTO> response = sendMultipartPostRequest(userDTO,file,url, IdDTO.class);
+    ResponseEntity<IdDTO> response = sendMultipartPostRequest(userDTO, resource, url, IdDTO.class);
+    //Then
+    assertEquals(200, response.getStatusCode().value());
+    assertNotNull(response.getBody());
     /*ResponseEntity<User> mockResponse = new ResponseEntity<>(userMapper.map(user), HttpStatus.OK);
     when(restTemplate.exchange(
             eq("/api/users/create"),

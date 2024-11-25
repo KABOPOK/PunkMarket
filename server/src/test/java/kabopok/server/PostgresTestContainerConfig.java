@@ -1,6 +1,7 @@
 package kabopok.server;
 
 import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.Flyway;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.utility.DockerImageName;
-
 import java.time.Duration;
 
 @Slf4j
@@ -27,6 +27,15 @@ public class PostgresTestContainerConfig {
                         .withLogConsumer(new Slf4jLogConsumer(log))
                         .withStartupTimeout(Duration.ofSeconds(60));
         postgreSQLContainer.start();
+
+        // Manually trigger Flyway migrations
+        Flyway flyway = Flyway.configure()
+                .dataSource(postgreSQLContainer.getJdbcUrl(), postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword())
+                .locations("classpath:db/migrations") // Specify your migration location here
+                .load();
+
+        flyway.migrate();
+
       }
     }
     return instance;
@@ -45,5 +54,5 @@ public class PostgresTestContainerConfig {
       ).applyTo(configurableApplicationContext.getEnvironment());
     }
   }
-
 }
+

@@ -294,6 +294,10 @@ paths:
       responses:
         '200':
           description: Successfully added to wishlist
+          content:
+            application/json:
+              schema:
+                type: boolean
 
 components:
   schemas:

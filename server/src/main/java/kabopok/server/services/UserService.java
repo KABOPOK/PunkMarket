@@ -62,11 +62,19 @@ public class UserService extends DefaultService {
     return updatedUser;
   }
 
-  public void addToWishList(UUID userId, UUID productId) {
+  public Boolean addToWishList(UUID userId, UUID productId) {
     User user = getOrThrow(userId, userRepository::findById);
     Product product = getOrThrow(productId, productRepository::findById);
+    boolean heartState = false;
+    if(user.getProductsWish().contains(product)){
+      user.getProductsWish().remove(product);
+    } else {
+      heartState = true;
+      user.getProductsWish().add(product);
+    }
     user.getProductsWish().add(product);
     userRepository.save(user);
+    return heartState;
   }
 
   public List<Product> getMyFavProducts(UUID userId){

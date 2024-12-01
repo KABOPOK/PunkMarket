@@ -1,6 +1,5 @@
 package kabopok.server.controllers;
 
-import com.fasterxml.jackson.databind.DeserializationContext;
 import generated.kabopok.server.api.UserApi;
 import generated.kabopok.server.api.model.IdDTO;
 import generated.kabopok.server.api.model.LoginDataDTO;
@@ -14,11 +13,9 @@ import kabopok.server.mappers.UserMapper;
 import kabopok.server.minio.StorageService;
 import kabopok.server.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;

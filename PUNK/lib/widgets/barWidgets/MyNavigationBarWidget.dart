@@ -4,9 +4,6 @@ import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListSc
 import 'package:punk/screens/navigationScreens/productListScreens/ProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductScreen.dart';
 
-import '../../screens/navigationScreens/messangerScreens/ChatScreen.dart';
-import '../../screens/navigationScreens/messangerScreens/MyChatsScreen.dart';
-
 
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({Key? key}) : super(key: key);
@@ -31,9 +28,9 @@ class _NavigationBarState extends State<MyNavigationBar> {
     // Initialize screens
     _screens.addAll([
       ProductListPage(),
-      ChatScreen(),
+      //ChatScreen(),
       MyProductListPage(),
-      MyChatsScreen(),
+      //MyChatsScreen(),
       MyProfileScreen(),
     ]);
   }
@@ -59,26 +56,26 @@ class _NavigationBarState extends State<MyNavigationBar> {
             label: 'Home',
             icon: _buildNavBarIcon(Icons.home, 0),
           ),
-          BottomNavigationBarItem(
-            label: 'Questions',
-            icon: _buildNavBarIcon(Icons.question_answer_sharp, 1),
-          ),
+          // BottomNavigationBarItem(
+          //   label: 'Questions',
+          //   icon: _buildNavBarIcon(Icons.question_answer_sharp, 1),
+          // ),
           BottomNavigationBarItem(
             label: 'Products',
-            icon: _buildNavBarIcon(Icons.shopping_basket, 2),
+            icon: _buildNavBarIcon(Icons.shopping_basket, 1),
           ),
-          BottomNavigationBarItem(
-            label: 'Messages',
-            icon: _buildNavBarIcon(Icons.message, 3),
-          ),
+          // BottomNavigationBarItem(
+          //   label: 'Messages',
+          //   icon: _buildNavBarIcon(Icons.message, 3),
+          // ),
           BottomNavigationBarItem(
             label: 'Profile',
-            icon: _buildNavBarIcon(Icons.person, 4),
+            icon: _buildNavBarIcon(Icons.person, 2),
           ),
         ],
       ),
       // FAB is only visible on MyProductListPage with "MyProducts" content
-      floatingActionButton: (_screenIndex == 2)
+      floatingActionButton: (_screenIndex == 1)
           ? ValueListenableBuilder<String>(
         valueListenable: _currentProductContent,
         builder: (context, content, child) {

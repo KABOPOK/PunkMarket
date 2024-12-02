@@ -13,7 +13,10 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
   List<Product> findAllByUser(User user, Pageable pageable);
+
   @Query("SELECT p FROM Product p WHERE p.productID IN :productIdList")
   List<Product> findByProductIdList(@Param("productIdList") List<UUID> productIdList, Pageable pageable);
+
+  List<Product> findAllByTitleContaining(String query, Pageable pageable);
 
 }

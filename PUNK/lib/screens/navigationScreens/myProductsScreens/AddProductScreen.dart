@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:punk/Online/Online.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductMediaScreen.dart';
 import 'package:punk/clases/Product.dart';
+import 'package:punk/common_functions/Functions.dart';
 
 class ProductAdditionScreen extends StatefulWidget {
   @override
@@ -11,47 +12,41 @@ class ProductAdditionScreen extends StatefulWidget {
 
 class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
   String? selectedCategory;
-  String? selectedPaymentMethod;
   bool isNegotiable = false;
   final Product product = Product();
 
   final TextEditingController priceController = TextEditingController();
   final TextEditingController productNameController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+
+  bool isValid(){
+    if (productNameController.text.isEmpty ||
+        priceController.text.isEmpty ||
+        descriptionController.text.isEmpty) {
+      Functions.showSnackBar('Please fill out all fields', context);
+      return false;
+    }
+    return true;
+  }
 
   @override
   void dispose() {
     priceController.dispose();
     productNameController.dispose();
-    addressController.dispose();
     descriptionController.dispose();
     super.dispose();
   }
 
   void _addProduct() {
-    if (productNameController.text.isEmpty ||
-        selectedCategory == null ||
-        priceController.text.isEmpty ||
-        selectedPaymentMethod == null ||
-        addressController.text.isEmpty ||
-        descriptionController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill out all fields')),
-      );
+    if(!isValid()){
       return;
     }
-
-    // Populate product fields
     product.title = productNameController.text;
     product.ownerName = Online.user.userName;
-    product.category = selectedCategory!;
+    if(selectedCategory!= null){product.category = selectedCategory!;}
     product.price = priceController.text;
-    product.location = addressController.text;
     product.description = descriptionController.text;
     product.userID = Online.user.userID;
-
-    // Navigate to media screen with the populated product
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -128,34 +123,6 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
                   return newValue;
                 })
               ],
-            ),
-            const SizedBox(height: 10),
-            DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: 'Payment Method',
-                border: OutlineInputBorder(),
-              ),
-              value: selectedPaymentMethod,
-              onChanged: (newValue) {
-                setState(() {
-                  selectedPaymentMethod = newValue;
-                });
-              },
-              items: ['Cash', 'Credit Card', 'PayPal']
-                  .map((method) {
-                return DropdownMenuItem(
-                  child: Text(method),
-                  value: method,
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: addressController,
-              decoration: const InputDecoration(
-                labelText: 'Address',
-                border: OutlineInputBorder(),
-              ),
             ),
             const SizedBox(height: 10),
             TextField(

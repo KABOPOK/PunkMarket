@@ -9,15 +9,16 @@ class SearchBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const SearchPage(),
-          ),
-        );
+        // Uncomment this if navigating to a separate search page
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => const SearchPage(),
+        //   ),
+        // );
       },
       child: Container(
-        height: 35,  // Height of the search bar
+        height: 45,  // Adjusted height for better aesthetics
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
@@ -27,37 +28,23 @@ class SearchBarWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),  // Border radius
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Icon(
-                    Icons.search,
-                    color: Colors.grey,
-                  ),
-                ),
-                Text(
-                  'Find Products',
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,  // Background color of search button
-                borderRadius: BorderRadius.circular(25),
-              ),
-              height: 32,
-              width: 75,
-              child: const Center(
-                child: Text(
-                  'Search',
-                  style: TextStyle(
-                    color: Colors.orangeAccent,  // Text color
+            Expanded(
+              child: TextField(
+                onChanged: (query) {
+                  onSearch(query);
+                },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                  hintText: 'Find Products',
+                  border: InputBorder.none,
+                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                    onPressed: () {
+                      // Trigger search action here
+                      onSearch('Search Query');
+                    },
                   ),
                 ),
               ),

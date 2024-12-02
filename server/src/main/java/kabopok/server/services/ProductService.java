@@ -27,9 +27,9 @@ public class ProductService extends DefaultService {
     return productID;
   }
 
-  public List<Product> getProducts(Integer page, Integer limit) {
+  public List<Product> getProducts(Integer page, Integer limit, String query) {
     Pageable pageable = PageRequest.of(page - 1, limit);
-    return productRepository.findAll(pageable).getContent();
+    return productRepository.findAllByTitleContaining(query, pageable);
   }
   public List<Product> getMyProducts(UUID userId, Integer page, Integer limit) {
     User user = getOrThrow(userId, userRepository::findById);

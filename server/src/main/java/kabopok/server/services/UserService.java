@@ -1,15 +1,12 @@
 package kabopok.server.services;
 
 import generated.kabopok.server.api.model.LoginDataDTO;
-import io.minio.MinioClient;
 import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
 import kabopok.server.repositories.ProductRepository;
 import kabopok.server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -19,8 +16,6 @@ public class UserService extends DefaultService {
 
   private final UserRepository userRepository;
   private final ProductRepository productRepository;
-  private final JdbcTemplate jdbcTemplate;
-  private final MinioClient minioClient;
   public UUID save(User user) {
     UUID userID = UUID.randomUUID();
     user.setUserID(userID);
@@ -54,11 +49,18 @@ public class UserService extends DefaultService {
     return updatedUser;
   }
 
-  public void addToWishList(UUID userId, UUID productId) {
+  public Boolean addToWishList(UUID userId, UUID productId) {
     User user = getOrThrow(userId, userRepository::findById);
     Product product = getOrThrow(productId, productRepository::findById);
-    user.getProductsWish().add(product);
+    boolean heartState = false;
+    if(user.getProductsWish().contains(product)){
+      user.getProductsWish().remove(product);
+    } else {
+      heartState = true;
+      user.getProductsWish().add(product);
+    }
     userRepository.save(user);
+    return heartState;
   }
 
   public List<Product> getMyFavProducts(UUID userId){

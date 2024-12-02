@@ -194,6 +194,13 @@ paths:
             schema:
               type: integer
               default: 20
+          - name: query
+            in: query
+            description: The titles of necessary products
+            required: false
+            schema:
+              type: string
+              default:
         responses:
           '200':
             description: A list of products
@@ -287,6 +294,10 @@ paths:
       responses:
         '200':
           description: Successfully added to wishlist
+          content:
+            application/json:
+              schema:
+                type: boolean
 
 components:
   schemas:

@@ -120,6 +120,7 @@ public class UserTest extends AbstractTest {
     // Having
     User user = createSampleUser();
     userRepository.save(user);
+
     // When
     LoginDataDTO loginData = new LoginDataDTO();
     loginData.setNumber(user.getNumber());
@@ -143,31 +144,30 @@ public class UserTest extends AbstractTest {
   @Order(3)
   public void updateUserTest() {
     // Given
-    assertNotNull(createdUserId, "User ID should be available from createUserTest");
+    User user = createSampleUser();
+    userRepository.save(user);
 
+    // When
     UserDTO updatedUserDTO = new UserDTO();
-    //updatedUserDTO.setUserID(String.valueOf(createdUserId));
     updatedUserDTO.setUserID(String.valueOf(UUID.randomUUID()));
     updatedUserDTO.setUserName("updatedUser");
-    updatedUserDTO.setPassword("UpdatedPassword");
+    updatedUserDTO.setPassword("updatedPassword");
     updatedUserDTO.setNumber("987654321");
     updatedUserDTO.setLocation("updatedLocation");
     updatedUserDTO.setTelegramID("updatedTelegramID");
     updatedUserDTO.setPhotoUrl("updatedPhoto");
 
     Resource updatedImage = new ClassPathResource("images/photo.jpg");
-
-    String url = "/api/users/update?userId=" + createdUserId;
-
-    // When
+    String url = "/api/users/update?userId=" + user.getUserID();
     ResponseEntity<IdDTO> response = sendMultipartPutRequest(updatedUserDTO, updatedImage, url, IdDTO.class);
 
     // Then
     assertEquals(200, response.getStatusCode().value());
 
-    User updatedUser = userRepository.findById(createdUserId)
+    User updatedUser = userRepository.findById(user.getUserID())
             .orElseThrow(() -> new RuntimeException("User not found"));
     assertEquals("updatedUser", updatedUser.getUserName());
+    assertEquals("updatedPassword", updatedUser.getPassword());
     assertEquals("987654321", updatedUser.getNumber());
     assertEquals("updatedLocation", updatedUser.getLocation());
     assertEquals("updatedTelegramID", updatedUser.getTelegramID());
@@ -177,11 +177,13 @@ public class UserTest extends AbstractTest {
   @Order(4)
   public void deleteUserTest() {
     // Given
-    assertNotNull(createdUserId, "User ID is null. Ensure createUserTest runs before deleteUserTest.");
+    User user = createSampleUser();
+    userRepository.save(user);
 
-    String url = "/api/users/delete?userId=" + createdUserId;
+
 
     // When
+    String url = "/api/users/delete?userId=" + user.getUserID();
     ResponseEntity<Void> response = testRestTemplate.exchange(
             url,
             HttpMethod.DELETE,
@@ -190,10 +192,10 @@ public class UserTest extends AbstractTest {
     );
 
     // Then
-    assertEquals(200, response.getStatusCode().value(), "Expected HTTP status 200 for successful deletion.");
+    assertEquals(200, response.getStatusCode().value());
 
-    boolean userExists = userRepository.existsById(createdUserId);
-    assertEquals(false, userExists, "User should be deleted from the database.");
+    boolean userExists = userRepository.existsById(user.getUserID());
+    assertEquals(false, userExists);
   }
 
 }

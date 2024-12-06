@@ -12,9 +12,10 @@ import org.springframework.util.MultiValueMap;
 
 @Component
 public class HttpSteps {
+
   @Autowired
   private TestRestTemplate testRestTemplate;
-
+  
   public <T> ResponseEntity<T> sendMultipartPostRequest(Object userDTO, Resource resource, String url, Class<T> responseType) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -58,8 +59,7 @@ public class HttpSteps {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     HttpEntity<LoginDataDTO> request = new HttpEntity<>(loginData, headers);
-
     return testRestTemplate.postForEntity(url, request, UserDTO.class);
   }
-  
+
 }

@@ -5,6 +5,7 @@ import kabopok.server.entities.User;
 import java.util.UUID;
 
 public class SampleObjectGenerator {
+
   public static User createSampleUser(){
     User user = new User();
     user.setUserID(UUID.randomUUID());

@@ -6,18 +6,11 @@ import generated.kabopok.server.api.model.UserDTO;
 import kabopok.server.entities.User;
 import kabopok.server.mappers.UserMapper;
 import kabopok.server.repositories.UserRepository;
-import kabopok.server.services.UserService;
-import kabopok.server.SampleObjectGenerator;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,8 +23,6 @@ public class UserTest extends AbstractTest {
   private UserRepository userRepository;
   @Autowired
   private UserMapper userMapper;
-  @Autowired
-  private TestRestTemplate testRestTemplate;
   @Autowired
   private HttpSteps httpSteps;
 
@@ -102,6 +93,7 @@ public class UserTest extends AbstractTest {
     List<User> userList = userRepository.findAll();
     assertEquals(updatedUserDTO, userMapper.map(userList.get(0)));
   }
+
   @Test
   @Order(4)
   public void deleteUserTest() {

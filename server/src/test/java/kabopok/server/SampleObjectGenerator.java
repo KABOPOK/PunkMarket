@@ -18,4 +18,5 @@ public class SampleObjectGenerator {
     user.setProductsWish(null);
     return user;
   }
+
 }

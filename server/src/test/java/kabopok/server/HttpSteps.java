@@ -10,9 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.io.IOException;
-import java.util.UUID;
-
 @Component
 public class HttpSteps {
   @Autowired
@@ -64,4 +61,5 @@ public class HttpSteps {
 
     return testRestTemplate.postForEntity(url, request, UserDTO.class);
   }
+  
 }

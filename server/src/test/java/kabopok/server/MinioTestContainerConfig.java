@@ -27,8 +27,8 @@ public class MinioTestContainerConfig {
         minioContainer = new GenericContainer<>("minio/minio:latest")
                 .withExposedPorts(9000)
                 .waitingFor(Wait.forListeningPort())
-                .withEnv("MINIO_ACCESS_KEY", "minioaccesskey")
-                .withEnv("MINIO_SECRET_KEY", "miniosecretkey")
+                .withEnv("MINIO_ACCESS_KEY", "minioadmin")
+                .withEnv("MINIO_SECRET_KEY", "minioadmin")
                 .withCommand("server /data");
         minioContainer.start();
       }

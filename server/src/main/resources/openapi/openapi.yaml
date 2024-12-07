@@ -87,7 +87,7 @@ paths:
             schema:
               type: object
               properties:
-                userDTO:
+                user:
                   $ref: '#/components/schemas/UserDTO'
                 image:
                   type: string

@@ -12,6 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
         PostgresTestContainerConfig.Initializer.class,
         MinioTestContainerConfig.Initializer.class
 })
-@SpringBootTest(classes = ServerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = ServerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AbstractTest {
 }

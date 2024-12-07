@@ -6,16 +6,21 @@ import generated.kabopok.server.api.model.UserDTO;
 import kabopok.server.entities.User;
 import kabopok.server.mappers.UserMapper;
 import kabopok.server.repositories.UserRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTest extends AbstractTest {
@@ -61,12 +66,11 @@ public class UserTest extends AbstractTest {
     User user = SampleObjectGenerator.createSampleUser();
     userRepository.save(user);
     // When
-    LoginDataDTO loginData = new LoginDataDTO();
-    loginData.setNumber(user.getNumber());
-    loginData.setPassword(user.getPassword());
+    LoginDataDTO loginDataDTO = new LoginDataDTO();
+    loginDataDTO.setNumber(user.getNumber());
+    loginDataDTO.setPassword(user.getPassword());
     String url = "/api/users/authorization";
-
-    ResponseEntity<UserDTO> response = httpSteps.sendAuthorizeUserRequest(url, loginData);
+    ResponseEntity<UserDTO> response = httpSteps.sendAuthorizeUserRequest(url, loginDataDTO);
     // Then
     assertEquals(200, response.getStatusCode().value());
     assertNotNull(response.getBody());
@@ -81,12 +85,12 @@ public class UserTest extends AbstractTest {
     // Given
     User user = SampleObjectGenerator.createSampleUser();
     userRepository.save(user);
+    Resource updatedImage = new ClassPathResource("images/photo.jpg");
     // When
     UserDTO updatedUserDTO = userMapper.map(user);
     updatedUserDTO.setUserID(String.valueOf(user.getUserID()));
     updatedUserDTO.setUserName("updatedUserName");
     updatedUserDTO.setNumber(String.valueOf((int)(Math.random() * 1000000000 + 1)));
-    Resource updatedImage = new ClassPathResource("images/photo.jpg");
     String url = "/api/users/update?userId=" + user.getUserID();
     ResponseEntity<IdDTO> response = httpSteps.sendMultipartPutRequest(updatedUserDTO, updatedImage, url, IdDTO.class);
     // Then

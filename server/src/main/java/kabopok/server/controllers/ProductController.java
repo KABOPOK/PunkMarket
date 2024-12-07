@@ -2,7 +2,6 @@ package kabopok.server.controllers;
 
 import generated.kabopok.server.api.ProductApi;
 import generated.kabopok.server.api.model.ProductDTO;
-import jakarta.validation.constraints.NotNull;
 import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
 import kabopok.server.mappers.ProductMapper;

@@ -1,5 +1,6 @@
 package kabopok.server;
 
+import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
 
 import java.util.UUID;
@@ -18,6 +19,21 @@ public class SampleObjectGenerator {
     user.setProducts(null);
     user.setProductsWish(null);
     return user;
+  }
+
+  static public Product createSampleProduct(User user){
+    Product product = new Product();
+    product.setProductID(UUID.randomUUID());
+    product.setOwnerName(user.getUserName());
+    product.setDescription("productDescription");
+    product.setPrice("1999.99");
+    product.setUser(user);
+    product.setCategory("sampleCategory");
+    product.setTitle("sampleTitle");
+    product.setLocation("sampleLocation");
+    product.setPhotoUrl("hola");
+    product.setUsersWishedBy(null);
+    return product;
   }
 
 }

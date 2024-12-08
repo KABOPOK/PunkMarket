@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.nio.file.attribute.UserDefinedFileAttributeView;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,5 +62,5 @@ public class User {
           joinColumns = {@JoinColumn(name = "user_id")},
           inverseJoinColumns =  {@JoinColumn(name = "product_id")}
   )
-  Set<Product> productsWish = new HashSet<>();
+  List<Product> productsWish = new ArrayList<>();
 }

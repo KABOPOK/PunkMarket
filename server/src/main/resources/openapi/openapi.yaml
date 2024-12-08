@@ -46,7 +46,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDTO'
+                $ref: '#/components/schemas/UserWithWishListDTO'
   /api/users/delete:
     delete:
       tags:
@@ -325,6 +325,16 @@ components:
         telegramID:
           type: string
           maxLength: 30
+    UserWithWishListDTO:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/UserDTO'
+        - properties:
+            wishList:
+              type: array
+              items:
+                type: string
+              description: A list of productId on the user's wish list
     IdDTO:
       type: object
       properties:

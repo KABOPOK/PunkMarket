@@ -5,6 +5,7 @@ import generated.kabopok.server.api.model.IdDTO;
 import generated.kabopok.server.api.model.LoginDataDTO;
 import generated.kabopok.server.api.model.ProductDTO;
 import generated.kabopok.server.api.model.UserDTO;
+import generated.kabopok.server.api.model.UserWithWishListDTO;
 import io.minio.MinioClient;
 import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
@@ -39,11 +40,17 @@ public class UserController implements UserApi {
   }
 
   @Override
-  public UserDTO getUser(LoginDataDTO loginDataDTO) {
+  public UserWithWishListDTO getUser(LoginDataDTO loginDataDTO) {
     User user = userService.findByNumber(loginDataDTO);
     String url = storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg",3600);
     user.setPhotoUrl(url);
-    return userMapper.map(user);
+    UserWithWishListDTO userWithWishListDTO = userMapper.mapWithWishList(user);
+    List<String> productIdList = new ArrayList<>();
+    user.getProductsWish().forEach(product -> {
+      productIdList.add(product.getProductID().toString());
+    });
+    userWithWishListDTO.setWishList(productIdList);
+    return userWithWishListDTO;
   }
 
   @Override

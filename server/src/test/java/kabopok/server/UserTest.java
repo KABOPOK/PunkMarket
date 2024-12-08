@@ -3,6 +3,7 @@ package kabopok.server;
 import generated.kabopok.server.api.model.IdDTO;
 import generated.kabopok.server.api.model.LoginDataDTO;
 import generated.kabopok.server.api.model.UserDTO;
+import generated.kabopok.server.api.model.UserWithWishListDTO;
 import kabopok.server.entities.User;
 import kabopok.server.mappers.UserMapper;
 import kabopok.server.repositories.UserRepository;
@@ -70,13 +71,13 @@ public class UserTest extends AbstractTest {
     loginDataDTO.setNumber(user.getNumber());
     loginDataDTO.setPassword(user.getPassword());
     String url = "/api/users/authorization";
-    ResponseEntity<UserDTO> response = httpSteps.sendAuthorizeUserRequest(url, loginDataDTO);
+    ResponseEntity<UserWithWishListDTO> response = httpSteps.sendAuthorizeUserRequest(url, loginDataDTO, UserWithWishListDTO.class);
     // Then
     assertEquals(200, response.getStatusCode().value());
     assertNotNull(response.getBody());
     user.setUserID(UUID.fromString(response.getBody().getUserID()));
     user.setPhotoUrl(response.getBody().getPhotoUrl());
-    assertEquals(response.getBody(), userMapper.map(user));
+    assertEquals(response.getBody(), userMapper.mapWithWishList(user));
   }
 
   @Test

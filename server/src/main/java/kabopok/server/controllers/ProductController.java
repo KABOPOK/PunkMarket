@@ -3,15 +3,12 @@ package kabopok.server.controllers;
 import generated.kabopok.server.api.ProductApi;
 import generated.kabopok.server.api.model.ProductDTO;
 import kabopok.server.entities.Product;
-import kabopok.server.entities.User;
 import kabopok.server.mappers.ProductMapper;
 import kabopok.server.minio.StorageService;
 import kabopok.server.services.ProductService;
-import kabopok.server.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,8 +20,6 @@ public class ProductController implements ProductApi {
   private final ProductService productService;
   private final ProductMapper productMapper;
   private final StorageService storageService;
-
-  private final UserService userService;
 
   @Override
   public void createProduct(ProductDTO productDTO, List<MultipartFile> images) {
@@ -43,7 +38,6 @@ public class ProductController implements ProductApi {
 
   @Override
   public List<ProductDTO> getMyProducts(UUID userId, Integer page, Integer limit) {
-    User user = userService.findById(userId);
     List<Product> productList = productService.getMyProducts(userId,page,limit);
     List<ProductDTO> productDTOList = new ArrayList<>();
     productList.forEach(product -> {
@@ -57,6 +51,7 @@ public class ProductController implements ProductApi {
 
   @Override
   public List<ProductDTO> getProducts(Integer page, Integer limit, String query) {
+    if(query == null){query = "";}
     List<Product> productList = productService.getProducts(page, limit, query);
     List<ProductDTO> productDTOList = new ArrayList<>();
     productList.forEach(product -> {

@@ -6,7 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -50,6 +52,6 @@ public class Product {
   private User user;
 
   @ManyToMany(mappedBy = "productsWish")
-  private Set<User> usersWishedBy = new HashSet<>();
+  private List<User> usersWishedBy = new ArrayList<>();
 
 }

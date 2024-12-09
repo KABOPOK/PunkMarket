@@ -6,14 +6,16 @@ import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductScree
 
 
 class MyNavigationBar extends StatefulWidget {
-  const MyNavigationBar({Key? key}) : super(key: key);
+  final int initialScreenIndex;
+
+  const MyNavigationBar({Key? key, this.initialScreenIndex = 0}) : super(key: key);
 
   @override
   State<MyNavigationBar> createState() => _NavigationBarState();
 }
 
 class _NavigationBarState extends State<MyNavigationBar> {
-  int _screenIndex = 0;
+  late int _screenIndex;
 
   // ValueNotifier to track the product content
   final ValueNotifier<String> _currentProductContent = ValueNotifier<String>("MyProducts");
@@ -25,12 +27,13 @@ class _NavigationBarState extends State<MyNavigationBar> {
   void initState() {
     super.initState();
 
+    // Initialize _screenIndex with the value passed from the constructor
+    _screenIndex = widget.initialScreenIndex;
+
     // Initialize screens
     _screens.addAll([
       ProductListPage(),
-      //ChatScreen(),
       MyProductListPage(),
-      //MyChatsScreen(),
       MyProfileScreen(),
     ]);
   }
@@ -56,25 +59,16 @@ class _NavigationBarState extends State<MyNavigationBar> {
             label: 'Home',
             icon: _buildNavBarIcon(Icons.home, 0),
           ),
-          // BottomNavigationBarItem(
-          //   label: 'Questions',
-          //   icon: _buildNavBarIcon(Icons.question_answer_sharp, 1),
-          // ),
           BottomNavigationBarItem(
             label: 'Products',
             icon: _buildNavBarIcon(Icons.shopping_basket, 1),
           ),
-          // BottomNavigationBarItem(
-          //   label: 'Messages',
-          //   icon: _buildNavBarIcon(Icons.message, 3),
-          // ),
           BottomNavigationBarItem(
             label: 'Profile',
             icon: _buildNavBarIcon(Icons.person, 2),
           ),
         ],
       ),
-      // FAB is only visible on MyProductListPage with "MyProducts" content
       floatingActionButton: (_screenIndex == 1)
           ? ValueListenableBuilder<String>(
         valueListenable: _currentProductContent,
@@ -114,3 +108,4 @@ class _NavigationBarState extends State<MyNavigationBar> {
     );
   }
 }
+

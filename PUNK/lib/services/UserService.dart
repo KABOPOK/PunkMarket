@@ -8,9 +8,12 @@ import '../Online/Online.dart';
 import '../clases/Product.dart';
 import '../clases/User.dart';
 import '../common_functions/Functions.dart';
+import '../screens/navigationScreens/profileScreens/MyProfileScreen.dart';
 import '../widgets/barWidgets/MyNavigationBarWidget.dart';
 
 class UserService {
+  static get navigationBarState => null;
+
 
   static Future<void> registerUser(User user, {String? imagePath}) async {
     var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/api/users/create'));
@@ -68,16 +71,25 @@ class UserService {
     return products;
   }
 
-  static Future<void> updateUser(String userId, User user, BuildContext context, {String? imagePath}) async {
-    var request = http.MultipartRequest('PUT', Uri.parse('$HTTPS/api/users/update?userId=$userId'));
-    request.fields['user'] = json.encode(user.toJson());
+  static Future<void> updateUser(String userId, BuildContext context, {String? imagePath}) async {
+    final Uri url = Uri.parse('$HTTPS/api/users/update?userId=$userId');
+    final http.MultipartRequest request = http.MultipartRequest('PUT', url);
+    request.fields['user'] = json.encode(Online.user.toJson());
     if (imagePath != null) {
-      request.files.add(await http.MultipartFile.fromPath('image', imagePath));
+      final http.MultipartFile imageFile = await http.MultipartFile.fromPath('image', imagePath);
+      request.files.add(imageFile);
     }
-    var response = await request.send();
+    final http.StreamedResponse response = await request.send();
     if (response.statusCode != 200) {
       throw Exception('Failed to update user');
     }
+    final String responseBody = await response.stream.bytesToString();
+    final Map<String, dynamic> jsonResponse = jsonDecode(responseBody);
+    Online.user = User.fromJson(jsonResponse);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MyNavigationBar(initialScreenIndex: 2)),
+    );
   }
   static Future<void> deleteUser(String userId, BuildContext context) async {
     final String url = '$HTTPS/api/users/delete?userId=$userId';

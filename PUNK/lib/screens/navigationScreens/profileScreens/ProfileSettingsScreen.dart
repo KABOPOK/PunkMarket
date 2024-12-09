@@ -21,7 +21,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   final ImagePicker _picker = ImagePicker();
   String existingImageUrl = '';
   File? newImage;
-
   User user;
 
   _ProfileSettingsScreenState({required this.user});
@@ -37,8 +36,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Initialize the TextEditingControllers with Online.user values
     fullNameController.text = Online.user.userName ?? '';
     phoneNumberController.text = Online.user.number ?? '';
     telegramController.text = Online.user.telegramID ?? '';
@@ -58,6 +55,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
     setState(() {
       if (pickedFile != null) {
         newImage = File(pickedFile.path);
+        existingImageUrl = pickedFile.path;
       } else {
         print('No image selected.');
       }
@@ -65,30 +63,22 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   }
   Future<void> _updateUser() async {
     try {
-      user.userName = fullNameController.text;
-      user.number = phoneNumberController.text;
-      user.telegramID = telegramController.text;
-      user.location= addressController.text;
-      user.password = Online.user.password;
-      // Call the updateProduct service with all data
+      Online.user.userName = fullNameController.text;
+      Online.user.number = phoneNumberController.text;
+      Online.user.telegramID = telegramController.text;
+      Online.user.location = addressController.text;
       await UserService.updateUser(
         Online.user.userID,
-        user,
         context,
         imagePath: newImage?.path,
       );
-
-      Navigator.pop(context);
     } catch (e) {
       Functions.showSnackBar('Error updating user: $e', context);
     }
   }
-  // Save the changed settings
   void _changeSettings() {
     if (_formKey.currentState!.validate()) {
       _updateUser();
-      // Pop and return true to indicate that changes were made
-      Navigator.pop(context, true);
     }else{
       Functions.showSnackBar("Please, fill all fields", context);
     }
@@ -122,12 +112,12 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                 child: CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.grey[300],
-                  backgroundImage: Online.user!.photoUrl != null
-                      ? NetworkImage(Online.user!.photoUrl!)
-                      : null,
-                  child: Online.user!.photoUrl == null
-                      ? Icon(Icons.person, size: 50, color: Colors.grey[700])
-                      : null,
+                  backgroundImage: (() {
+                    if (newImage != null) {
+                      return FileImage(newImage!);
+                    }
+                    else { return NetworkImage(Online.user!.photoUrl!); }
+                  })() as ImageProvider<Object>?,
                 ),
               ),
 

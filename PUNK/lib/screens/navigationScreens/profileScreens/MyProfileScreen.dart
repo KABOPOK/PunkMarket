@@ -116,9 +116,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               CircleAvatar(
                 radius: 50,
                 backgroundColor: Colors.grey[300],
-                backgroundImage: Online.user.photoUrl != null
-                    ? NetworkImage(Online.user.photoUrl!) // Load photo from URL
-                    : null,
+                backgroundImage: ((){
+                  if(Online.user.photoUrl != null){
+                    return NetworkImage(Online.user.photoUrl!);
+                  } else {
+                    return null;
+                  }
+                })(),
                 child: Online.user.photoUrl == null
                     ? Icon(
                   Icons.person,

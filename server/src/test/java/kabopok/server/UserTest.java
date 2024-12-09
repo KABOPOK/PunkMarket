@@ -92,7 +92,7 @@ public class UserTest extends AbstractTest {
     updatedUserDTO.setUserName("updatedUserName");
     updatedUserDTO.setNumber(String.valueOf((int)(Math.random() * 1000000000 + 1)));
     String url = "/api/users/update?userId=" + user.getUserID();
-    ResponseEntity<IdDTO> response = httpSteps.sendMultipartPutRequest(updatedUserDTO, updatedImage, url, IdDTO.class);
+    ResponseEntity<UserDTO> response = httpSteps.sendMultipartPutRequest(updatedUserDTO, updatedImage, url, UserDTO.class);
     // Then
     assertEquals(200, response.getStatusCode().value());
     List<User> userList = userRepository.findAll();

@@ -3,10 +3,14 @@ package kabopok.server.services;
 import generated.kabopok.server.api.model.LoginDataDTO;
 import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
+import kabopok.server.minio.StorageService;
 import kabopok.server.repositories.ProductRepository;
 import kabopok.server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -16,12 +20,16 @@ public class UserService extends DefaultService {
 
   private final UserRepository userRepository;
   private final ProductRepository productRepository;
-  public UUID save(User user) {
-    UUID userID = UUID.randomUUID();
-    user.setUserID(userID);
-    user.setPhotoUrl(userID.toString());
+  private final StorageService storageService;
+
+
+  @Transactional
+  public UUID save(User user, MultipartFile image) {
+    user.setUserID(UUID.randomUUID());
+    storageService.uploadFile("users", user.getUserID().toString() + ".jpg", image, image.getContentType());
+    user.setPhotoUrl(storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg"));
     userRepository.save(user);
-    return userID;
+    return user.getUserID();
   }
 
   public User findByNumber(LoginDataDTO loginDataDTO){
@@ -32,19 +40,22 @@ public class UserService extends DefaultService {
     return current;
   }
 
-  public User findById(UUID userId){
-    return getOrThrow(userId, userRepository::findById);
-  }
-
-  public User deleteUser(UUID userId){
+  @Transactional
+  public void deleteUser(UUID userId){
     User deletedUser = getOrThrow(userId, userRepository::findById);
     userRepository.delete(deletedUser);
-    return  deletedUser;
+    storageService.deleteFile("users", deletedUser.getUserID().toString() + ".jpg");
   }
 
-  public User updateUser(UUID userId, User updatedUser){
+  @Transactional
+  public User updateUser(UUID userId, User updatedUser, MultipartFile image){
     User user = getOrThrow(userId, userRepository::findById);
     updatedUser.setUserID(user.getUserID());
+    if(image != null){
+      storageService.deleteFile("users", updatedUser.getUserID().toString() + ".jpg");
+      storageService.uploadFile("users", updatedUser.getUserID().toString() + ".jpg", image, image.getContentType());
+    }
+    updatedUser.setPhotoUrl(storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg"));
     userRepository.save(updatedUser);
     return updatedUser;
   }
@@ -64,7 +75,7 @@ public class UserService extends DefaultService {
   }
 
   public List<Product> getMyFavProducts(UUID userId){
-    User user = getOrThrow(userId,userRepository::findById);
+    User user = getOrThrow(userId, userRepository::findById);
     return user.getProductsWish().stream().toList();
   }
 

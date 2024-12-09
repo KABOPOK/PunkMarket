@@ -20,8 +20,10 @@ public class StorageService {
   @Autowired
   private MinioClient minioClient;
 
-  public void uploadFile(String bucketName, String objectName, InputStream inputStream, String contentType) {
+  public void uploadFile(String bucketName, String objectName, MultipartFile image, String contentType) {
+    if (image == null) { return; }
     try {
+      InputStream inputStream = image.getInputStream();
       boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
       if (!found) {
         minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
@@ -69,13 +71,12 @@ public class StorageService {
     }
   }
 
-  public String generateImageUrl(String bucketName, String objectName, int expiryTimeInSeconds) {
+  public String generateImageUrl(String bucketName, String objectName) {
     try {
       GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
               .bucket(bucketName)
               .object(objectName)
               .method(io.minio.http.Method.GET)
-              .expiry(expiryTimeInSeconds)
               .build();
       return minioClient.getPresignedObjectUrl(args);
     } catch (MinioException |
@@ -86,12 +87,8 @@ public class StorageService {
 
   public void uploadFiles(String bucketName, Product product, List<MultipartFile> images){
     for (MultipartFile image : images) {
-      try (InputStream inputStream = image.getInputStream()) {
-        String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();
-        uploadFile(bucketName, path, inputStream, image.getContentType());
-      } catch (IOException e) {
-        throw new RuntimeException("Failed to upload images: " + e.getMessage(), e);
-      }
+      String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();
+      uploadFile(bucketName, path, image, image.getContentType());
     }
   }
 

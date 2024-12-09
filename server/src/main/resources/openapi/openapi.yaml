@@ -96,9 +96,10 @@ paths:
       responses:
         '200':
           description: User successfully updated
-
-
-
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
   /api/products/create:
     post:
       tags:

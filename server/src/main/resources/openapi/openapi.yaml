@@ -299,6 +299,30 @@ paths:
             application/json:
               schema:
                 type: boolean
+  /api/products/get_product_image_list:
+    get:
+      tags:
+        - Product
+      summary: Retrieve current product
+      operationId: getProductUrlList
+      parameters:
+        - name: productId
+          in: query
+          description: Unique identifier for the product
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved product details and URLs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: List of URLs related to the product
+
 
 components:
   schemas:

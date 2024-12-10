@@ -58,12 +58,18 @@ public class ProductService extends DefaultService {
     Product product  = getOrThrow(productId, productRepository::findById);
     updatedProduct.setProductID(product.getProductID());
     updatedProduct.setUser(product.getUser());
-    productRepository.save(updatedProduct);
     String path = updatedProduct.getUser().getUserID() + "/" + updatedProduct.getProductID();
     if (images != null) {
       storageService.deleteFolder("products", path);
       storageService.uploadFiles("products", updatedProduct, images);
     }
+    path = product.getUser().getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";
+    updatedProduct.setPhotoUrl(storageService.generateImageUrl("products", path));
+    productRepository.save(updatedProduct);
+  }
+
+  public Product getProduct(String productId) {
+    return getOrThrow(UUID.fromString(productId), productRepository::findById);
   }
 
 }

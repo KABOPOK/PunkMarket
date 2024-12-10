@@ -1,9 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../Online/Online.dart';
-
 @freezed
 class User {
+
   String userID;
   String number;
   String password;
@@ -12,7 +11,6 @@ class User {
   String location;
   String telegramID;
 
-  // Empty constructor
   User({
     this.userID = '',
     this.number = '',
@@ -23,7 +21,6 @@ class User {
     this.telegramID = '',
   });
 
-  // Method to convert User object to JSON
   Map<String, dynamic> toUserDTO() {
     return {
       'number': number,
@@ -43,8 +40,6 @@ class User {
 
   Map<String, dynamic> toJson() {
     return {
-      'userID': Online.user.userID,
-      'photoUrl': photoUrl,
       'location': location,
       'telegramID': telegramID,
       'userName': userName,
@@ -54,7 +49,6 @@ class User {
     };
   }
 
-  // Method to create a User object from JSON
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       userID: json['userID'] ?? '',
@@ -66,10 +60,7 @@ class User {
       telegramID: json['telegramID'] ?? '',
     );
   }
-  
-  
 
-  // Method to display user details
   String display() {
     return 'User ID: $userID\n'
         'Number: $number\n'
@@ -78,4 +69,5 @@ class User {
         'Location: $location\n'
         'Telegram: $telegramID';
   }
+
 }

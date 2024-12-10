@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../services/ProductService.dart';
 import '../../../common_functions/Functions.dart';
 import '../../../../clases/Product.dart';
+import '../../../widgets/barWidgets/MyNavigationBarWidget.dart';
 
 class EditProductMediaScreen extends StatefulWidget {
   final Product product;
@@ -18,63 +19,72 @@ class EditProductMediaScreen extends StatefulWidget {
 class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
   final int _maxImages = 10;
   final ImagePicker _picker = ImagePicker();
-
   List<String> existingImageUrls = [];
   List<File?> newImages = List<File?>.filled(10, null);
-
+  bool isLoading = true;
   Product product;
-
   _EditProductMediaScreenState({required this.product});
 
   @override
   void initState() {
     super.initState();
-    existingImageUrls = product.photoUrl != null ? [product.photoUrl!] : [];
+    _loadExistingImages();
+  }
+
+  Future<void> _loadExistingImages() async {
+    try {
+      List<String> fetchedUrls = await ProductService.fetchProductUrlList(product.productID);
+      setState(() {
+        existingImageUrls = fetchedUrls;
+      });
+      for (int i = 0; i < existingImageUrls.length; ++i) {
+        File file = await Functions.urlToFile(existingImageUrls[i]);
+        int index = 0;
+        int j = 0;
+        while(file.path[j+1] != '.') { ++j; } // set index from filenames for valid order
+        if (file.path[j] != 'p') { index = int.parse(file.path[j]); }
+        newImages[index] = file;
+      }
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      Functions.showSnackBar('Error loading images: $e', context);
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> _pickImage(int index) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        if (pickedFile != null) {
-          String customFileName;
-          if(index == 0){
-            customFileName = 'envelop.jpg';
-          } else {
-            customFileName = '${index}.jpg';
-          }
-          File customFile = File(pickedFile.path).renameSync(pickedFile.path.replaceAll(pickedFile.name, customFileName));
-          if (index >= 0 && index < newImages.length) {
-            newImages[index] = customFile;
-          } else {
-            newImages.add(customFile);
-          }
+        String customFileName;
+        if (index == 0) {
+          customFileName = 'envelop.jpg';
         } else {
-          print('No image selected.');
+          customFileName = '$index.jpg';
         }
+        File customFile = File(pickedFile.path).renameSync(pickedFile.path.replaceAll(pickedFile.name, customFileName));
+        newImages[index] = customFile;
       });
     }
   }
 
-  Future<void> _removeImage(int index) {
-    setState(() {
-      newImages[index] = null;
-    });
-    return Future.value();
-  }
-
   Future<void> _updateProduct() async {
     try {
-      // Call the updateProduct service with all data
+      List<File?> imagesToSend = [...newImages.where((image) => image != null)];
       await ProductService.updateProduct(
         product.productID,
         product,
         context,
-        newImages.where((image) => image != null).toList(),
+        imagesToSend,
       );
-
-      Navigator.pop(context);
-      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyNavigationBar(initialScreenIndex: 1)),
+      );
     } catch (e) {
       Functions.showSnackBar('Error updating product: $e', context);
     }
@@ -101,7 +111,9 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
             child: Text('Edit Images (up to 10)', style: TextStyle(fontSize: 16)),
           ),
           Expanded(
-            child: GridView.builder(
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 10,
@@ -109,41 +121,18 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
               ),
               itemCount: _maxImages,
               itemBuilder: (context, index) {
-                if (index < existingImageUrls.length) {
-                  // Show existing image
-                  return Stack(
-                    children: [
-                      GestureDetector(
-                        onTap: () => _pickImage(index),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Image.network(
-                            existingImageUrls[index],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  // Show new images or empty placeholder
-                  final newImageIndex = index - existingImageUrls.length;
-                  return GestureDetector(
-                    onTap: () => _pickImage(newImageIndex),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: newImages[newImageIndex] != null
-                          ? Image.file(newImages[newImageIndex]!, fit: BoxFit.cover)
-                          : const Icon(Icons.add),
+                return GestureDetector(
+                  onTap: () => _pickImage(index),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  );
-                }
+                    child: newImages[index] != null
+                        ? Image.file(newImages[index]!, fit: BoxFit.cover)
+                        : const Icon(Icons.add),
+                  ),
+                );
               },
             ),
           ),
@@ -162,3 +151,4 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
     );
   }
 }
+

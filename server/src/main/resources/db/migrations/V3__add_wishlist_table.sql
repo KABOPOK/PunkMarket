@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS products (
                                         description TEXT,
                                         category TEXT,
                                         user_id UUID NOT NULL,
-                                        FOREIGN KEY (user_id) REFERENCES users(user_id)
+                                        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
     );
 CREATE TABLE IF NOT EXISTS chats (
                                      chat_id UUID PRIMARY KEY,

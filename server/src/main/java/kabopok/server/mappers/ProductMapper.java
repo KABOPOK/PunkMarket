@@ -10,6 +10,7 @@ import java.util.List;
 public interface ProductMapper {
 
   Product map(ProductDTO productDTO);
+
   ProductDTO map(Product product);
 
   List<ProductDTO> map(List<Product> productList);

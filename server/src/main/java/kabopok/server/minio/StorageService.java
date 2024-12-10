@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -90,6 +91,29 @@ public class StorageService {
       String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();
       uploadFile(bucketName, path, image, image.getContentType());
     }
+  }
+
+  public List<String> getProductUrlList(String bucketName, String path) {
+    List<String> urlList = new ArrayList<>();
+    try {
+      Iterable<Result<Item>> objects = minioClient.listObjects(
+              ListObjectsArgs.builder()
+                      .bucket(bucketName)
+                      .prefix(path)
+                      .build()
+      );
+
+      // For each object, generate the presigned URL
+      for (Result<Item> item : objects) {
+        String objectName = item.get().objectName();
+        String imageUrl = generateImageUrl(bucketName, objectName);
+        urlList.add(imageUrl);
+      }
+    } catch (MinioException | InvalidKeyException | IOException | NoSuchAlgorithmException e) {
+      throw new RuntimeException("Error listing objects or generating URLs: " + e.getMessage(), e);
+    }
+
+    return urlList;
   }
 
 }

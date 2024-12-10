@@ -19,7 +19,6 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
   List<File?> _productImages = List<File?>.filled(11, null); // Index 0 for cover image
   final ImagePicker _picker = ImagePicker();
   Product product;
-
   _AddProductMediaScreenState({required this.product});
 
   Future<void> _sendProduct(Product product, List<File?> images) async {
@@ -31,6 +30,7 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
       Functions.showSnackBar('Error creating product', context);
     }
   }
+
   Future<void> _pickImage(int index) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
@@ -42,11 +42,7 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
           customFileName = '${index}.jpg';
         }
         File customFile = File(pickedFile.path).renameSync(pickedFile.path.replaceAll(pickedFile.name, customFileName));
-        if (index >= 0 && index < _productImages.length) {
-          _productImages[index] = customFile;
-        } else {
-          _productImages.add(customFile);
-        }
+        _productImages[index] = customFile;
       } else {
         print('No image selected.');
       }

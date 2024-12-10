@@ -8,30 +8,53 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
+
       - name: Build with Maven
         run: |
           cd server
           mvn clean package -DskipTests
-      - name: Update dependency graph
+
+      - name: Update Dependency Graph
         if: always()
         run: |
           cd server  
           mvn com.github.ferstl:depgraph-maven-plugin:4.0.1:graph
-      - name: Run Flyway Migrations
+
+      - name: Set Flyway Version
+        id: flyway-version
+        run: echo "flyway_version=9.16.1" >> $GITHUB_ENV
+
+      - name: Run Flyway Migrations (v9.16.1)
         run: |
           cd server
-          mvn flyway:migrate -Dflyway.version=9.16.1 -Dflyway.user=postgres -Dflyway.password=9 -Dflyway.schemas=public
+          mvn flyway:migrate -Dflyway.version=${{ env.flyway_version }} \
+                             -Dflyway.user=postgres \
+                             -Dflyway.password=9 \
+                             -Dflyway.schemas=public
+        env:
+          flyway_version: "9.16.1"
+
+      - name: Run Flyway Migrations (v10.17.0)
+        run: |
+          cd server
+          mvn flyway:migrate -Dflyway.version=10.17.0 \
+                             -Dflyway.user=postgres \
+                             -Dflyway.password=9 \
+                             -Dflyway.schemas=public
+        env:
+          flyway_version: "10.17.0"
+
       - name: Run Tests
         run: |
           cd server

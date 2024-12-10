@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -76,7 +75,7 @@ public class UserService extends DefaultService {
 
   public List<Product> getMyFavProducts(UUID userId){
     User user = getOrThrow(userId, userRepository::findById);
-    return user.getProductsWish().stream().toList();
+    return user.getProductsWish();
   }
 
 }

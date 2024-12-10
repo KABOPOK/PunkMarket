@@ -31,8 +31,8 @@ jobs:
       - name: Run Flyway Migrations
         run: |
           cd server
-          mvn flyway:migrate
+          mvn flyway:migrate -Dflyway.version=9.16.1 -Dflyway.user=postgres -Dflyway.password=9 -Dflyway.schemas=public
       - name: Run Tests
         run: |
-          cd root/server
+          cd server
           mvn test

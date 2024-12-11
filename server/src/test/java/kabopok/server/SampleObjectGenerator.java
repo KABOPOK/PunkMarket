@@ -3,6 +3,7 @@ package kabopok.server;
 import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class SampleObjectGenerator {
@@ -16,8 +17,8 @@ public class SampleObjectGenerator {
     user.setLocation("testLocation");
     user.setTelegramID("tg123456789");
     user.setPhotoUrl("halo");
-    user.setProducts(null);
-    user.setProductsWish(null);
+    user.setProducts(new ArrayList<>());
+    user.setProductsWish(new ArrayList<>());
     return user;
   }
 

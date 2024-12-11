@@ -109,4 +109,13 @@ public class HttpSteps {
     );
   }
 
+  public ResponseEntity<Boolean> sendAddToWishListRequest(String url) {
+    return testRestTemplate.exchange(
+            url,
+            HttpMethod.POST,
+            null,
+            Boolean.class
+    );
+  }
+
 }

@@ -25,8 +25,10 @@ public class UserService extends DefaultService {
   @Transactional
   public UUID save(User user, MultipartFile image) {
     user.setUserID(UUID.randomUUID());
-    storageService.uploadFile("users", user.getUserID().toString() + ".jpg", image, image.getContentType());
-    user.setPhotoUrl(storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg"));
+    storageService.uploadFile("users", user.getUserID().toString() + ".jpg", image);
+    if (image != null) {
+      user.setPhotoUrl(storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg"));
+    }
     userRepository.save(user);
     return user.getUserID();
   }
@@ -52,7 +54,7 @@ public class UserService extends DefaultService {
     updatedUser.setUserID(user.getUserID());
     if(image != null){
       storageService.deleteFile("users", updatedUser.getUserID().toString() + ".jpg");
-      storageService.uploadFile("users", updatedUser.getUserID().toString() + ".jpg", image, image.getContentType());
+      storageService.uploadFile("users", updatedUser.getUserID().toString() + ".jpg", image);
     }
     updatedUser.setPhotoUrl(storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg"));
     userRepository.save(updatedUser);

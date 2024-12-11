@@ -5,11 +5,13 @@ import io.minio.errors.MinioException;
 import io.minio.messages.Item;
 import kabopok.server.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLConnection;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ public class StorageService {
   @Autowired
   private MinioClient minioClient;
 
-  public void uploadFile(String bucketName, String objectName, MultipartFile image, String contentType) {
+  public void uploadFile(String bucketName, String objectName, MultipartFile image) {
     if (image == null) { return; }
     try {
       InputStream inputStream = image.getInputStream();
@@ -32,10 +34,28 @@ public class StorageService {
       minioClient.putObject(
               PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(
                               inputStream, inputStream.available(), -1)
-                      .contentType(contentType)
+                      .contentType(image.getContentType())
                       .build());
     } catch (Exception e) {
       throw new RuntimeException("Error occurred: " + e.getMessage());
+    }
+  }
+
+  public void uploadFile(String bucketName, String objectName, Resource image) {
+    if (image == null) { return; }
+    try {
+      InputStream inputStream = image.getInputStream();
+      boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+      if (!found) {
+        minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+      }
+      String contentType = URLConnection.guessContentTypeFromStream(inputStream);
+      if (contentType == null) {
+        contentType = "application/octet-stream";
+      }
+      minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(inputStream, inputStream.available(), -1).contentType(contentType).build());
+    } catch (Exception e) {
+      throw new RuntimeException("Error occurred: " + e.getMessage(), e);
     }
   }
 
@@ -89,7 +109,7 @@ public class StorageService {
   public void uploadFiles(String bucketName, Product product, List<MultipartFile> images){
     for (MultipartFile image : images) {
       String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();
-      uploadFile(bucketName, path, image, image.getContentType());
+      uploadFile(bucketName, path, image);
     }
   }
 
@@ -102,8 +122,6 @@ public class StorageService {
                       .prefix(path)
                       .build()
       );
-
-      // For each object, generate the presigned URL
       for (Result<Item> item : objects) {
         String objectName = item.get().objectName();
         String imageUrl = generateImageUrl(bucketName, objectName);
@@ -112,7 +130,6 @@ public class StorageService {
     } catch (MinioException | InvalidKeyException | IOException | NoSuchAlgorithmException e) {
       throw new RuntimeException("Error listing objects or generating URLs: " + e.getMessage(), e);
     }
-
     return urlList;
   }
 

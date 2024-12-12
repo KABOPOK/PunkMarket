@@ -31,21 +31,23 @@ jobs:
           cd server  
           mvn com.github.ferstl:depgraph-maven-plugin:4.0.1:graph
 
-      - name: Show Effective POM
-        run: |
-          cd server  
-          mvn help:effective-pom
+      - name: Load Environment Variables
+        uses: goanpeca/setup-envfile@v1
+        with:
+          envfile-path: ../server/.env
+
 
       - name: Run Flyway Migrations (v9.16.1)
-        run: cd server
         env:
             POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
             PORT_DB: ${{ env.PORT_DB }}
-            POSTGRESQL_DATABASE: ${{ env.POSTGRESQL_DATABASE }}
-            POSTGRESQL_USERNAME: ${{ env.POSTGRESQL_USERNAME }}
+            POSTGRESQL_DATABASE: server/${{ env.POSTGRESQL_DATABASE }}
+            POSTGRESQL_USERNAME: server/${{ env.POSTGRESQL_USERNAME }}
             POSTGRESQL_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
             POSTGRES_SCHEMA: ${{ env.POSTGRES_SCHEMA }}
-        run:  mvn flyway:migrate  -Pflyway-v9 \
+        run: |
+          cd server
+          mvn flyway:migrate  -Pflyway-v9 \
               -Dflyway.url="jdbc:postgresql://${POSTGRES_HOST}:${PORT_DB}/${POSTGRESQL_DATABASE}" \
               -Dflyway.user=${POSTGRESQL_USERNAME} \
               -Dflyway.password=${POSTGRESQL_PASSWORD} \

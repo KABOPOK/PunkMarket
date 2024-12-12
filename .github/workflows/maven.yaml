@@ -31,18 +31,18 @@ jobs:
           cd server  
           mvn com.github.ferstl:depgraph-maven-plugin:4.0.1:graph
 
-      - name: Load Environment Variables
-        uses: goanpeca/setup-envfile@v1
-        with:
-          envfile-path: ../server/.env
+      - name: Load .env File
+        run: |
+          export $(cat ../server/.env | xargs)
+
 
 
       - name: Run Flyway Migrations (v9.16.1)
         env:
             POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
             PORT_DB: ${{ env.PORT_DB }}
-            POSTGRESQL_DATABASE: server/${{ env.POSTGRESQL_DATABASE }}
-            POSTGRESQL_USERNAME: server/${{ env.POSTGRESQL_USERNAME }}
+            POSTGRESQL_DATABASE: ${{ env.POSTGRESQL_DATABASE }}
+            POSTGRESQL_USERNAME: ${{ env.POSTGRESQL_USERNAME }}
             POSTGRESQL_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
             POSTGRES_SCHEMA: ${{ env.POSTGRES_SCHEMA }}
         run: |

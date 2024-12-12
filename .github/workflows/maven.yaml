@@ -39,7 +39,7 @@ jobs:
       - name: Run Flyway Migrations (v9.16.1)
         run: |
           cd server
-          mvn flyway:migrate \
+          mvn flyway:migrate  -Pflyway-v9 \
               -Dflyway.url="jdbc:postgresql://${POSTGRES_HOST}:${PORT_DB}/${POSTGRESQL_DATABASE}" \
               -Dflyway.user=${POSTGRESQL_USERNAME} \
               -Dflyway.password=${POSTGRESQL_PASSWORD} \

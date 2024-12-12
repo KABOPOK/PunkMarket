@@ -31,29 +31,14 @@ jobs:
           cd server  
           mvn com.github.ferstl:depgraph-maven-plugin:4.0.1:graph
 
-      - name: Set Flyway Version
-        id: flyway-version
-        run: echo "flyway_version=9.16.1" >> $GITHUB_ENV
-
       - name: Run Flyway Migrations (v9.16.1)
         run: |
           cd server
-          mvn flyway:migrate -Dflyway.version=${{ env.flyway_version }} \
-                             -Dflyway.user=postgres \
-                             -Dflyway.password=9 \
-                             -Dflyway.schemas=public
-        env:
-          flyway_version: "9.16.1"
-
-      - name: Run Flyway Migrations (v10.17.0)
-        run: |
-          cd server
-          mvn flyway:migrate -Dflyway.version=10.17.0 \
-                             -Dflyway.user=postgres \
-                             -Dflyway.password=9 \
-                             -Dflyway.schemas=public
-        env:
-          flyway_version: "10.17.0"
+          mvn flyway:migrate -Pflyway-v9 -DskipTests\
+              -Dflyway.url="jdbc:postgresql://localhost:5432/postgres" \
+              -Dflyway.user=postgres \
+              -Dflyway.password=9 \
+              -Dflyway.schemas=public   
 
       - name: Run Tests
         run: |

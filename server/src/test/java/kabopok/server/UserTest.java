@@ -125,7 +125,7 @@ public class UserTest extends AbstractTest {
     // Given
     User user = SampleObjectGenerator.createSampleUser();
     Resource resource = new ClassPathResource("images/photo.jpg");
-    storageService.uploadFile("users", user.getUserID().toString(),resource);
+    storageService.uploadFile("users", user.getUserID().toString(), resource);
     user.setPhotoUrl(storageService.generateImageUrl("users",user.getUserID().toString()));
     userRepository.save(user);
     Resource updatedImage = new ClassPathResource("images/photo1.jpg");

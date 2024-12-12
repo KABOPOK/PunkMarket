@@ -1,9 +1,12 @@
 package kabopok.server;
 
+import generated.kabopok.server.api.model.IdDTO;
 import generated.kabopok.server.api.model.ProductDTO;
+import generated.kabopok.server.api.model.UserDTO;
 import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
 import kabopok.server.mappers.ProductMapper;
+import kabopok.server.mappers.UserMapper;
 import kabopok.server.repositories.ProductRepository;
 import kabopok.server.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +35,8 @@ public class ProductTest extends AbstractTest {
   @Autowired
   private ProductRepository productRepository;
   @Autowired
+  private UserMapper userMapper;
+  @Autowired
   ProductMapper productMapper;
   @Autowired
   private UserRepository userRepository;
@@ -45,7 +50,7 @@ public class ProductTest extends AbstractTest {
 
   @Test
   @Order(1)
-  public void createProductTest() {
+  public void createProductDBTest() {
     // Given
     User user = createSampleUser();
     userRepository.save(user);
@@ -62,12 +67,30 @@ public class ProductTest extends AbstractTest {
     // Then
     assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
     List<Product> productList = productRepository.findAll();
-    productList.get(0).setUsersWishedBy(null);
-    productList.get(0).setPhotoUrl(product.getPhotoUrl());
-    productList.get(0).setUser(product.getUser());
-    productList.get(0).setProductID(product.getProductID());
-    assertEquals(productList.get(0), product);
+    productList.get(0).setPhotoUrl(productDTO.getPhotoUrl());
+    productList.get(0).setProductID(productDTO.getProductID());
+    productDTO.setUserID(null);
+    assertEquals(productMapper.map(productList.get(0)), productDTO);
   }
+
+//  @Test
+//  public void createProductStorageTest() {
+//    // Given
+//    User user = createSampleUser();
+//    userRepository.save(user);
+//    Product product = createSampleProduct(user);
+//    List<Resource> resources = List.of( new ClassPathResource("images/photo.jpg"));
+//    // When
+//    ProductDTO productDTO = productMapper.map(product);
+//    productDTO.setUserID(user.getUserID());
+//    String url = "/api/products/create";
+//    ResponseEntity<Void> response = httpSteps.sendMultipartPostRequest(productDTO, resources, url, Void.class);
+//    // Then
+//    assertEquals(200, response.getStatusCode().value());
+//    List<Product> productList = productRepository.findAll();
+//    String expectedFileName = "envelop.jpg";
+//    Functions.compareResources(resources.get(0), productList.get(0).getPhotoUrl(), expectedFileName);
+//  }
 
   @Test
   @Order(2)

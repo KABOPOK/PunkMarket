@@ -20,12 +20,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Load Environment Variables from .env
-        run: |
-          set -a
-          source server/.env
-          set +a
-
       - name: Build with Maven
         run: |
           cd server
@@ -37,36 +31,15 @@ jobs:
           cd server  
           mvn com.github.ferstl:depgraph-maven-plugin:4.0.1:graph
 
-
-
       - name: Run Flyway Migrations (v9.16.1)
         run: |
           cd server
-          mvn flyway:migrate  -Pflyway-v9 \
-              -Dflyway.url="jdbc:postgresql://${POSTGRES_HOST}:${PORT_DB}/${POSTGRESQL_DATABASE}" \
-              -Dflyway.user=${POSTGRESQL_USERNAME} \
-              -Dflyway.password=${POSTGRESQL_PASSWORD} \
-              -Dflyway.schemas=${POSTGRES_SCHEMA}
-        
-        
-
-      - name: Run Flyway Migrations (v10.17.0)
-        env:
-            POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
-            PORT_DB: ${{ env.PORT_DB }}
-            POSTGRESQL_DATABASE: ${{ env.POSTGRESQL_DATABASE }}
-            POSTGRESQL_USERNAME: ${{ env.POSTGRESQL_USERNAME }}
-            POSTGRESQL_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
-            POSTGRES_SCHEMA: ${{ env.POSTGRES_SCHEMA }}
-        run: |
-          cd server
-          mvn flyway:migrate  -Pflyway-v10 \
-              -Dflyway.url="jdbc:postgresql://${POSTGRES_HOST}:${PORT_DB}/${POSTGRESQL_DATABASE}" \
-              -Dflyway.user=${POSTGRESQL_USERNAME} \
-              -Dflyway.password=${POSTGRESQL_PASSWORD} \
-              -Dflyway.schemas=${POSTGRES_SCHEMA}
-        
-
+          mvn flyway:migrate -Pflyway-v9 -DskipTests\
+              -Dflyway.url="jdbc:postgresql://postgres:5432/postgres" \
+              -Dflyway.user=postgres \
+              -Dflyway.password=9 \
+              -Dflyway.schemas=public   
+ss
       - name: Run Tests
         run: |
           cd server

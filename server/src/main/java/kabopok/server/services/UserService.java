@@ -21,6 +21,7 @@ public class UserService extends DefaultService {
   private final ProductRepository productRepository;
   private final StorageService storageService;
 
+  public User getUser(UUID id){return getOrThrow(id, userRepository::findById);}
 
   @Transactional
   public UUID save(User user, MultipartFile image) {

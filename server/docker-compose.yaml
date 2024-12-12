@@ -15,6 +15,7 @@ services:
   minio:
     container_name: student-market-minio
     image: minio/minio
+    network_mode: "host"
     ports:
       - "9005:9000"   # MinIO API
       - "9001:9001"   # MinIO Console
@@ -35,5 +36,3 @@ services:
         condition: service_healthy
     env_file:
       - .env
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres  # Updated to the correct service name and port

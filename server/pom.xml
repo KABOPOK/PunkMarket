@@ -84,9 +84,11 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
+      <version>42.6.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -136,18 +138,15 @@
       <artifactId>h2</artifactId>
       <version>2.2.224</version>
     </dependency>
-    <!-- Flyway Core Dependency -->
+
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-      <version>9.16.0</version>
+      <version>9.16.1</version>
     </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.7.2</version>
-    </dependency>
-<!--    testContainersDependency-->
+
+
+    <!--    testContainersDependency-->
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
@@ -239,19 +238,6 @@
           </execution>
         </executions>
       </plugin>
-      <!--    migrations-->
-      <plugin>
-        <groupId>org.flywaydb</groupId>
-        <artifactId>flyway-maven-plugin</artifactId>
-        <version>10.17.0</version>
-        <configuration>
-          <user>postgres</user>
-          <password>9</password>
-          <schemas>
-            <schema>public</schema>
-          </schemas>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <!-- Profiles for Flyway Versions -->
@@ -266,11 +252,11 @@
           <artifactId>flyway-maven-plugin</artifactId>
           <version>9.16.1</version>
           <configuration>
+            <url>jdbc:postgresql://localhost:5432/postgres</url>
             <user>postgres</user>
             <password>9</password>
-            <schemas>
-              <schema>public</schema>
-            </schemas>
+            <locations>classpath:db/migration</locations>
+            <baselineOnMigrate>true</baselineOnMigrate>
           </configuration>
         </plugin>
       </plugins>
@@ -286,11 +272,11 @@
             <artifactId>flyway-maven-plugin</artifactId>
             <version>10.17.0</version>
             <configuration>
+              <url>jdbc:postgresql://localhost:5432/postgres</url>
               <user>postgres</user>
               <password>9</password>
-              <schemas>
-                <schema>public</schema>
-              </schemas>
+              <locations>classpath:db/migration</locations>
+              <baselineOnMigrate>true</baselineOnMigrate>
             </configuration>
           </plugin>
         </plugins>

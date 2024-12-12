@@ -37,7 +37,7 @@ jobs:
           mvn help:effective-pom
 
       - name: Run Flyway Migrations (v9.16.1)
-       run: cd server
+        run: cd server
         env:
             POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
             PORT_DB: ${{ env.PORT_DB }}

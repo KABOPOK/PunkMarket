@@ -40,7 +40,6 @@ jobs:
         run: |
           cd server
           mvn flyway:migrate -Pflyway-v9 \
-                            -Dflyway.url=jdbc:postgresql://localhost:5432/postgres \
                             -Dflyway.user=postgres \
                             -Dflyway.password=9          
 
@@ -48,7 +47,7 @@ jobs:
         run: |
           cd server
           mvn flyway:migrate -Pflyway-v10 \
-                            -Dflyway.url=jdbc:postgresql://localhost:5432/postgres \
+                            -Dflyway.url=jdbc:postgresql://localhost:5421/postgres \
                             -Dflyway.user=postgres \
                             -Dflyway.password=9   
 

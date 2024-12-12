@@ -35,7 +35,7 @@ jobs:
         run: |
           cd server
           mvn flyway:migrate -Pflyway-v9 -DskipTests\
-              -Dflyway.url="jdbc:postgresql://postgres:5432/postgres" \
+              -Dflyway.url="jdbc:postgresql://localhost:5432/postgres" \
               -Dflyway.user=postgres \
               -Dflyway.password=9 \
               -Dflyway.schemas=public   

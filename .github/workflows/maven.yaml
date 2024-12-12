@@ -37,16 +37,15 @@ jobs:
           mvn help:effective-pom
 
       - name: Run Flyway Migrations (v9.16.1)
+       run: cd server
         env:
-            POSTGRES_HOST: ${{ server/env.POSTGRES_HOST }}
-            PORT_DB: ${{ server/env.PORT_DB }}
-            POSTGRESQL_DATABASE: ${{ server/env.POSTGRESQL_DATABASE }}
-            POSTGRESQL_USERNAME: ${{ server/env.POSTGRESQL_USERNAME }}
-            POSTGRESQL_PASSWORD: ${{ server/env.POSTGRESQL_PASSWORD }}
-            POSTGRES_SCHEMA: ${{ server/env.POSTGRES_SCHEMA }}
-        run: |
-          cd server
-          mvn flyway:migrate  -Pflyway-v9 \
+            POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+            PORT_DB: ${{ env.PORT_DB }}
+            POSTGRESQL_DATABASE: ${{ env.POSTGRESQL_DATABASE }}
+            POSTGRESQL_USERNAME: ${{ env.POSTGRESQL_USERNAME }}
+            POSTGRESQL_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
+            POSTGRES_SCHEMA: ${{ env.POSTGRES_SCHEMA }}
+        run:  mvn flyway:migrate  -Pflyway-v9 \
               -Dflyway.url="jdbc:postgresql://${POSTGRES_HOST}:${PORT_DB}/${POSTGRESQL_DATABASE}" \
               -Dflyway.user=${POSTGRESQL_USERNAME} \
               -Dflyway.password=${POSTGRESQL_PASSWORD} \
@@ -56,12 +55,12 @@ jobs:
 
       - name: Run Flyway Migrations (v10.17.0)
         env:
-            POSTGRES_HOST: ${{ server/env.POSTGRES_HOST }}
-            PORT_DB: ${{ server/env.PORT_DB }}
-            POSTGRESQL_DATABASE: ${{ server/env.POSTGRESQL_DATABASE }}
-            POSTGRESQL_USERNAME: ${{ server/env.POSTGRESQL_USERNAME }}
-            POSTGRESQL_PASSWORD: ${{ server/env.POSTGRESQL_PASSWORD }}
-            POSTGRES_SCHEMA: ${{ server/env.POSTGRES_SCHEMA }}
+            POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+            PORT_DB: ${{ env.PORT_DB }}
+            POSTGRESQL_DATABASE: ${{ env.POSTGRESQL_DATABASE }}
+            POSTGRESQL_USERNAME: ${{ env.POSTGRESQL_USERNAME }}
+            POSTGRESQL_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
+            POSTGRES_SCHEMA: ${{ env.POSTGRES_SCHEMA }}
         run: |
           cd server
           mvn flyway:migrate  -Pflyway-v10 \

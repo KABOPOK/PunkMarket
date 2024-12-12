@@ -37,6 +37,13 @@ jobs:
           mvn help:effective-pom
 
       - name: Run Flyway Migrations (v9.16.1)
+        env:
+            POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+            PORT_DB: ${{ env.PORT_DB }}
+            POSTGRESQL_DATABASE: ${{ env.POSTGRESQL_DATABASE }}
+            POSTGRESQL_USERNAME: ${{ env.POSTGRESQL_USERNAME }}
+            POSTGRESQL_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
+            POSTGRES_SCHEMA: ${{ env.POSTGRES_SCHEMA }}
         run: |
           cd server
           mvn flyway:migrate  -Pflyway-v9 \
@@ -44,22 +51,25 @@ jobs:
               -Dflyway.user=${POSTGRESQL_USERNAME} \
               -Dflyway.password=${POSTGRESQL_PASSWORD} \
               -Dflyway.schemas=${POSTGRES_SCHEMA}
-        env:
-          POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
-          PORT_DB: ${{ env.PORT_DB }}
-          POSTGRESQL_DATABASE: ${{ env.POSTGRESQL_DATABASE }}
-          POSTGRESQL_USERNAME: ${{ env.POSTGRESQL_USERNAME }}
-          POSTGRESQL_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
-          POSTGRES_SCHEMA: ${{ env.POSTGRES_SCHEMA }}
+        
         
 
       - name: Run Flyway Migrations (v10.17.0)
+        env:
+            POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+            PORT_DB: ${{ env.PORT_DB }}
+            POSTGRESQL_DATABASE: ${{ env.POSTGRESQL_DATABASE }}
+            POSTGRESQL_USERNAME: ${{ env.POSTGRESQL_USERNAME }}
+            POSTGRESQL_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
+            POSTGRES_SCHEMA: ${{ env.POSTGRES_SCHEMA }}
         run: |
           cd server
-          mvn flyway:migrate -Pflyway-v10 \
-                            -Dflyway.url=jdbc:postgresql://localhost:5421/postgres \
-                            -Dflyway.user=postgres \
-                            -Dflyway.password=9   
+          mvn flyway:migrate  -Pflyway-v10 \
+              -Dflyway.url="jdbc:postgresql://${POSTGRES_HOST}:${PORT_DB}/${POSTGRESQL_DATABASE}" \
+              -Dflyway.user=${POSTGRESQL_USERNAME} \
+              -Dflyway.password=${POSTGRESQL_PASSWORD} \
+              -Dflyway.schemas=${POSTGRES_SCHEMA}
+        
 
       - name: Run Tests
         run: |

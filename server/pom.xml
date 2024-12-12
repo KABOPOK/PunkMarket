@@ -140,17 +140,12 @@
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-      <version>9.16.0</version> <!-- Use the latest version -->
-    </dependency>
-    <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-maven-plugin</artifactId>
-      <version>9.16.1</version>
+      <version>9.16.0</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.7.2</version> <!-- Or the latest version -->
+      <version>42.7.2</version>
     </dependency>
 <!--    testContainersDependency-->
     <dependency>
@@ -170,7 +165,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -260,5 +254,47 @@
       </plugin>
     </plugins>
   </build>
-
+  <!-- Profiles for Flyway Versions -->
+  <profiles>
+  <!-- Flyway v9.16.1 Profile -->
+  <profile>
+    <id>flyway-v9</id>
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.flywaydb</groupId>
+          <artifactId>flyway-maven-plugin</artifactId>
+          <version>9.16.1</version>
+          <configuration>
+            <user>postgres</user>
+            <password>9</password>
+            <schemas>
+              <schema>public</schema>
+            </schemas>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+    <!-- Flyway v10.17.0 Profile -->
+    <profile>
+      <id>flyway-v10</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+            <version>10.17.0</version>
+            <configuration>
+              <user>postgres</user>
+              <password>9</password>
+              <schemas>
+                <schema>public</schema>
+              </schemas>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

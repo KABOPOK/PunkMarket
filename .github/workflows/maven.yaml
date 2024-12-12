@@ -39,7 +39,7 @@ jobs:
               -Dflyway.user=postgres \
               -Dflyway.password=9 \
               -Dflyway.schemas=public   
-ss
+
       - name: Run Tests
         run: |
           cd server

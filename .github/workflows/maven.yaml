@@ -39,12 +39,18 @@ jobs:
       - name: Run Flyway Migrations (v9.16.1)
         run: |
           cd server
-          mvn flyway:migrate -Pflyway-v9
+          mvn flyway:migrate -Pflyway-v9 \
+                            -Dflyway.url=jdbc:postgresql://localhost:5432/postgres \
+                            -Dflyway.user=postgres \
+                            -Dflyway.password=9          
 
       - name: Run Flyway Migrations (v10.17.0)
         run: |
           cd server
-          mvn flyway:migrate -Pflyway-v10
+          mvn flyway:migrate -Pflyway-v10 \
+                            -Dflyway.url=jdbc:postgresql://localhost:5432/postgres \
+                            -Dflyway.user=postgres \
+                            -Dflyway.password=9   
 
       - name: Run Tests
         run: |

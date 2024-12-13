@@ -30,16 +30,6 @@ jobs:
         run: |
           cd server  
           mvn com.github.ferstl:depgraph-maven-plugin:4.0.1:graph
-
-      - name: Run Flyway Migrations (v9.16.1)
-        run: |
-          cd server
-          mvn flyway:migrate -Pflyway-v9 -DskipTests\
-              -Dflyway.url="jdbc:postgresql://postgres:5432/postgres" \
-              -Dflyway.user=postgres \
-              -Dflyway.password=9 \
-              -Dflyway.schemas=public   
-
       - name: Run Tests
         run: |
           cd server

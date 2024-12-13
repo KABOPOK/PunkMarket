@@ -10,9 +10,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/58-add-ci-cd" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "feature/58-add-ci-cd" ]
 
 jobs:
   build:

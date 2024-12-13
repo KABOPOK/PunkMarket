@@ -219,12 +219,19 @@ class _ProductListPageState extends State<ProductListPage> {
 
   Future<void> _fetchProducts({String query = ''}) async {
     try {
+      // Fetch all products
       List<Product> products = await ProductService.fetchProducts(_page, _limit, query);
+
+      // Filter out products owned by the current user
+      List<Product> visibleProducts = products.where((product) {
+        return product.ownerName != Online.user.userName;
+      }).toList();
+
       setState(() {
         if (_page == 1) {
-          filteredProducts = products;
+          filteredProducts = visibleProducts;
         } else {
-          filteredProducts.addAll(products);
+          filteredProducts.addAll(visibleProducts);
         }
         isLoading = false;
       });
@@ -236,6 +243,7 @@ class _ProductListPageState extends State<ProductListPage> {
     }
   }
 
+
   void _filterProducts(String query) {
     _currentQuery = query;
     _page = 1;
@@ -245,7 +253,7 @@ class _ProductListPageState extends State<ProductListPage> {
   Future<void> _fetchMoreProducts() async {
     if (_isLoadingMore) return;
     _isLoadingMore = true;
-    _page++;
+    ++_page;
     try {
       List<Product> moreProducts = await ProductService.fetchProducts(_page, _limit, _currentQuery);
       setState(() {
@@ -342,10 +350,12 @@ class _ProductListPageState extends State<ProductListPage> {
                           MaterialPageRoute(
                             builder: (context) => ProductScreen(
                               title: product.title,
-                              photoUrl: product.photoUrl,
+                              //photoUrl: product.photoUrl,
                               price: product.price,
                               owner: product.ownerName,
                               description: product.description,
+                              productID: product.productID,
+                              //userID: product.userID,
                             ),
                           ),
                         );

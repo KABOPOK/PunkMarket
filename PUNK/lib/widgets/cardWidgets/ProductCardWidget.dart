@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ProductCard extends StatelessWidget {
+import '../../services/UserService.dart';
+class ProductCard extends StatefulWidget {
   final String productID;
   final String photoUrl;
   final String title;
@@ -23,6 +24,34 @@ class ProductCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _ProductCardState createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  bool _isInWishlist = false; // Tracks if the product is in the wishlist
+  int _page = 1;
+  final int _limit = 20;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkWishlistStatus();
+  }
+
+  Future<void> _checkWishlistStatus() async {
+
+    try {
+      final wishlistProductIDs = await UserService.fetchWishlistProducts(_page, _limit);
+      setState(() {
+        _isInWishlist = wishlistProductIDs.contains(widget.productID);
+      });
+    } catch (error) {
+      // Handle error gracefully (e.g., show a toast or log the error)
+      print("Error fetching wishlist: $error");
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Get screen width to make responsive adjustments
     final screenWidth = MediaQuery.of(context).size.width;
@@ -41,7 +70,7 @@ class ProductCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                 child: Image.network(
-                  photoUrl,
+                  widget.photoUrl,
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: imageHeight, // Dynamic height based on screen size
@@ -52,15 +81,15 @@ class ProductCard extends StatelessWidget {
                 top: 10,
                 right: 10,
                 child: GestureDetector(
-                  onTap: onAddToWishlist,
+                  onTap: widget.onAddToWishlist,
                   child: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: const Icon(
-                      Icons.favorite_border,
+                    child: Icon(
+                      _isInWishlist ? Icons.favorite : Icons.favorite_border, // Filled or outlined heart
                       color: Colors.red,
                       size: 24,
                     ),
@@ -78,7 +107,7 @@ class ProductCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    price,
+                    widget.price,
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -94,7 +123,7 @@ class ProductCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: ElevatedButton.icon(
-                    onPressed: onAddToCart,
+                    onPressed: widget.onAddToCart,
                     icon: const Icon(Icons.add_shopping_cart),
                     label: const Text("Add to Cart"),
                     style: ElevatedButton.styleFrom(
@@ -102,22 +131,20 @@ class ProductCard extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      //minimumSize: const Size(double.infinity, 40), // Full width
                     ),
                   ),
                 ),
               ),
-
             ],
           ),
-          // Content below the image in a Scrollable Column
+          // Content below the image
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  widget.title,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -127,7 +154,7 @@ class ProductCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  owner,
+                  widget.owner,
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.black,
@@ -135,12 +162,9 @@ class ProductCard extends StatelessWidget {
                   maxLines: 6,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 2),
-
               ],
             ),
           ),
-          // Add to Cart Button
         ],
       ),
     );

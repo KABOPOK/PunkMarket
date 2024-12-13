@@ -4,6 +4,7 @@ import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListSc
 import 'package:punk/services/ProductService.dart';
 import '../../../services/UserService.dart';
 import '../../../widgets/cardWidgets/WishlistCardWidget.dart';
+import '../productListScreens/ProductDetailsScreen.dart';
 
 
 class WishListPage extends StatefulWidget {
@@ -58,11 +59,7 @@ class _WishListPageState extends State<WishListPage> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MyProductListPage()),
-                      );
+
                     },
                     child: Container(
                       color: Colors.orange,
@@ -139,17 +136,39 @@ class _WishListPageState extends State<WishListPage> {
                   childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
+                  if (index < _myProducts.length) {
                   final product = _myProducts[index];
-                  return WishlistCard(
-                    productID: _myProducts[index].productID,
-                    photoUrl: _myProducts[index].photoUrl,
-                    title: _myProducts[index].title,
-                    price: _myProducts[index].price,
-                    owner: _myProducts[index].ownerName,
-                    description: _myProducts[index].description,
-                    onAddToCart: () {  },
-                    onAddToWishlist: () {  },
+                  return GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProductScreen(
+                        //photoUrl: product.photoUrl,
+                        price: product.price,
+                        owner: product.ownerName,
+                        description: product.description,
+                        productID: product.productID,
+                        title: product.title,
+                        //userID: product.userID,
+                          ),
+                        ),
+                      );
+                    },
+                    child: WishlistCard(
+                      productID: _myProducts[index].productID,
+                      photoUrl: _myProducts[index].photoUrl,
+                      title: _myProducts[index].title,
+                      price: _myProducts[index].price,
+                      owner: _myProducts[index].ownerName,
+                      description: _myProducts[index].description,
+                      onAddToCart: () {  },
+                      onAddToWishlist: () {  },
+                    ),
                   );
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
                 },
               ),
             ),

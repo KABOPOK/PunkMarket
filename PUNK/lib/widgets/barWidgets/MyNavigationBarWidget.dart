@@ -16,24 +16,19 @@ class MyNavigationBar extends StatefulWidget {
 
 class _NavigationBarState extends State<MyNavigationBar> {
   late int _screenIndex;
+  final ValueNotifier<String> _currentProductContent =
+  ValueNotifier<String>("MyProducts");
 
-  // ValueNotifier to track the product content
-  final ValueNotifier<String> _currentProductContent = ValueNotifier<String>("MyProducts");
-
-  // List of widgets/screens for the navigation bar
   final List<Widget> _screens = [];
 
   @override
   void initState() {
     super.initState();
-
-    // Initialize _screenIndex with the value passed from the constructor
     _screenIndex = widget.initialScreenIndex;
 
-    // Initialize screens
     _screens.addAll([
       ProductListPage(),
-      MyProductListPage(),
+      MyProductListPage(currentProductContent: _currentProductContent),
       MyProfileScreen(),
     ]);
   }
@@ -42,7 +37,7 @@ class _NavigationBarState extends State<MyNavigationBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: _screens[_screenIndex], // Display the selected screen
+        child: _screens[_screenIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _screenIndex,
@@ -75,18 +70,21 @@ class _NavigationBarState extends State<MyNavigationBar> {
         builder: (context, content, child) {
           return content == "MyProducts"
               ? FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              final result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => ProductAdditionScreen(),
                 ),
               );
+              if (result == true) {
+                setState(() {});
+              }
             },
             backgroundColor: Colors.deepOrangeAccent,
             child: const Icon(Icons.add, color: Colors.white),
           )
-              : Container(); // Return an empty widget when FAB is not needed
+              : Container();
         },
       )
           : null,
@@ -108,4 +106,3 @@ class _NavigationBarState extends State<MyNavigationBar> {
     );
   }
 }
-

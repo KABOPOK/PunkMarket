@@ -1,16 +1,16 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:punk/clases/Product.dart';
 import 'package:punk/services/ProductService.dart';
 import 'package:punk/services/UserService.dart';
-import 'package:punk/widgets/cardWidgets/MyProductCardWidget.dart';
-import 'package:punk/Online/Online.dart';
-import 'package:http/http.dart' as http;
 
 import '../../../widgets/ProductContent/MyProductsContent.dart';
 import '../../../widgets/ProductContent/WishlistContent.dart';
 
 class MyProductListPage extends StatefulWidget {
+  final ValueNotifier<String> currentProductContent;
+
+  MyProductListPage({required this.currentProductContent});
+
   @override
   _MyProductListPageState createState() => _MyProductListPageState();
 }
@@ -30,7 +30,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 0);
+    _pageController = PageController(initialPage: _currentPage);
     _fetchUserProducts();
     _fetchWishlistProducts();
   }
@@ -77,55 +77,58 @@ class _MyProductListPageState extends State<MyProductListPage> {
     setState(() {
       _currentPage = pageIndex;
     });
+    widget.currentProductContent.value =
+    pageIndex == 0 ? "MyProducts" : "Wishlist";
     _pageController.jumpToPage(pageIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // Single SliverAppBar
-          SliverAppBar(
-            pinned: true,
-            floating: false,
-            backgroundColor: Colors.orange,
-            flexibleSpace: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _onTabChanged(0),
-                    child: Container(
-                      color: _currentPage == 0 ? Colors.orangeAccent : Colors.orange,
-                      padding: EdgeInsets.symmetric(vertical: 14),
-                      child: Icon(Icons.shopping_cart,
-                          color: _currentPage == 0 ? Colors.white : Colors.white70),
-                    ),
+      body: Column(
+        children: [
+          // Tab Switcher
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => _onTabChanged(0),
+                  child: Container(
+                    color: _currentPage == 0
+                        ? Colors.orangeAccent
+                        : Colors.orange,
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    child: Icon(Icons.shopping_cart,
+                        color: _currentPage == 0
+                            ? Colors.white
+                            : Colors.white70),
                   ),
                 ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _onTabChanged(1),
-                    child: Container(
-                      color: _currentPage == 1 ? Colors.orangeAccent : Colors.orange,
-                      padding: EdgeInsets.symmetric(vertical: 14),
-                      child: Icon(Icons.favorite,
-                          color: _currentPage == 1 ? Colors.white : Colors.white70),
-                    ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => _onTabChanged(1),
+                  child: Container(
+                    color: _currentPage == 1
+                        ? Colors.orangeAccent
+                        : Colors.orange,
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    child: Icon(Icons.favorite,
+                        color: _currentPage == 1
+                            ? Colors.white
+                            : Colors.white70),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
 
-          // PageView Content
-          SliverFillRemaining(
+          // Tab Content
+          Expanded(
             child: PageView(
               controller: _pageController,
               onPageChanged: (pageIndex) {
-                setState(() {
-                  _currentPage = pageIndex;
-                });
+                _onTabChanged(pageIndex);
               },
               children: [
                 MyProductsContent(

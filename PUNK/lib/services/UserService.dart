@@ -36,7 +36,7 @@ class UserService {
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       Online.user = User.fromJson(jsonResponse);
-      Functions.showSnackBar('здарова заебал', context);
+      Functions.showSnackBar('bienvenido', context);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const MyNavigationBar()),

@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../clases/Product.dart';
 import '../../../common_functions/Functions.dart';
 import '../../../services/ProductService.dart';
+import '../../../widgets/barWidgets/MyNavigationBarWidget.dart';
 
 class AddProductMediaScreen extends StatefulWidget {
   final Product product;
@@ -24,8 +25,10 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
   Future<void> _sendProduct(Product product, List<File?> images) async {
     try {
      ProductService.sendProduct(product, images, context) ;
-      //Navigator.pop(context);
-      //Navigator.pop(context);
+     Navigator.push(
+       context,
+       MaterialPageRoute(builder: (context) => const MyNavigationBar(initialScreenIndex: 1)),
+     );
     } catch (e) {
       Functions.showSnackBar('Error creating product', context);
     }

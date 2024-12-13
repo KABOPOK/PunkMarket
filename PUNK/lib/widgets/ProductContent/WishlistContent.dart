@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:punk/services/UserService.dart';
 
 import '../../clases/Product.dart';
+import '../../screens/navigationScreens/productListScreens/ProductDetailsScreen.dart';
 import '../cardWidgets/WishlistCardWidget.dart';
 
 class WishlistContent extends StatelessWidget {
@@ -36,17 +37,39 @@ class WishlistContent extends StatelessWidget {
             childAspectRatio: 0.75,
           ),
           itemBuilder: (context, index) {
-            final product = myProducts[index];
-            return WishlistCard(
-              productID: product.productID,
-              photoUrl: product.photoUrl,
-              title: product.title,
-              price: product.price,
-              owner: product.ownerName,
-              description: product.description,
-              onAddToCart: () {},
-              onAddToWishlist: () {},
-            );
+            if (index < myProducts.length) {
+              final product = myProducts[index];
+              return GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductScreen(
+                        //photoUrl: product.photoUrl,
+                        price: product.price,
+                        owner: product.ownerName,
+                        description: product.description,
+                        productID: product.productID,
+                        title: product.title,
+                        //userID: product.userID,
+                      ),
+                    ),
+                  );
+                },
+                child: WishlistCard(
+                  productID: myProducts[index].productID,
+                  photoUrl: myProducts[index].photoUrl,
+                  title: myProducts[index].title,
+                  price: myProducts[index].price,
+                  owner: myProducts[index].ownerName,
+                  description: myProducts[index].description,
+                  onAddToCart: () {  },
+                  onAddToWishlist: () {  },
+                ),
+              );
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
           },
         ),
       );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:punk/screens/WelcomeScreen.dart';
 import '../../../Online/Online.dart';
 import '../../../services/UserService.dart';
 import 'ProfileSettingsScreen.dart';
@@ -22,8 +23,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Logging Out...')),
         );
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        );
         break;
       case 'delete':
         _confirmDelete(Online.user.userID, context);
@@ -48,8 +51,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             TextButton(
               onPressed: () {
                 UserService.deleteUser(userId, context); // Call delete
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+                );
               },
               child: const Text('Да'),
             ),

@@ -63,7 +63,7 @@ class WelcomeScreen extends StatelessWidget {
         );
       },
       child: const Text(
-        'ВОЙТИ',
+        'LOG IN',
         style: TextStyle(fontSize: 20),
       ),
     );
@@ -86,7 +86,7 @@ class WelcomeScreen extends StatelessWidget {
         );
       },
       child: const Text(
-        'РЕГИСТРАЦИЯ',
+        'SIGN UP',
         style: TextStyle(fontSize: 20),
       ),
     );

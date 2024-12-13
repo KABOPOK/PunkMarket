@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:postgres/postgres.dart';
 import 'package:punk/screens/WelcomeScreen.dart';
@@ -31,7 +32,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        print('No image selected, no swag.');
       }
     });
   }
@@ -39,19 +40,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
   bool _validateLoginForm() {
     if(_nameController.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('кто ты, воин?')),
+        const SnackBar(content: Text('What\'s your name, sweetie')),
       );
       return false;
     }
     if(_passwordController.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('тут пароль может быть в 1 цифру')),
+        const SnackBar(content: Text('Please, enter your password')),
       );
       return false;
     }
     if(_numberController.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('номер дай, я продам втб, они будут тебе кредит втюхивать')),
+        const SnackBar(content: Text('Please, enter your phone number')),
       );
       return false;
     }
@@ -59,7 +60,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   }
 
   Future<void> _registerUser() async {
-    if(_validateLoginForm == false) {return;}
+    if(_validateLoginForm() == false) {return;}
     User user = User(
       userName: _nameController.text,
       password: _passwordController.text,
@@ -115,7 +116,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    labelText: 'Имя',
+                    labelText: 'Name',
                     labelStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.black,
@@ -123,10 +124,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(32),
+                  ],
                   style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
+                      return 'Please, enter your name';
                     }
                     return null;
                   },
@@ -135,7 +139,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Пароль',
+                    labelText: 'Password',
                     labelStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.black,
@@ -143,6 +147,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(16),
+                  ],
                   obscureText: true,
                   style: const TextStyle(color: Colors.white),
                   validator: (value) {
@@ -156,7 +163,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 TextFormField(
                   controller: _numberController,
                   decoration: InputDecoration(
-                    labelText: 'Номер',
+                    labelText: 'Phone Number',
                     labelStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.black,
@@ -165,10 +172,14 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     ),
                   ),
                   keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(11),
+                  ],
                   style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your number';
+                      return 'Please, enter your phone number';
                     }
                     return null;
                   },
@@ -185,10 +196,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(32),
+                  ],
                   style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your Telegram ID';
+                      return 'Please, enter your Telegram ID';
                     }
                     return null;
                   },
@@ -222,7 +236,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   ),
                   onPressed: _registerUser,
                   child: const Text(
-                    'зарегаться',
+                    'sign up',
                     style: TextStyle(fontSize: 20),
                   ),
                 ),

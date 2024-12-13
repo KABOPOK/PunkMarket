@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'package:punk/Global/Global.dart';
-import 'package:punk/widgets/barWidgets/MyNavigationBarWidget.dart';
-
-import '../Online/Online.dart';
 import '../clases/User.dart';
 import '../common_functions/Functions.dart';
 import '../services/UserService.dart';
+import 'package:flutter/services.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -32,12 +26,12 @@ class _LoginFormState extends State<LoginForm> {
 
   bool _validateLoginForm() {
     if (_passwordController.text.isEmpty) {
-      Functions.showSnackBar('тут пароль может быть в 1 цифру',context);
+      Functions.showSnackBar('Please, check your password',context);
       return false;
     }
 
     if (_numberController.text.isEmpty) {
-      Functions.showSnackBar('номер дай, я продам втб, они будут тебе кредит втюхивать',context);
+      Functions.showSnackBar('Please, check your phone number',context);
       return false;
     }
 
@@ -75,7 +69,7 @@ class _LoginFormState extends State<LoginForm> {
                 TextFormField(
                   controller: _numberController,
                   decoration: InputDecoration(
-                    labelText: 'номер',
+                    labelText: 'phone number',
                     labelStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.black,
@@ -84,10 +78,14 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ),
                   keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(11),
+                  ],
                   style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your number';
+                      return 'Please, enter your phone number';
                     }
                     return null;
                   },
@@ -96,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'пароль',
+                    labelText: 'password',
                     labelStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.black,
@@ -108,7 +106,7 @@ class _LoginFormState extends State<LoginForm> {
                   style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'Please, enter your password';
                     }
                     return null;
                   },
@@ -126,7 +124,7 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     const Expanded(
                       child: Text(
-                        'Меня легко потерять и невозможно забыть',
+                        'engine start',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -145,7 +143,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   onPressed: _loginUser,
                   child: const Text(
-                    'ВОЙТИ',
+                    'LOG IN',
                     style: TextStyle(fontSize: 20),
                   ),
                 ),

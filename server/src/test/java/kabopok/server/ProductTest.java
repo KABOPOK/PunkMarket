@@ -9,6 +9,7 @@ import kabopok.server.mappers.ProductMapper;
 import kabopok.server.mappers.UserMapper;
 import kabopok.server.repositories.ProductRepository;
 import kabopok.server.repositories.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -43,7 +44,7 @@ public class ProductTest extends AbstractTest {
   @Autowired
   private HttpSteps httpSteps;
 
-  @BeforeEach
+  @AfterEach
   public void clear() {
     productRepository.deleteAll();
     userRepository.deleteAll();

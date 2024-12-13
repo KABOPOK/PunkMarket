@@ -4,6 +4,8 @@ import '../common_functions/Functions.dart';
 import '../services/UserService.dart';
 import 'package:flutter/services.dart';
 
+import '../supplies/app_colors.dart';
+
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
 
@@ -54,7 +56,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
         title: const Text('Login Form'),
       ),
@@ -70,9 +72,9 @@ class _LoginFormState extends State<LoginForm> {
                   controller: _numberController,
                   decoration: InputDecoration(
                     labelText: 'phone number',
-                    labelStyle: const TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: AppColors.primaryText),
                     filled: true,
-                    fillColor: Colors.black,
+                    fillColor: AppColors.secondaryBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -82,7 +84,7 @@ class _LoginFormState extends State<LoginForm> {
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(11),
                   ],
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: AppColors.primaryText),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please, enter your phone number';
@@ -95,15 +97,15 @@ class _LoginFormState extends State<LoginForm> {
                   controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'password',
-                    labelStyle: const TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: AppColors.primaryText),
                     filled: true,
-                    fillColor: Colors.black,
+                    fillColor: AppColors.secondaryBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
                   obscureText: true,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: AppColors.primaryText),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please, enter your password';
@@ -125,7 +127,7 @@ class _LoginFormState extends State<LoginForm> {
                     const Expanded(
                       child: Text(
                         'engine start',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: AppColors.primaryText),
                       ),
                     ),
                   ],
@@ -133,8 +135,8 @@ class _LoginFormState extends State<LoginForm> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.primaryBackground,
+                    foregroundColor: AppColors.icons,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 10),
                     shape: RoundedRectangleBorder(

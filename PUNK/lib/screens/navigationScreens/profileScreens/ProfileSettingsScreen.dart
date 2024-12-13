@@ -6,6 +6,7 @@ import '../../../Online/Online.dart';
 import '../../../clases/User.dart';
 import '../../../common_functions/Functions.dart';
 import '../../../services/UserService.dart';
+import '../../../supplies/app_colors.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
   final User user;
@@ -25,7 +26,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
 
   _ProfileSettingsScreenState({required this.user});
 
-  // Update user details
   final fullNameController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final telegramController = TextEditingController();
@@ -88,12 +88,12 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
-        backgroundColor: Colors.orange,
-        title: Text("Profile Settings"),
+        backgroundColor: AppColors.accent,
+        title: Text("Profile Settings", style: TextStyle(color: AppColors.primaryText),),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios_sharp, color: AppColors.icons,),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -127,7 +127,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                 child: Container(
                   padding: EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.secondaryBackground,
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
@@ -138,6 +138,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                     ],
                   ),
                   child: Column(
+
                     children: [
                       // Full Name
                       InfoRow(
@@ -170,16 +171,16 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: AppColors.accent,
                     ),
-                    child: Text('Cancel'),
+                    child: Text('Cancel', style: TextStyle(color: AppColors.primaryText),),
                   ),
                   ElevatedButton(
                     onPressed: _changeSettings,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: AppColors.accent,
                     ),
-                    child: Text('Save'),
+                    child: Text('Save', style: TextStyle(color: AppColors.primaryText),),
                   ),
                 ],
               ),
@@ -191,7 +192,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   }
 }
 
-// Custom widget for rows with label and editable field
 class InfoRow extends StatelessWidget {
   final String label;
   final TextEditingController controller;
@@ -200,6 +200,7 @@ class InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -208,16 +209,16 @@ class InfoRow extends StatelessWidget {
           width: 120,
           child: Text(
             label,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.primaryText),
           ),
         ),
         // Editable Text Field
         Expanded(
           child: TextFormField(
             controller: controller,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16, color: AppColors.primaryText),
             decoration: InputDecoration(
-              isDense: true, // Reduces the height of the TextFormField
+              isDense: true,
               contentPadding: EdgeInsets.symmetric(vertical: 8),
             ),
           ),
@@ -234,6 +235,7 @@ class ProfileInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -241,13 +243,13 @@ class ProfileInfoRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primaryText),
           ),
           Expanded(
             child: Text(
               value ?? '',
               textAlign: TextAlign.right,
-              style: TextStyle(color: Colors.grey[700]),
+              style: TextStyle(color: AppColors.secondaryText),
             ),
           ),
         ],

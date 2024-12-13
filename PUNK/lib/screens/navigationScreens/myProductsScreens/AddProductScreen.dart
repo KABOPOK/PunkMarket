@@ -5,6 +5,8 @@ import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductMedia
 import 'package:punk/clases/Product.dart';
 import 'package:punk/common_functions/Functions.dart';
 
+import '../../../supplies/app_colors.dart';
+
 class ProductAdditionScreen extends StatefulWidget {
   @override
   _ProductAdditionScreenState createState() => _ProductAdditionScreenState();
@@ -58,14 +60,15 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
         title: const Text(
           'Add Product',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.primaryText, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: AppColors.accent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.icons),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -80,13 +83,18 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
               decoration: const InputDecoration(
                 labelText: 'Product Name',
                 border: OutlineInputBorder(),
+                fillColor: AppColors.secondaryBackground,
               ),
+              style: TextStyle(color: AppColors.primaryText),
+
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
+
               decoration: const InputDecoration(
                 labelText: 'Category',
                 border: OutlineInputBorder(),
+                fillColor: AppColors.secondaryBackground,
               ),
               value: selectedCategory,
               onChanged: (newValue) {
@@ -106,8 +114,10 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
             TextField(
               controller: priceController,
               decoration: const InputDecoration(
+                fillColor: AppColors.secondaryBackground,
                 labelText: 'Price',
                 border: OutlineInputBorder(),
+
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
@@ -123,6 +133,7 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
                   return newValue;
                 })
               ],
+              style: TextStyle(color: AppColors.primaryText),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -131,19 +142,22 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
                 labelText: 'Description',
                 alignLabelWithHint: true,
                 border: OutlineInputBorder(),
+                fillColor: AppColors.secondaryBackground,
+
               ),
+              style: TextStyle(color: AppColors.primaryText),
               maxLines: 4,
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _addProduct,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
+                backgroundColor: AppColors.accent,
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
               ),
               child: const Text(
                 'Add Media',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(color: AppColors.primaryText, fontSize: 16),
               ),
             ),
           ],

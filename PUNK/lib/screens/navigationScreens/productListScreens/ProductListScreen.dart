@@ -3,6 +3,7 @@ import 'package:punk/services/ProductService.dart';
 import 'package:punk/services/UserService.dart';
 import '../../../Online/Online.dart';
 import '../../../clases/Product.dart';
+import '../../../supplies/app_colors.dart';
 import '../../../widgets/barWidgets/SearchBarWidget.dart';
 import '../../../widgets/cardWidgets/ProductCardWidget.dart';
 import 'ProductDetailsScreen.dart';
@@ -281,11 +282,11 @@ class _ProductListPageState extends State<ProductListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBackground,
       body: Column(
         children: [
           Container(
-            color: Colors.orange,
+            color: AppColors.accent,
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             child: Column(
               children: [
@@ -296,10 +297,10 @@ class _ProductListPageState extends State<ProductListPage> {
                       children: [
                         CircleAvatar(
                           radius: 20.0,
-                          backgroundColor: Colors.black,
+                          backgroundColor: Colors.white,
                           child: Text(
                             "Logo",
-                            style: TextStyle(color: Colors.white, fontSize: 10),
+                            style: TextStyle(color: AppColors.accent, fontSize: 10),
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -308,13 +309,13 @@ class _ProductListPageState extends State<ProductListPage> {
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: AppColors.primaryText,
                           ),
                         ),
                       ],
                     ),
                     IconButton(
-                      icon: Icon(Icons.filter_list, color: Colors.white),
+                      icon: Icon(Icons.filter_list, color: AppColors.icons),
                       onPressed: () {
                         // Define filter action
                       },
@@ -330,7 +331,7 @@ class _ProductListPageState extends State<ProductListPage> {
             child: isLoading
                 ? Center(child: CircularProgressIndicator())
                 : errorMessage.isNotEmpty
-                ? Center(child: Text(errorMessage, style: TextStyle(color: Colors.red)))
+                ? Center(child: Text(errorMessage, style: TextStyle(color: AppColors.error)))
                 : Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(

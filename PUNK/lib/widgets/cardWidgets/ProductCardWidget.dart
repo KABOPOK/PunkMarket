@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../supplies/app_colors.dart';
+
 class ProductCard extends StatefulWidget {
   final String productID;
   final String photoUrl;
@@ -36,6 +38,7 @@ class _ProductCardState extends State<ProductCard> {
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      color: AppColors.secondaryBackground,
       elevation: 5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -64,7 +67,7 @@ class _ProductCardState extends State<ProductCard> {
                     ),
                     child: Icon(
                       widget.isInWishlist ? Icons.favorite : Icons.favorite_border,
-                      color: Colors.red,
+                      color: AppColors.like,
                       size: 24,
                     ),
                   ),
@@ -76,7 +79,7 @@ class _ProductCardState extends State<ProductCard> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: AppColors.priceTag,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -84,7 +87,7 @@ class _ProductCardState extends State<ProductCard> {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppColors.primaryText,
                     ),
                   ),
                 ),
@@ -96,10 +99,10 @@ class _ProductCardState extends State<ProductCard> {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: ElevatedButton.icon(
                     onPressed: widget.onAddToCart,
-                    icon: const Icon(Icons.add_shopping_cart),
-                    label: const Text("Add to Cart"),
+                    icon: const Icon(Icons.add_shopping_cart, color: AppColors.icons,),
+                    label: const Text("Add to Cart", style: TextStyle(color: AppColors.primaryText)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: AppColors.accentHover,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -117,6 +120,7 @@ class _ProductCardState extends State<ProductCard> {
                 Text(
                   widget.title,
                   style: const TextStyle(
+                    color: AppColors.primaryText,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -128,7 +132,7 @@ class _ProductCardState extends State<ProductCard> {
                   widget.owner,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.black,
+                    color: AppColors.primaryText,
                   ),
                   maxLines: 6,
                   overflow: TextOverflow.ellipsis,

@@ -3,6 +3,7 @@ import 'package:punk/clases/Product.dart';
 import 'package:punk/services/ProductService.dart';
 import 'package:punk/services/UserService.dart';
 
+import '../../../supplies/app_colors.dart';
 import '../../../widgets/ProductContent/MyProductsContent.dart';
 import '../../../widgets/ProductContent/WishlistContent.dart';
 
@@ -85,6 +86,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.primaryBackground,
       body: Column(
         children: [
           // Tab Switcher
@@ -95,13 +97,13 @@ class _MyProductListPageState extends State<MyProductListPage> {
                   onTap: () => _onTabChanged(0),
                   child: Container(
                     color: _currentPage == 0
-                        ? Colors.orangeAccent
-                        : Colors.orange,
+                        ? AppColors.accentHover
+                        : AppColors.accent,
                     padding: EdgeInsets.symmetric(vertical: 14),
                     child: Icon(Icons.shopping_cart,
                         color: _currentPage == 0
-                            ? Colors.white
-                            : Colors.white70),
+                            ? AppColors.icons
+                            : AppColors.icons2),
                   ),
                 ),
               ),
@@ -110,13 +112,13 @@ class _MyProductListPageState extends State<MyProductListPage> {
                   onTap: () => _onTabChanged(1),
                   child: Container(
                     color: _currentPage == 1
-                        ? Colors.orangeAccent
-                        : Colors.orange,
+                        ? AppColors.accentHover
+                        : AppColors.accent,
                     padding: EdgeInsets.symmetric(vertical: 14),
                     child: Icon(Icons.favorite,
                         color: _currentPage == 1
-                            ? Colors.white
-                            : Colors.white70),
+                            ? AppColors.icons
+                            : AppColors.icons2),
                   ),
                 ),
               ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../common_functions/Functions.dart';
 import '../../../services/ProductService.dart';
+import '../../../supplies/app_colors.dart';
 
 class ProductScreen extends StatefulWidget {
   final String title;
@@ -52,18 +53,18 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: AppColors.accent,
         title: Text(
           'PUNK MARKET',
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.primaryText,
             fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white,),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.icons,),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -102,7 +103,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   Positioned(
                     left: 16,
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios, size: 30, color: Colors.black),
+                      icon: const Icon(Icons.arrow_back_ios, size: 30, color: AppColors.accentHover),
                       onPressed: () {
                         if (currentIndex > 0) {
                           setState(() {
@@ -115,7 +116,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   Positioned(
                     right: 16,
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_forward_ios, size: 30, color: Colors.black),
+                      icon: const Icon(Icons.arrow_forward_ios, size: 30, color: AppColors.accentHover),
                       onPressed: () {
                         if (currentIndex < existingImageUrls.length - 1) {
                           setState(() {
@@ -138,8 +139,8 @@ class _ProductScreenState extends State<ProductScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: currentIndex == index
-                                ? Colors.orange
-                                : Colors.grey,
+                                ? AppColors.accent
+                                : AppColors.accentBackground,
                           ),
                         ),
                       ),
@@ -154,13 +155,13 @@ class _ProductScreenState extends State<ProductScreen> {
               children: [
                 Text(
                   widget.title,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primaryText),
                 ),
                 Text(
                   widget.price,
                   style: TextStyle(
                     fontSize: 20,
-                    color: Colors.green,
+                    color: AppColors.priceTag,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -169,12 +170,12 @@ class _ProductScreenState extends State<ProductScreen> {
             const SizedBox(height: 8),
             const Text(
               'Описание',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primaryText),
             ),
             const SizedBox(height: 4),
             Text(
               widget.description,
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, color: AppColors.primaryText),
             ),
             const SizedBox(height: 16),
             const Divider(),
@@ -185,7 +186,7 @@ class _ProductScreenState extends State<ProductScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                  backgroundColor: Colors.orange,
+                  backgroundColor: AppColors.accent,
                 ),
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -195,7 +196,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 },
                 child: const Text(
                   'Contact the owner',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                  style: TextStyle(fontSize: 18, color: AppColors.primaryText),
                 ),
               ),
             ),

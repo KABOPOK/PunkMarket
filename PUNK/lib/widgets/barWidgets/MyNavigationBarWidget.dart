@@ -4,6 +4,8 @@ import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListSc
 import 'package:punk/screens/navigationScreens/productListScreens/ProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductScreen.dart';
 
+import '../../supplies/app_colors.dart';
+
 
 class MyNavigationBar extends StatefulWidget {
   final int initialScreenIndex;
@@ -40,27 +42,31 @@ class _NavigationBarState extends State<MyNavigationBar> {
         child: _screens[_screenIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: AppColors.primaryBackground,
         currentIndex: _screenIndex,
         onTap: (int newIndex) {
           setState(() {
             _screenIndex = newIndex;
           });
         },
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.deepOrangeAccent,
+        selectedItemColor: AppColors.icons,
+        unselectedItemColor: AppColors.accent,
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
             label: 'Home',
             icon: _buildNavBarIcon(Icons.home, 0),
+            backgroundColor: AppColors.secondaryBackground
           ),
           BottomNavigationBarItem(
             label: 'Products',
             icon: _buildNavBarIcon(Icons.shopping_basket, 1),
+              backgroundColor: AppColors.secondaryBackground
           ),
           BottomNavigationBarItem(
             label: 'Profile',
             icon: _buildNavBarIcon(Icons.person, 2),
+              backgroundColor: AppColors.secondaryBackground
           ),
         ],
       ),
@@ -81,8 +87,8 @@ class _NavigationBarState extends State<MyNavigationBar> {
                 setState(() {});
               }
             },
-            backgroundColor: Colors.deepOrangeAccent,
-            child: const Icon(Icons.add, color: Colors.white),
+            backgroundColor: AppColors.accent,
+            child: const Icon(Icons.add, color: AppColors.icons),
           )
               : Container();
         },
@@ -96,12 +102,13 @@ class _NavigationBarState extends State<MyNavigationBar> {
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.orange : Colors.transparent,
+
+        color: isSelected ? AppColors.accent : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Icon(
         iconData,
-        color: isSelected ? Colors.white : Colors.orangeAccent,
+        color: isSelected ? AppColors.icons : AppColors.accentHover,
       ),
     );
   }

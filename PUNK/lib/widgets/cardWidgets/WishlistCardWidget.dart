@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../supplies/app_colors.dart';
+
 class WishlistCard extends StatelessWidget {
   final String photoUrl;
   final String title;
@@ -26,17 +28,16 @@ class WishlistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen width to make responsive adjustments
     final screenWidth = MediaQuery.of(context).size.width;
     final imageHeight = screenWidth * 0.5; // Adjust image height based on screen width
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      color: AppColors.secondaryBackground,
       elevation: 5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Product Image with Wishlist and Price Tag
           Stack(
             children: [
               // Product Image
@@ -56,7 +57,7 @@ class WishlistCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.green,
+                    color: AppColors.priceTag,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -64,7 +65,7 @@ class WishlistCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppColors.primaryText,
                     ),
                   ),
                 ),
@@ -78,9 +79,9 @@ class WishlistCard extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: onAddToCart,
                     icon: const Icon(Icons.add_shopping_cart),
-                    label: const Text("Add to Cart"),
+                    label: const Text("Add to Cart", style: TextStyle(color: AppColors.primaryText),),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: AppColors.accentHover,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -92,7 +93,6 @@ class WishlistCard extends StatelessWidget {
 
             ],
           ),
-          // Content below the image in a Scrollable Column
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
@@ -103,6 +103,7 @@ class WishlistCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: AppColors.primaryText,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -112,7 +113,7 @@ class WishlistCard extends StatelessWidget {
                   owner,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.black,
+                    color: AppColors.primaryText,
                   ),
                   maxLines: 6,
                   overflow: TextOverflow.ellipsis,

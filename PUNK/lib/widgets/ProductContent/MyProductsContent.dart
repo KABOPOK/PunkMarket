@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../../clases/Product.dart';
-import '../../screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
 import '../cardWidgets/MyProductCardWidget.dart';
 
 class MyProductsContent extends StatelessWidget {

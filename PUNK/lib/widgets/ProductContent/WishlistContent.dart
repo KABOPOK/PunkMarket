@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:punk/services/UserService.dart';
 
 import '../../clases/Product.dart';
 import '../../screens/navigationScreens/productListScreens/ProductDetailsScreen.dart';

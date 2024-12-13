@@ -1,10 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:punk/services/ProductService.dart';
-import 'package:uuid/uuid.dart';
-import '../../Global/Global.dart';
+
 import '../../clases/Product.dart';
 import '../../screens/navigationScreens/myProductsScreens/EditProduct.dart';
 

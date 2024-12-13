@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:punk/clases/Product.dart';
+
 import '../../../Online/Online.dart';
-import '../../../services/ProductService.dart';
 import 'EditProductMedia.dart';
 
 class ProductEditingScreen extends StatefulWidget {

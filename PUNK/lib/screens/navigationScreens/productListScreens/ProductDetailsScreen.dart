@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import '../../../services/ProductService.dart';
+
 import '../../../common_functions/Functions.dart';
+import '../../../services/ProductService.dart';
 
 class ProductScreen extends StatefulWidget {
   final String title;

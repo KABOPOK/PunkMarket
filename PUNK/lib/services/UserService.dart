@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 import '../Global/Global.dart';
 import '../Online/Online.dart';
 import '../clases/Product.dart';
 import '../clases/User.dart';
 import '../common_functions/Functions.dart';
-import '../screens/navigationScreens/profileScreens/MyProfileScreen.dart';
 import '../widgets/barWidgets/MyNavigationBarWidget.dart';
 
 class UserService {

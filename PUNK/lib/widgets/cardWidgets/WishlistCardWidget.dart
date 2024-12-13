@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
-import '../../Global/Global.dart';
-import '../../clases/Product.dart';
 
 class WishlistCard extends StatelessWidget {
   final String photoUrl;

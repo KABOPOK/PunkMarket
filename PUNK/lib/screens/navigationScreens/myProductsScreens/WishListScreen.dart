@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:punk/clases/Product.dart';
-import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
-import 'package:punk/services/ProductService.dart';
 import '../../../services/UserService.dart';
 import '../../../widgets/cardWidgets/WishlistCardWidget.dart';
 import '../productListScreens/ProductDetailsScreen.dart';

@@ -189,7 +189,8 @@ class _ProductScreenState extends State<ProductScreen> {
                 ),
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('The owner will be notified')),
+                    const SnackBar(content: Text('The owner will be notified'),),
+
                   );
                 },
                 child: const Text(

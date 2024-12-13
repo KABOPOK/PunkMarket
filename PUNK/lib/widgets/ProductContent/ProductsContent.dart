@@ -45,6 +45,7 @@ class ProductsContent extends StatelessWidget {
               //userID: product.userID,
               onAddToCart: () {  },
               onAddToWishlist: () {  },
+              isInWishlist: false,
             );
           },
         ),

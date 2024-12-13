@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../services/UserService.dart';
 class ProductCard extends StatefulWidget {
   final String productID;
   final String photoUrl;
@@ -8,6 +7,7 @@ class ProductCard extends StatefulWidget {
   final String price;
   final String owner;
   final String description;
+  final bool isInWishlist;
   final VoidCallback onAddToCart;
   final VoidCallback onAddToWishlist;
 
@@ -19,6 +19,7 @@ class ProductCard extends StatefulWidget {
     required this.price,
     required this.owner,
     required this.description,
+    required this.isInWishlist,
     required this.onAddToCart,
     required this.onAddToWishlist,
   }) : super(key: key);
@@ -28,34 +29,10 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  bool _isInWishlist = false; // Tracks if the product is in the wishlist
-  int _page = 1;
-  final int _limit = 20;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkWishlistStatus();
-  }
-
-  Future<void> _checkWishlistStatus() async {
-
-    try {
-      final wishlistProductIDs = await UserService.fetchWishlistProducts(_page, _limit);
-      setState(() {
-        _isInWishlist = wishlistProductIDs.contains(widget.productID);
-      });
-    } catch (error) {
-      // Handle error gracefully (e.g., show a toast or log the error)
-      print("Error fetching wishlist: $error");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Get screen width to make responsive adjustments
     final screenWidth = MediaQuery.of(context).size.width;
-    final imageHeight = screenWidth * 0.5; // Adjust image height based on screen width
+    final imageHeight = screenWidth * 0.5;
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -63,20 +40,17 @@ class _ProductCardState extends State<ProductCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Product Image with Wishlist and Price Tag
           Stack(
             children: [
-              // Product Image
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                 child: Image.network(
                   widget.photoUrl,
                   fit: BoxFit.cover,
                   width: double.infinity,
-                  height: imageHeight, // Dynamic height based on screen size
+                  height: imageHeight,
                 ),
               ),
-              // Wishlist Icon
               Positioned(
                 top: 10,
                 right: 10,
@@ -89,14 +63,13 @@ class _ProductCardState extends State<ProductCard> {
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: Icon(
-                      _isInWishlist ? Icons.favorite : Icons.favorite_border, // Filled or outlined heart
+                      widget.isInWishlist ? Icons.favorite : Icons.favorite_border,
                       color: Colors.red,
                       size: 24,
                     ),
                   ),
                 ),
               ),
-              // Price Tag
               Positioned(
                 bottom: 10,
                 left: 10,
@@ -116,7 +89,6 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                 ),
               ),
-              // Add to cart
               Positioned(
                 bottom: 10,
                 right: 10,
@@ -137,7 +109,6 @@ class _ProductCardState extends State<ProductCard> {
               ),
             ],
           ),
-          // Content below the image
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
@@ -170,3 +141,4 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 }
+

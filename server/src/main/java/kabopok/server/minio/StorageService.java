@@ -106,7 +106,7 @@ public class StorageService {
     }
   }
 
-  public void uploadFiles(String bucketName, Product product, List<MultipartFile> images){
+  public void uploadFiles(String bucketName, Product product, List<MultipartFile> images) {
     for (MultipartFile image : images) {
       String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();
       uploadFile(bucketName, path, image);

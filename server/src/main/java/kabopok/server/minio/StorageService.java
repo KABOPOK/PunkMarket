@@ -2,8 +2,10 @@ package kabopok.server.minio;
 
 import io.minio.*;
 import io.minio.errors.MinioException;
+import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import kabopok.server.entities.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class StorageService {
 
   @Autowired
@@ -133,4 +136,20 @@ public class StorageService {
     return urlList;
   }
 
+  public void deleteAll() {
+    try {
+      List<Bucket> buckets = minioClient.listBuckets();
+      for (Bucket bucket : buckets) {
+        String bucketName = bucket.name();
+        Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs.builder().bucket(bucketName).build());
+        for (Result<Item> result : results) {
+          Item item = result.get();
+          minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(item.objectName()).build());
+        }
+        minioClient.removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
+      }
+    } catch (MinioException | InvalidKeyException | NoSuchAlgorithmException | IOException e) {
+      log.error("Error deleting buckets and objects: ", e);
+    }
+  }
 }

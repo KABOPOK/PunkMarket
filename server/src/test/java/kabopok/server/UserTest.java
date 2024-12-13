@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserTest extends AbstractTest {
 
   @Autowired
@@ -40,10 +39,10 @@ public class UserTest extends AbstractTest {
   @BeforeEach
   public void clear() {
     userRepository.deleteAll();
+    storageService.deleteAll();
   }
 
   @Test
-  @Order(1)
   public void createUserDBTest() {
     // Given
     User user = SampleObjectGenerator.createSampleUser();
@@ -60,7 +59,6 @@ public class UserTest extends AbstractTest {
   }
 
   @Test
-  @Order(2)
   public void createUserFileStorageTest() {
     // Given
     User user = SampleObjectGenerator.createSampleUser();
@@ -79,7 +77,6 @@ public class UserTest extends AbstractTest {
   }
 
   @Test
-  @Order(3)
   public void getUserTest() {
     // Given
     User user = SampleObjectGenerator.createSampleUser();
@@ -99,10 +96,12 @@ public class UserTest extends AbstractTest {
   }
 
   @Test
-  @Order(4)
   public void updateUserDBTest() {
     // Given
     User user = SampleObjectGenerator.createSampleUser();
+    Resource resource = new ClassPathResource("images/photo.jpg");
+    storageService.uploadFile("users", user.getUserID().toString(), resource);
+    user.setPhotoUrl(storageService.generateImageUrl("users",user.getUserID().toString()));
     userRepository.save(user);
     // When
     UserDTO updatedUserDTO = userMapper.map(user);
@@ -120,7 +119,6 @@ public class UserTest extends AbstractTest {
   }
 
   @Test
-  @Order(5)
   public void updateUserStorageTest() {
     // Given
     User user = SampleObjectGenerator.createSampleUser();
@@ -143,10 +141,12 @@ public class UserTest extends AbstractTest {
   }
 
   @Test
-  @Order(6)
   public void deleteUserTest() {
     // Given
     User user = SampleObjectGenerator.createSampleUser();
+    Resource resource = new ClassPathResource("images/photo.jpg");
+    storageService.uploadFile("users", user.getUserID().toString(), resource);
+    user.setPhotoUrl(storageService.generateImageUrl("users",user.getUserID().toString()));
     userRepository.save(user);
     // When
     String url = "/api/users/delete?userId=" + user.getUserID();

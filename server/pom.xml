@@ -112,27 +112,6 @@
       <artifactId>minio</artifactId>
       <version>RELEASE</version>
     </dependency>
-    <!-- Безопасность -->
-<!--    <dependency>-->
-<!--      <groupId>org.springframework.boot</groupId>-->
-<!--      <artifactId>spring-boot-starter-security</artifactId>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>io.jsonwebtoken</groupId>-->
-<!--      <artifactId>jjwt-impl</artifactId>-->
-<!--      <version>0.11.5</version>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>io.jsonwebtoken</groupId>-->
-<!--      <artifactId>jjwt-api</artifactId>-->
-<!--      <version>0.11.5</version>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>io.jsonwebtoken</groupId>-->
-<!--      <artifactId>jjwt-jackson</artifactId>-->
-<!--      <version>0.11.5</version>-->
-<!--    </dependency>-->
-<!--    migrations-->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -144,9 +123,6 @@
       <artifactId>flyway-core</artifactId>
       <version>9.16.1</version>
     </dependency>
-
-
-    <!--    testContainersDependency-->
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
@@ -262,25 +238,5 @@
       </plugins>
     </build>
   </profile>
-    <!-- Flyway v10.17.0 Profile -->
-    <profile>
-      <id>flyway-v10</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-maven-plugin</artifactId>
-            <version>10.17.0</version>
-            <configuration>
-              <url>jdbc:postgresql://localhost:5432/postgres</url>
-              <user>postgres</user>
-              <password>9</password>
-              <locations>classpath:db/migration</locations>
-              <baselineOnMigrate>true</baselineOnMigrate>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 </project>

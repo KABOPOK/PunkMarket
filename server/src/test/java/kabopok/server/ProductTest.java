@@ -46,6 +46,7 @@ public class ProductTest extends AbstractTest {
   @BeforeEach
   public void clear() {
     productRepository.deleteAll();
+    userRepository.deleteAll();
   }
 
   @Test
@@ -73,24 +74,24 @@ public class ProductTest extends AbstractTest {
     assertEquals(productMapper.map(productList.get(0)), productDTO);
   }
 
-//  @Test
-//  public void createProductStorageTest() {
-//    // Given
-//    User user = createSampleUser();
-//    userRepository.save(user);
-//    Product product = createSampleProduct(user);
-//    List<Resource> resources = List.of( new ClassPathResource("images/photo.jpg"));
-//    // When
-//    ProductDTO productDTO = productMapper.map(product);
-//    productDTO.setUserID(user.getUserID());
-//    String url = "/api/products/create";
-//    ResponseEntity<Void> response = httpSteps.sendMultipartPostRequest(productDTO, resources, url, Void.class);
-//    // Then
-//    assertEquals(200, response.getStatusCode().value());
-//    List<Product> productList = productRepository.findAll();
-//    String expectedFileName = "envelop.jpg";
-//    Functions.compareResources(resources.get(0), productList.get(0).getPhotoUrl(), expectedFileName);
-//  }
+  @Test
+  public void createProductStorageTest() {
+    // Given
+    User user = createSampleUser();
+    userRepository.save(user);
+    Product product = createSampleProduct(user);
+    List<Resource> resources = List.of( new ClassPathResource("images/photo.jpg"));
+    // When
+    ProductDTO productDTO = productMapper.map(product);
+    productDTO.setUserID(user.getUserID());
+    String url = "/api/products/create";
+    ResponseEntity<Void> response = httpSteps.sendMultipartPostRequest(productDTO, resources, url, Void.class);
+    // Then
+    assertEquals(200, response.getStatusCode().value());
+    List<Product> productList = productRepository.findAll();
+    String expectedFileName = "envelop.jpg";
+    Functions.compareResources(resources.get(0), productList.get(0).getPhotoUrl(), expectedFileName);
+  }
 
   @Test
   @Order(2)

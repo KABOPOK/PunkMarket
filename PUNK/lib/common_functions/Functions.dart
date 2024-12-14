@@ -16,8 +16,14 @@ class Functions {
   static Future<File> urlToFile(String imageUrl) async {
     int i = 0;
     String fileName;
-    while (imageUrl[i+1] != '.'){ ++i; } // get original filenames for valid order
-    if (imageUrl[i] == 'p') { fileName = 'envelop.jpg'; }
+    int split = 6;
+    while (split != 0) {
+      if(imageUrl[i] == '/'){
+      --split;
+      }
+      ++i;
+    }// get original filenames for valid order
+    if (imageUrl[i] == 'e') { fileName = 'envelop.jpg'; }
     else { fileName = '${imageUrl[i]}.jpg';  }
     final response = await http.get(Uri.parse(imageUrl));
     final documentDirectory = await getApplicationDocumentsDirectory();

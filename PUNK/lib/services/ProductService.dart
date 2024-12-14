@@ -6,6 +6,7 @@ import '../Global/Global.dart';
 import '../Online/Online.dart';
 import '../clases/Product.dart';
 import '../common_functions/Functions.dart';
+import '../widgets/barWidgets/MyNavigationBarWidget.dart';
 
 class ProductService {
 
@@ -60,6 +61,10 @@ class ProductService {
     else {
       throw Exception('Failed to update product: ${response.statusCode}');
     }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MyNavigationBar(initialScreenIndex: 1)),
+    );
   }
 
   static Future<List<Product>> fetchUserProducts(int page, int limit) async {

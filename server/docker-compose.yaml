@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     ports:
-      - "5433:5432"  # Expose port 5432 from the container to host 5433
+      - "5433:5432"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
       interval: 2s
@@ -23,8 +23,8 @@ services:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
     ports:
-      - "9000:9000"  # MinIO API
-      - "9001:9001"  # MinIO Console
+      - "9000:9000"
+      - "9001:9001"
     command: server /data --console-address ":9001"
     networks:
       - student-market-network
@@ -35,7 +35,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8085:8085"  # Expose app on port 8085
+      - "8085:8085"
     depends_on:
       postgres:
         condition: service_healthy

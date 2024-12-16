@@ -28,7 +28,7 @@ public class UserService extends DefaultService {
     user.setUserID(UUID.randomUUID());
     storageService.uploadFile("users", user.getUserID().toString() + ".jpg", image);
     if (image != null) {
-      user.setPhotoUrl(storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg"));
+      user.setPhotoUrl(storageService.generateExternalPresignedUrl("users", user.getUserID().toString() + ".jpg"));
     }
     userRepository.save(user);
     return user.getUserID();

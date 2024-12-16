@@ -105,7 +105,22 @@ public class StorageService {
       throw new RuntimeException("Error generating presigned URL: " + e.getMessage(), e);
     }
   }
-
+  public String generateExternalPresignedUrl(String bucketName, String objectName) {
+    MinioClient externalClient = MinioClient.builder()
+            .endpoint("http://192.168.0.101:9005") // External/public-facing URL (e.g., "http://192.168.0.101:9000")
+            .credentials("minioadmin", "minioadmin")
+            .build();
+    try {
+      GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
+              .bucket(bucketName)
+              .object(objectName)
+              .method(io.minio.http.Method.GET)
+              .build();
+      return externalClient.getPresignedObjectUrl(args);
+    } catch (MinioException | InvalidKeyException | IOException | NoSuchAlgorithmException e) {
+      throw new RuntimeException("Error generating presigned URL: " + e.getMessage(), e);
+    }
+  }
   public void uploadFiles(String bucketName, Product product, List<MultipartFile> images){
     for (MultipartFile image : images) {
       String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + image.getOriginalFilename();

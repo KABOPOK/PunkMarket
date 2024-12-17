@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <description>
+        <name>Punk Market</name>
+        <domain>Создание платформы для студентов, позволяющей покупать, продавать и находить уникальные товары.</domain>
+    </description>
+
+    <data>
+        <table name="users">
+            <dataConstraints>
+                <field name="user_id" type="UUID" primaryKey="true" unique="true" notNull="true" />
+                <field name="number" type="TEXT" unique="true" notNull="true" />
+                <field name="password" type="TEXT" notNull="true" />
+                <field name="user_name" type="TEXT" notNull="true" />
+                <field name="photo_url" type="TEXT" nullable="true" />
+                <field name="location" type="TEXT" nullable="true" />
+                <field name="telegram_id" type="TEXT" nullable="true" />
+            </dataConstraints>
+            <integrityConstraints>
+                <primaryKey>user_id</primaryKey>
+                <unique>number</unique>
+            </integrityConstraints>
+        </table>
+
+        <table name="products">
+            <dataConstraints>
+                <field name="product_id" type="UUID" primaryKey="true" unique="true" notNull="true" />
+                <field name="price" type="TEXT" notNull="true" />
+                <field name="title" type="TEXT" notNull="true" />
+                <field name="owner_name" type="TEXT" notNull="true" />
+                <field name="photo_url" type="TEXT" nullable="true" />
+                <field name="location" type="TEXT" nullable="true" />
+                <field name="description" type="TEXT" nullable="true" />
+                <field name="category" type="TEXT" nullable="true" />
+                <field name="user_id" type="UUID" notNull="true" />
+            </dataConstraints>
+            <integrityConstraints>
+                <primaryKey>product_id</primaryKey>
+                <foreignKey field="user_id" references="users(user_id)" onDelete="CASCADE" />
+            </integrityConstraints>
+        </table>
+
+        <table name="users_products">
+            <dataConstraints>
+                <field name="user_id" type="UUID" notNull="true" />
+                <field name="product_id" type="UUID" notNull="true" />
+            </dataConstraints>
+            <integrityConstraints>
+                <compositePrimaryKey>user_id, product_id</compositePrimaryKey>
+                <foreignKey field="user_id" references="users(user_id)" onDelete="CASCADE" />
+                <foreignKey field="product_id" references="products(product_id)" onDelete="CASCADE" />
+            </integrityConstraints>
+        </table>
+
+        <table name="chats">
+            <dataConstraints>
+                <field name="chat_id" type="UUID" primaryKey="true" unique="true" notNull="true" />
+                <field name="other_name" type="TEXT" notNull="true" />
+                <field name="other_photo_url" type="TEXT" nullable="true" />
+                <field name="other_chat_id" type="UUID" notNull="true" />
+                <field name="user_id" type="UUID" notNull="true" />
+            </dataConstraints>
+            <integrityConstraints>
+                <primaryKey>chat_id</primaryKey>
+                <foreignKey field="user_id" references="users(user_id)" onDelete="CASCADE" />
+            </integrityConstraints>
+        </table>
+
+        <table name="messages">
+            <dataConstraints>
+                <field name="message_id" type="UUID" primaryKey="true" unique="true" notNull="true" />
+                <field name="text" type="TEXT" notNull="true" />
+                <field name="time" type="TIMESTAMP" notNull="true" />
+                <field name="chat_id" type="UUID" notNull="true" />
+                <field name="user_id" type="UUID" notNull="true" />
+            </dataConstraints>
+            <integrityConstraints>
+                <primaryKey>message_id</primaryKey>
+                <foreignKey field="user_id" references="users(user_id)" onDelete="CASCADE" />
+            </integrityConstraints>
+        </table>
+    </data>
+
+    <userRoles>
+        <role>
+            <name>продавец-покупатель</name>
+            <responsibilities>
+                <responsibility>создание товаров в таблице product</responsibility>
+                <responsibility>удаление товаров из таблицы product</responsibility>
+                <responsibility>добавление товаров в вишлист</responsibility>
+                <responsibility>изъятие товаров из вишлиста</responsibility>
+                <responsibility>редактирование товаров</responsibility>
+                <responsibility>редактирование профиля</responsibility>
+                <responsibility>просмотр товаров</responsibility>
+                <responsibility>поиск товаров</responsibility>
+            </responsibilities>
+            <userCount />
+        </role>
+    </userRoles>
+
+    <uiApi>
+        <frontend>
+            <platform>мобильное приложение (Android)</platform>
+            <technology>Dart</technology>
+            <framework>Flutter</framework>
+        </frontend>
+        <backend>
+            <serverTechnology>Java</serverTechnology>
+            <framework>SpringBoot</framework>
+            <webServer>Tomcat</webServer>
+            <apiDocumentation>Swagger</apiDocumentation>
+            <orm>Hibernate</orm>
+            <ormWrapper>SpringJpa</ormWrapper>
+        </backend>
+    </uiApi>
+
+    <technologies>
+        <programmingLanguages>
+            <language>Java</language>
+            <language>Dart</language>
+        </programmingLanguages>
+        <database>PostgreSQL</database>
+    </technologies>
+
+    <testing>
+        <framework>RestTemplate</framework>
+        <framework>JUnit</framework>
+        <ciCdTool>GitHub</ciCdTool>
+        <feature>API for loading test data</feature>
+    </testing>
+
+    <transactions>
+        <description>Оформлены в виде аннотаций, предоставляемых SpringBoot. Используются для атомарной загрузки в базу данных и хранилище S3 (Minio).</description>
+    </transactions>
+</project>

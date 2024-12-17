@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +35,7 @@ public class ProductController implements ProductApi {
   @Transactional
   public List<ProductDTO> getProducts(Integer page, Integer limit, String query) {
     List <Product> productList = productService.getProducts(page, limit, query);
-    storageService.generateImageUrls("users", productList);
+    storageService.generateImageUrls("products", productList);
     return productMapper.map(productList);
   }
 
@@ -44,7 +43,7 @@ public class ProductController implements ProductApi {
   @Transactional
   public List<ProductDTO> getMyProducts(UUID userId, Integer page, Integer limit) {
     List <Product> productList = productService.getMyProducts(userId,page,limit);
-    storageService.generateImageUrls("users", productList);
+    storageService.generateImageUrls("products", productList);
     return productMapper.map(productList);
   }
 

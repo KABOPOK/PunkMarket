@@ -143,11 +143,9 @@ public class StorageService {
   }
 
   public void generateImageUrls(String bucketName, List<Product> productList) {
-    int imageIndex = 1;
     for (Product product : productList) {
-      String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + imageIndex;
+      String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + "envelop.jpg";
       product.setPhotoUrl(generateImageUrl(bucketName, path));
-      ++imageIndex;
     }
   }
 

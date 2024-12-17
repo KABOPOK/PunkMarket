@@ -1,15 +1,13 @@
 package kabopok.server;
 
-import generated.kabopok.server.api.model.IdDTO;
 import generated.kabopok.server.api.model.ProductDTO;
-import generated.kabopok.server.api.model.UserDTO;
 import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
 import kabopok.server.mappers.ProductMapper;
 import kabopok.server.mappers.UserMapper;
 import kabopok.server.repositories.ProductRepository;
 import kabopok.server.repositories.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -22,7 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import java.util.List;
+
 import static kabopok.server.SampleObjectGenerator.createSampleProduct;
 import static kabopok.server.SampleObjectGenerator.createSampleUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,15 +35,13 @@ public class ProductTest extends AbstractTest {
   @Autowired
   private ProductRepository productRepository;
   @Autowired
-  private UserMapper userMapper;
-  @Autowired
   ProductMapper productMapper;
   @Autowired
   private UserRepository userRepository;
   @Autowired
   private HttpSteps httpSteps;
 
-  @BeforeEach
+  @AfterEach
   public void clear() {
     productRepository.deleteAll();
   }

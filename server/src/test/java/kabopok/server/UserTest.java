@@ -7,7 +7,7 @@ import kabopok.server.entities.User;
 import kabopok.server.mappers.UserMapper;
 import kabopok.server.minio.StorageService;
 import kabopok.server.repositories.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ public class UserTest extends AbstractTest {
   @Autowired
   private HttpSteps httpSteps;
 
-  @BeforeEach
+  @AfterEach
   public void clear() {
     userRepository.deleteAll();
   }

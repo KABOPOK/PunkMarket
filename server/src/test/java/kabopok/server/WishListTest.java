@@ -6,7 +6,7 @@ import kabopok.server.entities.User;
 import kabopok.server.mappers.ProductMapper;
 import kabopok.server.repositories.ProductRepository;
 import kabopok.server.repositories.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,7 +26,7 @@ public class WishListTest extends AbstractTest{
   @Autowired
   private HttpSteps httpSteps;
 
-  @BeforeEach
+  @AfterEach
   public void clear() {
     productRepository.deleteAll();
     userRepository.deleteAll();

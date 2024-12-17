@@ -5,6 +5,7 @@ import io.minio.errors.MinioException;
 import io.minio.messages.Item;
 import kabopok.server.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,8 +21,11 @@ import java.util.List;
 @Service
 public class StorageService {
 
+  @Value("${minio.port}")
+  private String port;
   @Autowired
   private MinioClient minioClient;
+
 
   public void uploadFile(String bucketName, String objectName, MultipartFile image) {
     if (image == null) { return; }
@@ -93,13 +97,18 @@ public class StorageService {
   }
 
   public String generateImageUrl(String bucketName, String objectName) {
+    String url = MinioConfig.networkUrl + "9005";
+    MinioClient outsideMinioClient = MinioClient.builder()
+            .endpoint(url)
+            .credentials("minioadmin", "minioadmin")
+            .build();
     try {
       GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
               .bucket(bucketName)
               .object(objectName)
               .method(io.minio.http.Method.GET)
               .build();
-      return minioClient.getPresignedObjectUrl(args);
+      return outsideMinioClient.getPresignedObjectUrl(args);
     } catch (MinioException |
              InvalidKeyException | IOException | NoSuchAlgorithmException e) {
       throw new RuntimeException("Error generating presigned URL: " + e.getMessage(), e);
@@ -131,6 +140,15 @@ public class StorageService {
       throw new RuntimeException("Error listing objects or generating URLs: " + e.getMessage(), e);
     }
     return urlList;
+  }
+
+  public void generateImageUrls(String bucketName, List<Product> productList) {
+    int imageIndex = 1;
+    for (Product product : productList) {
+      String path = product.getUser().getUserID() + "/" + product.getProductID() + "/" + imageIndex;
+      product.setPhotoUrl(generateImageUrl(bucketName, path));
+      ++imageIndex;
+    }
   }
 
 }

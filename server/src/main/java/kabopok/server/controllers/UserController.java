@@ -1,19 +1,18 @@
 package kabopok.server.controllers;
 
 import generated.kabopok.server.api.UserApi;
-import generated.kabopok.server.api.model.IdDTO;
 import generated.kabopok.server.api.model.LoginDataDTO;
-import generated.kabopok.server.api.model.ProductDTO;
 import generated.kabopok.server.api.model.UserDTO;
 import kabopok.server.entities.User;
-import kabopok.server.mappers.ProductMapper;
 import kabopok.server.mappers.UserMapper;
+import kabopok.server.minio.MinioConfig;
+import kabopok.server.minio.StorageService;
 import kabopok.server.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,38 +21,42 @@ public class UserController implements UserApi {
 
   private final UserService userService;
   private final UserMapper userMapper;
-  private final ProductMapper productMapper;
+  private final StorageService storageService;
 
   @Override
-  public void deleteUser(UUID userId) {
-    userService.deleteUser(userId);
-  }
-
-  @Override
-  public UserDTO getUser(LoginDataDTO loginDataDTO) {
-    return userMapper.map(userService.findByNumber(loginDataDTO));
-  }
-
-  @Override
-  public Boolean saveToWishlist(UUID userId, UUID productId) {
-    return userService.addToWishList(userId, productId);
-  }
-
-  @Override
-  public IdDTO saveUser(UserDTO userDTO, MultipartFile image) {
+  @Transactional
+  public void saveUser(UserDTO userDTO, MultipartFile image) {
     User user = userMapper.map(userDTO);
-    return new IdDTO(userService.save(user, image));
+    String userId = userService.save(user).toString();
+    storageService.uploadFile("users", userId + ".jpg", image);
   }
 
   @Override
+  @Transactional
+  public UserDTO getUser(String networkUrl, LoginDataDTO loginDataDTO) {
+    MinioConfig.networkUrl = networkUrl;
+    User user = userService.getUser(loginDataDTO);
+    user.setPhotoUrl(storageService.generateImageUrl("users", user.getUserID().toString() + ".jpg"));
+    return userMapper.map(user);
+  }
+
+  @Override
+  @Transactional
+  public void deleteUser(UUID userId) {
+    UUID userID = userService.deleteUser(userId);
+    storageService.deleteFile("users", userID + ".jpg");
+  }
+
+  @Override
+  @Transactional
   public UserDTO updateUser(UUID userId, UserDTO userDTO, MultipartFile image) {
-    User updatedUser = userService.updateUser(userId, userMapper.map(userDTO), image);
+    User updatedUser = userService.updateUser(userId, userMapper.map(userDTO));
+    if(image != null){
+      storageService.deleteFile("users", updatedUser.getUserID().toString() + ".jpg");
+      storageService.uploadFile("users", updatedUser.getUserID().toString() + ".jpg", image);
+    }
+    updatedUser.setPhotoUrl(storageService.generateImageUrl("users", updatedUser.getUserID().toString() + ".jpg"));
     return userMapper.map(updatedUser);
-  }
-
-  @Override
-  public List<ProductDTO> getWishlist(String userId) {
-    return productMapper.map(userService.getMyFavProducts(UUID.fromString(userId)));
   }
 
 }

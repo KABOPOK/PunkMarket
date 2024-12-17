@@ -2,7 +2,6 @@ package kabopok.server.services;
 
 import kabopok.server.entities.Product;
 import kabopok.server.entities.User;
-import kabopok.server.minio.StorageService;
 import kabopok.server.repositories.ProductRepository;
 import kabopok.server.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +20,14 @@ public class ProductService extends DefaultService {
 
   private final ProductRepository productRepository;
   private final UserRepository userRepository;
-  private final StorageService storageService;
 
   @Transactional
-  public void save(Product product, UUID userId, List<MultipartFile> images) {
+  public Product save(Product product, UUID userId) {
     User user = getOrThrow(userId, userRepository::findById);
     product.setUser(user);
     product.setProductID(UUID.randomUUID());
-    storageService.uploadFiles("products", product, images);
-    String path = product.getUser().getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";
-    product.setPhotoUrl(storageService.generateImageUrl("products", path));
     productRepository.save(product);
+    return product;
   }
 
   public List<Product> getProducts(Integer page, Integer limit, String query) {
@@ -46,26 +42,18 @@ public class ProductService extends DefaultService {
   }
 
   @Transactional
-  public void deleteProduct(UUID productId) {
-    Product deletedProduct = getOrThrow(productId, productRepository::findById);
-    productRepository.delete(deletedProduct);
-    String path = deletedProduct.getUser().getUserID() + "/" + deletedProduct.getProductID();
-    storageService.deleteFolder("products",path);
-  }
-
-  @Transactional
-  public void updateProduct(UUID productId, Product updatedProduct, List<MultipartFile> images) {
+  public Product updateProduct(UUID productId, Product updatedProduct) {
     Product product  = getOrThrow(productId, productRepository::findById);
     updatedProduct.setProductID(product.getProductID());
     updatedProduct.setUser(product.getUser());
-    String path = updatedProduct.getUser().getUserID() + "/" + updatedProduct.getProductID();
-    if (images != null) {
-      storageService.deleteFolder("products", path);
-      storageService.uploadFiles("products", updatedProduct, images);
-    }
-    path = product.getUser().getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";
-    updatedProduct.setPhotoUrl(storageService.generateImageUrl("products", path));
     productRepository.save(updatedProduct);
+    return updatedProduct;
+  }
+
+  public Product deleteProduct(UUID productId) {
+    Product deletedProduct = getOrThrow(productId, productRepository::findById);
+    productRepository.delete(deletedProduct);
+    return deletedProduct;
   }
 
   public Product getProduct(String productId) {

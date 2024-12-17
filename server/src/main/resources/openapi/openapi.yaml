@@ -24,16 +24,19 @@ paths:
       responses:
         '200':
           description: User ID created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IdDTO'
   /api/users/authorization:
     post:
       tags:
         - User
       operationId: getUser
       summary: get user for authorization
+      parameters:
+        - in: query
+          name: networkUrl
+          required: true
+          schema:
+            type: string
+          description: The user Network
       requestBody:
         required: true
         content:
@@ -100,6 +103,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDTO'
+
+
   /api/products/create:
     post:
       tags:
@@ -248,10 +253,35 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/ProductDTO'
-  /api/users/get_fav_products:
+  /api/products/get_product_image_list:
     get:
       tags:
-        - User
+        - Product
+      summary: Retrieve current product
+      operationId: getProductUrlList
+      parameters:
+        - name: productId
+          in: query
+          description: Unique identifier for the product
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved product details and URLs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: List of URLs related to the product
+
+
+  /api/wishlist/get_fav_products:
+    get:
+      tags:
+        - WishList
       summary: Retrieve user's wishlist
       operationId: getWishlist
       parameters:
@@ -270,11 +300,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ProductDTO'
-
-  /api/users/add_to_wishlist:
+  /api/wishlist/add_to_wishlist:
     post:
       tags:
-        - User
+        - WishList
       operationId: saveToWishlist
       summary: Add a product to the user's wishlist
       parameters:
@@ -299,29 +328,6 @@ paths:
             application/json:
               schema:
                 type: boolean
-  /api/products/get_product_image_list:
-    get:
-      tags:
-        - Product
-      summary: Retrieve current product
-      operationId: getProductUrlList
-      parameters:
-        - name: productId
-          in: query
-          description: Unique identifier for the product
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successfully retrieved product details and URLs
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-                  description: List of URLs related to the product
 
 
 components:

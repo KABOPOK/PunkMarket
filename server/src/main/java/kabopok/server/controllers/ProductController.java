@@ -20,24 +20,54 @@ public class ProductController implements ProductApi {
 
   private final ProductService productService;
   private final ProductMapper productMapper;
-
   private final StorageService storageService;
 
   @Override
+  @Transactional
   public void createProduct(ProductDTO productDTO, List<MultipartFile> images) {
     Product product = productMapper.map(productDTO);
-    productService.save(product, productDTO.getUserID(), images);
+    product = productService.save(product, productDTO.getUserID());
+    storageService.uploadFiles("products", product, images);
+    String path = product.getUser().getUserID() + "/" + product.getProductID()  + "/" + "envelop.jpg";
+    product.setPhotoUrl(storageService.generateImageUrl("products", path));
   }
 
   @Override
-  public void deleteProduct(UUID productId) {
-    productService.deleteProduct(productId);
-
+  @Transactional
+  public List<ProductDTO> getProducts(Integer page, Integer limit, String query) {
+    List <Product> productList = productService.getProducts(page, limit, query);
+    storageService.generateImageUrls("users", productList);
+    return productMapper.map(productList);
   }
 
   @Override
+  @Transactional
   public List<ProductDTO> getMyProducts(UUID userId, Integer page, Integer limit) {
-    return productMapper.map(productService.getMyProducts(userId,page,limit));
+    List <Product> productList = productService.getMyProducts(userId,page,limit);
+    storageService.generateImageUrls("users", productList);
+    return productMapper.map(productList);
+  }
+
+  @Override
+  @Transactional
+  public void updateProduct(UUID productId, ProductDTO productDTO, List<MultipartFile> images) {
+    Product updatedProduct = productMapper.map(productDTO);
+    updatedProduct = productService.updateProduct(productId, updatedProduct);
+    String path = updatedProduct.getUser().getUserID() + "/" + updatedProduct.getProductID();
+    if (images != null) {
+      storageService.deleteFolder("products", path);
+      storageService.uploadFiles("products", updatedProduct, images);
+    }
+    path = updatedProduct.getUser().getUserID() + "/" + updatedProduct.getProductID()  + "/" + "envelop.jpg";
+    updatedProduct.setPhotoUrl(storageService.generateImageUrl("products", path));
+  }
+
+  @Override
+  @Transactional
+  public void deleteProduct(UUID productId) {
+    Product deletedProduct = productService.deleteProduct(productId);
+    String path = deletedProduct.getUser().getUserID() + "/" + deletedProduct.getProductID();
+    storageService.deleteFolder("products", path);
   }
 
   @Override
@@ -46,17 +76,6 @@ public class ProductController implements ProductApi {
     Product product = productService.getProduct(productId);
     String path = product.getUser().getUserID() + "/" + product.getProductID() + "/";
     return storageService.getProductUrlList("products", path);
-  }
-
-  @Override
-  public List<ProductDTO> getProducts(Integer page, Integer limit, String query) {
-    return productMapper.map(productService.getProducts(page, limit, query));
-  }
-
-  @Override
-  public void updateProduct(UUID productId, ProductDTO productDTO, List<MultipartFile> images) {
-    Product updatedProduct = productMapper.map(productDTO);
-    productService.updateProduct(productId, updatedProduct, images);
   }
 
 }

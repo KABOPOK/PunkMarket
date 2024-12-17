@@ -27,3 +27,4 @@ spring:
 #    locale-resolver: fixed
 minio:
   url : http://${MINIO_HOST}:${MINIO_PORT}
+  port : ${MINIO_EXTERNAL_PORT}

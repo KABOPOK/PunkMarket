@@ -145,7 +145,7 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
               onPressed: _updateProduct,
               child: const Text('Save Changes', style: TextStyle(color: AppColors.primaryText),),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryText,
+                backgroundColor: AppColors.accent,
                 padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
               ),
             ),

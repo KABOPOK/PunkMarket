@@ -15,9 +15,9 @@ public class MinioConfig {
 
   @Bean
   public MinioClient minioClient() throws UnknownHostException {
-    InetAddress inetAddress = InetAddress.getLocalHost();
-    String ip = inetAddress.getHostAddress();
-    minioUrl = minioUrl.replace("localhost", ip);
+//    InetAddress inetAddress = InetAddress.getLocalHost();
+//    String ip = inetAddress.getHostAddress();
+//    minioUrl = minioUrl.replace("localhost", ip);
     return MinioClient.builder()
             .endpoint(minioUrl)
             .credentials("minioadmin", "minioadmin")

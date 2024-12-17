@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'package:punk/Global/Global.dart';
-import 'package:punk/widgets/barWidgets/MyNavigationBarWidget.dart';
-
-import '../Online/Online.dart';
 import '../clases/User.dart';
 import '../common_functions/Functions.dart';
 import '../services/UserService.dart';
+import 'package:flutter/services.dart';
+
+import '../supplies/app_colors.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -32,12 +28,12 @@ class _LoginFormState extends State<LoginForm> {
 
   bool _validateLoginForm() {
     if (_passwordController.text.isEmpty) {
-      Functions.showSnackBar('тут пароль может быть в 1 цифру',context);
+      Functions.showSnackBar('Please, check your password',context);
       return false;
     }
 
     if (_numberController.text.isEmpty) {
-      Functions.showSnackBar('номер дай, я продам втб, они будут тебе кредит втюхивать',context);
+      Functions.showSnackBar('Please, check your phone number',context);
       return false;
     }
 
@@ -53,14 +49,14 @@ class _LoginFormState extends State<LoginForm> {
     try {
       await UserService.loginUser(user, context);
     } catch (e) {
-       Functions.showSnackBar('Error: $e', context);
+      Functions.showSnackBar('Error: $e', context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
         title: const Text('Login Form'),
       ),
@@ -75,19 +71,23 @@ class _LoginFormState extends State<LoginForm> {
                 TextFormField(
                   controller: _numberController,
                   decoration: InputDecoration(
-                    labelText: 'номер',
-                    labelStyle: const TextStyle(color: Colors.white),
+                    labelText: 'phone number',
+                    labelStyle: const TextStyle(color: AppColors.primaryText),
                     filled: true,
-                    fillColor: Colors.black,
+                    fillColor: AppColors.secondaryBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
                   keyboardType: TextInputType.phone,
-                  style: const TextStyle(color: Colors.white),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(11),
+                  ],
+                  style: const TextStyle(color: AppColors.primaryText),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your number';
+                      return 'Please, enter your phone number';
                     }
                     return null;
                   },
@@ -96,19 +96,19 @@ class _LoginFormState extends State<LoginForm> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'пароль',
-                    labelStyle: const TextStyle(color: Colors.white),
+                    labelText: 'password',
+                    labelStyle: const TextStyle(color: AppColors.primaryText),
                     filled: true,
-                    fillColor: Colors.black,
+                    fillColor: AppColors.secondaryBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
                   obscureText: true,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: AppColors.primaryText),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'Please, enter your password';
                     }
                     return null;
                   },
@@ -126,8 +126,8 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     const Expanded(
                       child: Text(
-                        'Меня легко потерять и невозможно забыть',
-                        style: TextStyle(color: Colors.white),
+                        'engine start',
+                        style: TextStyle(color: AppColors.primaryText),
                       ),
                     ),
                   ],
@@ -135,8 +135,8 @@ class _LoginFormState extends State<LoginForm> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.primaryBackground,
+                    foregroundColor: AppColors.icons,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 10),
                     shape: RoundedRectangleBorder(
@@ -145,7 +145,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   onPressed: _loginUser,
                   child: const Text(
-                    'ВОЙТИ',
+                    'LOG IN',
                     style: TextStyle(fontSize: 20),
                   ),
                 ),

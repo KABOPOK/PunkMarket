@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:punk/screens/WelcomeScreen.dart';
 import '../../../Online/Online.dart';
 import '../../../services/UserService.dart';
+import '../../../supplies/app_colors.dart';
 import 'ProfileSettingsScreen.dart';
 
 class MyProfileScreen extends StatefulWidget {
@@ -22,8 +24,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Logging Out...')),
         );
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        );
         break;
       case 'delete':
         _confirmDelete(Online.user.userID, context);
@@ -36,22 +40,25 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Подтверждение удаления'),
-          content: const Text('Вы точно хотите удалить свой аккаунт?'),
+          backgroundColor: AppColors.secondaryBackground,
+          title: const Text('Подтверждение удаления', style: TextStyle(color: AppColors.primaryText),),
+          content: const Text('Вы точно хотите удалить свой аккаунт?', style: TextStyle(color: AppColors.primaryText),),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
-              child: const Text('Нет'),
+              child: const Text('Нет', style: TextStyle(color: AppColors.primaryText),),
             ),
             TextButton(
               onPressed: () {
-                UserService.deleteUser(userId, context); // Call delete
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
+                UserService.deleteUser(userId, context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+                );
               },
-              child: const Text('Да'),
+              child: const Text('Да', style: TextStyle(color: AppColors.primaryText),),
             ),
           ],
         );
@@ -62,46 +69,47 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: AppColors.accent,
         title: Text(
           'PUNK MARKET',
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.primaryText,
             fontWeight: FontWeight.bold,
           ),
         ),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            backgroundColor: Colors.black,
+            backgroundColor: AppColors.primaryBackground,
             child: Text(
               'LOGO',
-              style: TextStyle(color: Colors.white, fontSize: 12),
+              style: TextStyle(color: AppColors.primaryText, fontSize: 12),
             ),
           ),
         ),
         actions: [
           PopupMenuButton<String>(
+            color: AppColors.secondaryBackground,
             icon: const Icon(
               Icons.more_horiz_rounded,
-              color: Colors.white,
+              color: AppColors.icons,
               size: 30,
             ),
             onSelected: (choice) => _handleMenuSelection(choice, context),
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(
                 value: 'settings',
-                child: Text('Настройки'),
+                child: Text('Настройки', style: TextStyle(color: AppColors.primaryText),),
               ),
               const PopupMenuItem<String>(
                 value: 'log_out',
-                child: Text('Выйти из аккаунта'),
+                child: Text('Выйти из аккаунта', style: TextStyle(color: AppColors.primaryText),),
               ),
               const PopupMenuItem<String>(
                 value: 'delete',
-                child: Text('Удалить Аккаунт'),
+                child: Text('Удалить Аккаунт', style: TextStyle(color: AppColors.primaryText),),
               ),
             ],
           ),
@@ -115,7 +123,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundColor: Colors.grey[300],
+                backgroundColor: AppColors.icons2,
                 backgroundImage: ((){
                   if(Online.user.photoUrl != null){
                     return NetworkImage(Online.user.photoUrl!);
@@ -127,7 +135,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     ? Icon(
                   Icons.person,
                   size: 50,
-                  color: Colors.grey[700],
+                  color: AppColors.primaryBackground,
                 )
                     : null,
               ),
@@ -149,11 +157,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     }
                   },
                   child: CircleAvatar(
-                    backgroundColor: Colors.orange,
+                    backgroundColor: AppColors.accent,
                     radius: 18,
                     child: Icon(
                       Icons.settings,
-                      color: Colors.white,
+                      color: AppColors.icons,
                       size: 20,
                     ),
                   ),
@@ -166,7 +174,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             Online.user.userName ?? 'ACCOUNT NAME',
             style: TextStyle(
               fontSize: 18,
-              color: Colors.orange,
+              color: AppColors.accent,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -175,11 +183,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             padding: EdgeInsets.all(16),
             margin: EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.secondaryBackground,
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: AppColors.primaryBackground,
                   spreadRadius: 3,
                   blurRadius: 5,
                 ),

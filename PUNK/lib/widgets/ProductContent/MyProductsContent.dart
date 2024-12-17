@@ -3,17 +3,21 @@ import 'package:flutter/material.dart';
 import '../../clases/Product.dart';
 import '../../screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
 import '../cardWidgets/MyProductCardWidget.dart';
+import '../cardWidgets/ProductCardWidget.dart';
 
 class MyProductsContent extends StatelessWidget {
   final bool isLoading;
   final String errorMessage;
   final List<Product> myProducts;
+  final Function(Product) onProductTap;
 
   const MyProductsContent({
     required this.isLoading,
     required this.errorMessage,
     required this.myProducts,
+    required this.onProductTap,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +40,17 @@ class MyProductsContent extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             final product = myProducts[index];
-            return MyProduct(
-              photoUrl: product.photoUrl,
-              title: product.title,
-              price: product.price,
-              owner: product.ownerName,
-              description: product.description,
-              productID: product.productID,
-              userID: product.userID,
+            return GestureDetector(
+              onTap: () => onProductTap(product),
+              child: MyProduct(
+                  photoUrl: product.photoUrl,
+                  title: product.title,
+                  price: product.price,
+                  owner: product.ownerName,
+                  description: product.description,
+                  productID: product.productID,
+                  userID: product.userID,
+              ),
             );
           },
         ),

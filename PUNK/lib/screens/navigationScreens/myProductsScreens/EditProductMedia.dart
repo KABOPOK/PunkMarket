@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:punk/supplies/app_colors.dart';
 import '../../../services/ProductService.dart';
 import '../../../common_functions/Functions.dart';
 import '../../../../clases/Product.dart';
@@ -60,17 +61,19 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        String customFileName;
-        if (index == 0) {
-          customFileName = 'envelop.jpg';
-        } else {
-          customFileName = '$index.jpg';
-        }
-        File customFile = File(pickedFile.path).renameSync(pickedFile.path.replaceAll(pickedFile.name, customFileName));
+        // Rename the file for backend logic and update the image list
+        String customFileName = index == 0 ? 'envelop.jpg' : '$index.jpg';
+        File customFile = File(pickedFile.path).renameSync(
+          pickedFile.path.replaceAll(pickedFile.name, customFileName),
+        );
         newImages[index] = customFile;
       });
+
+      // Optional: Log or print the updated list for debugging
+      debugPrint('Updated Images: ${newImages.map((file) => file?.path).toList()}');
     }
   }
+
 
   Future<void> _updateProduct() async {
     try {
@@ -92,13 +95,14 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
-        title: const Text('Edit Media'),
-        backgroundColor: Colors.orange,
+        title: const Text('Edit Media',style: TextStyle(color: AppColors.primaryText),),
+        backgroundColor: AppColors.accent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: AppColors.icons,),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -108,7 +112,7 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
         children: [
           const Padding(
             padding: EdgeInsets.all(16.0),
-            child: Text('Edit Images (up to 10)', style: TextStyle(fontSize: 16)),
+            child: Text('Edit Images (up to 10)', style: TextStyle(fontSize: 16, color: AppColors.primaryText)),
           ),
           Expanded(
             child: isLoading
@@ -125,7 +129,7 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
                   onTap: () => _pickImage(index),
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
+                      border: Border.all(color: AppColors.accentBackground),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: newImages[index] != null
@@ -139,9 +143,9 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
           Center(
             child: ElevatedButton(
               onPressed: _updateProduct,
-              child: const Text('Save Changes'),
+              child: const Text('Save Changes', style: TextStyle(color: AppColors.primaryText),),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
+                backgroundColor: AppColors.primaryText,
                 padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
               ),
             ),
@@ -151,4 +155,3 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
     );
   }
 }
-

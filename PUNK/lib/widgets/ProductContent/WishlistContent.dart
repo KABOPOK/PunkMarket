@@ -9,11 +9,13 @@ class WishlistContent extends StatelessWidget {
   final bool isLoading;
   final String errorMessage;
   final List<Product> myProducts;
+  final Function(Product) onProductTap;
 
   const WishlistContent({
     required this.isLoading,
     required this.errorMessage,
     required this.myProducts,
+    required this.onProductTap,
   });
 
   @override
@@ -37,15 +39,18 @@ class WishlistContent extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             final product = myProducts[index];
-            return WishlistCard(
-              productID: product.productID,
-              photoUrl: product.photoUrl,
-              title: product.title,
-              price: product.price,
-              owner: product.ownerName,
-              description: product.description,
-              onAddToCart: () {},
-              onAddToWishlist: () {},
+            return GestureDetector(
+              onTap: () => onProductTap(product),
+              child: WishlistCard(
+                productID: product.productID,
+                photoUrl: product.photoUrl,
+                title: product.title,
+                price: product.price,
+                owner: product.ownerName,
+                description: product.description,
+                onAddToCart: () {},
+                onAddToWishlist: () {},
+              ),
             );
           },
         ),

@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:postgres/postgres.dart';
 import 'package:punk/screens/WelcomeScreen.dart';
 
 import '../clases/User.dart';
 import '../services/UserService.dart';
+import '../supplies/app_colors.dart';
 
 class RegistrationForm extends StatefulWidget {
   const RegistrationForm({super.key});
@@ -31,7 +33,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
       } else {
-        print('No image selected.');
+        print('No image selected, no swag.');
       }
     });
   }
@@ -39,19 +41,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
   bool _validateLoginForm() {
     if(_nameController.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('кто ты, воин?')),
+        const SnackBar(content: Text('Please, enter your name')),
       );
       return false;
     }
     if(_passwordController.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('тут пароль может быть в 1 цифру')),
+        const SnackBar(content: Text('Please, enter your password')),
       );
       return false;
     }
     if(_numberController.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('номер дай, я продам втб, они будут тебе кредит втюхивать')),
+        const SnackBar(content: Text('Please, enter your phone number')),
       );
       return false;
     }
@@ -59,7 +61,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   }
 
   Future<void> _registerUser() async {
-    if(_validateLoginForm == false) {return;}
+    if(_validateLoginForm() == false) {return;}
     User user = User(
       userName: _nameController.text,
       password: _passwordController.text,
@@ -78,12 +80,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.accent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: AppColors.icons),
           onPressed: () {
             Navigator.pop(context); // Pop the current screen off the navigation stack
           },
@@ -100,13 +102,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   onTap: _pickImage,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundColor: Colors.orange,
+                    backgroundColor: AppColors.accent,
                     backgroundImage: _image != null ? FileImage(_image!) : null,
                     child: _image == null
                         ? const Icon(
                       Icons.person,
                       size: 80,
-                      color: Colors.black,
+                      color: AppColors.secondaryBackground,
                     )
                         : null,
                   ),
@@ -115,18 +117,21 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    labelText: 'Имя',
-                    labelStyle: const TextStyle(color: Colors.white),
+                    labelText: 'Name',
+                    labelStyle: const TextStyle(color: AppColors.primaryText),
                     filled: true,
-                    fillColor: Colors.black,
+                    fillColor: AppColors.secondaryBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(32),
+                  ],
+                  style: const TextStyle(color: AppColors.primaryText),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
+                      return 'Please, enter your name';
                     }
                     return null;
                   },
@@ -135,16 +140,19 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Пароль',
-                    labelStyle: const TextStyle(color: Colors.white),
+                    labelText: 'Password',
+                    labelStyle: const TextStyle(color: AppColors.primaryText),
                     filled: true,
-                    fillColor: Colors.black,
+                    fillColor: AppColors.secondaryBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(16),
+                  ],
                   obscureText: true,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: AppColors.primaryText),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
@@ -156,19 +164,23 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 TextFormField(
                   controller: _numberController,
                   decoration: InputDecoration(
-                    labelText: 'Номер',
-                    labelStyle: const TextStyle(color: Colors.white),
+                    labelText: 'Phone Number',
+                    labelStyle: const TextStyle(color: AppColors.primaryText),
                     filled: true,
-                    fillColor: Colors.black,
+                    fillColor: AppColors.secondaryBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
                   keyboardType: TextInputType.phone,
-                  style: const TextStyle(color: Colors.white),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(11),
+                  ],
+                  style: const TextStyle(color: AppColors.primaryText),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your number';
+                      return 'Please, enter your phone number';
                     }
                     return null;
                   },
@@ -178,17 +190,20 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   controller: _telegramController,
                   decoration: InputDecoration(
                     labelText: 'Telegramm @ID',
-                    labelStyle: const TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: AppColors.primaryText),
                     filled: true,
-                    fillColor: Colors.black,
+                    fillColor: AppColors.secondaryBackground,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(32),
+                  ],
+                  style: const TextStyle(color: AppColors.primaryText),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your Telegram ID';
+                      return 'Please, enter your Telegram ID';
                     }
                     return null;
                   },
@@ -206,15 +221,15 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     ),
                     const Text(
                       'Погожев всегда прав',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: AppColors.primaryText),
                     ),
                   ],
                 ),
                 const SizedBox(height: 80),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.primaryBackground,
+                    foregroundColor: AppColors.primaryText,
                     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -222,7 +237,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   ),
                   onPressed: _registerUser,
                   child: const Text(
-                    'зарегаться',
+                    'sign up',
                     style: TextStyle(fontSize: 20),
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../screens/navigationScreens/productListScreens/SearchPageScreen.dart';
+
+import '../../supplies/app_colors.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final Function(String) onSearch;  // A callback for the search query
@@ -18,14 +19,14 @@ class SearchBarWidget extends StatelessWidget {
         // );
       },
       child: Container(
-        height: 45,  // Adjusted height for better aesthetics
+        height: 45,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.search_bar,
           border: Border.all(
-            color: Colors.orangeAccent,  // Border color
+            color: AppColors.highlightBorder,
             width: 1.4,
           ),
-          borderRadius: BorderRadius.circular(15),  // Border radius
+          borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
           children: [
@@ -38,9 +39,9 @@ class SearchBarWidget extends StatelessWidget {
                   contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                   hintText: 'Find Products',
                   border: InputBorder.none,
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  prefixIcon: Icon(Icons.search, color: AppColors.icons2),
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                    icon: Icon(Icons.arrow_forward_ios, color: AppColors.icons2),
                     onPressed: () {
                       // Trigger search action here
                       onSearch('Search Query');

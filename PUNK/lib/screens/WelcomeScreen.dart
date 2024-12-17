@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../supplies/app_colors.dart';
 import 'RegistrationFormScreen.dart';
 import 'LoginFormScreen.dart';
 
@@ -8,7 +9,7 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBackground,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -30,7 +31,7 @@ class WelcomeScreen extends StatelessWidget {
         Text(
           'ПУНК',
           style: TextStyle(
-            color: Colors.orange,
+            color: AppColors.accent,
             fontSize: 80,
             fontWeight: FontWeight.bold,
           ),
@@ -38,7 +39,7 @@ class WelcomeScreen extends StatelessWidget {
         Text(
           'market',
           style: TextStyle(
-            color: Colors.orange,
+            color: AppColors.accent,
             fontSize: 50,
           ),
         ),
@@ -49,8 +50,8 @@ class WelcomeScreen extends StatelessWidget {
   Widget _buildLoginButton(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.primaryBackground,
+        foregroundColor: AppColors.primaryText,
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -63,7 +64,7 @@ class WelcomeScreen extends StatelessWidget {
         );
       },
       child: const Text(
-        'ВОЙТИ',
+        'LOG IN',
         style: TextStyle(fontSize: 20),
       ),
     );
@@ -72,8 +73,8 @@ class WelcomeScreen extends StatelessWidget {
   Widget _buildRegistrationButton(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.primaryBackground,
+        foregroundColor: AppColors.primaryText,
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -86,7 +87,7 @@ class WelcomeScreen extends StatelessWidget {
         );
       },
       child: const Text(
-        'РЕГИСТРАЦИЯ',
+        'SIGN UP',
         style: TextStyle(fontSize: 20),
       ),
     );

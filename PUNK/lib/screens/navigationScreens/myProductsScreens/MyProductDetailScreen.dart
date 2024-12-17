@@ -4,14 +4,14 @@ import '../../../services/ProductService.dart';
 import '../../../supplies/app_colors.dart';
 import '../../../widgets/cardWidgets/FullScreenImageView.dart';
 
-class ProductScreen extends StatefulWidget {
+class MyProductDetailScreen extends StatefulWidget {
   final String title;
   final String price;
   final String owner;
   final String description;
   final String productID;
 
-  const ProductScreen({
+  const MyProductDetailScreen({
     Key? key,
     required this.title,
     required this.price,
@@ -21,10 +21,10 @@ class ProductScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ProductScreenState createState() => _ProductScreenState();
+  _MyProductDetailScreen createState() => _MyProductDetailScreen();
 }
 
-class _ProductScreenState extends State<ProductScreen> {
+class _MyProductDetailScreen extends State<MyProductDetailScreen> {
   List<String> existingImageUrls = [];
   bool isLoading = true;
   int currentIndex = 0;
@@ -34,13 +34,13 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(); // Initialize PageController
+    _pageController = PageController();
     _loadExistingImages();
   }
 
   @override
   void dispose() {
-    _pageController.dispose(); // Clean up the controller
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -48,12 +48,9 @@ class _ProductScreenState extends State<ProductScreen> {
     try {
       List<String> fetchedUrls =
       await ProductService.fetchProductUrlList(widget.productID);
-
-      // Rearrange the images to make the last image the first one (main preview)
       if (fetchedUrls.isNotEmpty) {
         fetchedUrls.insert(0, fetchedUrls.removeLast());
       }
-
       setState(() {
         existingImageUrls = fetchedUrls;
         isLoading = false;
@@ -66,6 +63,7 @@ class _ProductScreenState extends State<ProductScreen> {
     }
   }
 
+  // This method ensures the infinite scroll effect
   void _goToPreviousImage() {
     setState(() {
       currentIndex = (currentIndex - 1 + existingImageUrls.length) % existingImageUrls.length;
@@ -154,7 +152,6 @@ class _ProductScreenState extends State<ProductScreen> {
                       },
                     ),
                   ),
-                  // Left Arrow Button
                   Positioned(
                     left: 16,
                     child: IconButton(
@@ -163,7 +160,6 @@ class _ProductScreenState extends State<ProductScreen> {
                       onPressed: _goToPreviousImage,
                     ),
                   ),
-                  // Right Arrow Button
                   Positioned(
                     right: 16,
                     child: IconButton(
@@ -172,7 +168,6 @@ class _ProductScreenState extends State<ProductScreen> {
                       onPressed: _goToNextImage,
                     ),
                   ),
-                  // Image Indicator (Dots)
                   Positioned(
                     bottom: 8,
                     child: Row(
@@ -182,7 +177,8 @@ class _ProductScreenState extends State<ProductScreen> {
                             (index) => Container(
                           width: 8,
                           height: 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 4),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: currentIndex == index
@@ -237,28 +233,6 @@ class _ProductScreenState extends State<ProductScreen> {
             buildInfoRow('Владелец', widget.owner),
             buildInfoRow('Состояние', 'б.у.'),
             const Spacer(),
-            // Contact Button
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16, horizontal: 32),
-                  backgroundColor: AppColors.accent,
-                ),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('The owner will be notified'),
-                    ),
-                  );
-                },
-                child: const Text(
-                  'Contact the owner',
-                  style: TextStyle(
-                      fontSize: 18, color: AppColors.primaryText),
-                ),
-              ),
-            ),
           ],
         ),
       ),

@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:punk/clases/Product.dart';
+
 import '../../../Online/Online.dart';
-import '../../../services/ProductService.dart';
+import '../../../supplies/app_colors.dart';
 import 'EditProductMedia.dart';
 
 class ProductEditingScreen extends StatefulWidget {
@@ -73,14 +72,15 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
         title: const Text(
           'Edit Product',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.primaryText, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor:AppColors.accent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: AppColors.primaryText),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -96,6 +96,7 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
                 labelText: 'Product Name',
                 border: OutlineInputBorder(),
               ),
+              style: TextStyle(color: AppColors.primaryText),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -108,6 +109,7 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
               ],
+              style: TextStyle(color: AppColors.primaryText),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -116,6 +118,7 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
                 labelText: 'Address',
                 border: OutlineInputBorder(),
               ),
+              style: TextStyle(color: AppColors.primaryText),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -126,17 +129,18 @@ class _ProductEditingScreenState extends State<ProductEditingScreen> {
                 border: OutlineInputBorder(),
               ),
               maxLines: 4,
+              style: TextStyle(color: AppColors.primaryText),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _updateProduct,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
+                backgroundColor: AppColors.accent,
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
               ),
               child: const Text(
                 'Save Changes',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(color: AppColors.primaryText, fontSize: 16),
               ),
             ),
           ],

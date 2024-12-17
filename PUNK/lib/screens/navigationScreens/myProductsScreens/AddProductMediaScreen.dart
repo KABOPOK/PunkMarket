@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../clases/Product.dart';
 import '../../../common_functions/Functions.dart';
 import '../../../services/ProductService.dart';
+import '../../../supplies/app_colors.dart';
+import '../../../widgets/barWidgets/MyNavigationBarWidget.dart';
 
 class AddProductMediaScreen extends StatefulWidget {
   final Product product;
@@ -23,9 +25,11 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
 
   Future<void> _sendProduct(Product product, List<File?> images) async {
     try {
-     ProductService.sendProduct(product, images, context) ;
-      //Navigator.pop(context);
-      //Navigator.pop(context);
+      ProductService.sendProduct(product, images, context) ;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MyNavigationBar(initialScreenIndex: 1)),
+      );
     } catch (e) {
       Functions.showSnackBar('Error creating product', context);
     }
@@ -52,12 +56,12 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
-        title: const Text('Add Media'),
-        backgroundColor: Colors.orange,
+        title: const Text('Add Media', style: TextStyle(color: AppColors.primaryText),),
+        backgroundColor: AppColors.accent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: AppColors.icons,),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -68,7 +72,7 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
         children: [
           const Padding(
             padding: EdgeInsets.all(16.0),
-            child: Text('Add Images (up to 10)', style: TextStyle(fontSize: 16)),
+            child: Text('Add Images (up to 10)', style: TextStyle(fontSize: 16, color: AppColors.primaryText)),
           ),
           Expanded(
             child: GridView.builder(
@@ -97,9 +101,9 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
           Center(
             child: ElevatedButton(
               onPressed: () => _sendProduct(widget.product, _productImages),
-              child: const Text('Create Product'),
+              child: const Text('Create Product',style: TextStyle(color: AppColors.primaryText),),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
+                backgroundColor: AppColors.accent,
                 padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
               ),
             ),

@@ -9,111 +9,87 @@ import '../common_functions/Functions.dart';
 import '../widgets/barWidgets/MyNavigationBarWidget.dart';
 
 class ProductService {
-
   static Future<void> sendProduct(Product product, List<File?> images, BuildContext context) async {
-      var request = http.MultipartRequest('POST', Uri.parse('$HTTPS/api/products/create'));
-      request.fields['product'] = jsonEncode(product.toJson());
-      for (var i = 0; i < images.length; i++) {
-        File? image = images[i];
-        if (image != null) {
-          request.files.add(
-            await http.MultipartFile.fromPath(
-              'images',
-              image.path,
-            ),
-          );
-        }
+    String baseUrl = await HTTP();
+    var request = http.MultipartRequest('POST', Uri.parse('$baseUrl$port/api/products/create'));
+    request.fields['product'] = jsonEncode(product.toJson());
+    for (var image in images) {
+      if (image != null) {
+        request.files.add(await http.MultipartFile.fromPath('images', image.path));
       }
-      var response = await request.send();
-      if (response.statusCode != 200) {
-        throw Exception('Failed to load product : ${response.statusCode}');
-      }
-      //var responseString = await response.stream.bytesToString();;
+    }
+    var response = await request.send();
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load product: ${response.statusCode}');
+    }
   }
 
   static Future<void> updateProduct(String productId, Product product, BuildContext context, List<File?> images) async {
-    final uri = Uri.parse('$HTTPS/api/products/update?productId=$productId');
-    final request = http.MultipartRequest('PUT', uri);
+    String baseUrl = await HTTP();
+    var request = http.MultipartRequest('PUT', Uri.parse('$baseUrl$port/api/products/update?productId=$productId'));
     request.fields['product'] = jsonEncode(product.toJson());
-    for (var i = 0; i < images.length; i++) {
-      var image = images[i];
+    for (var image in images) {
       if (image != null) {
-        request.files.add(
-          await http.MultipartFile.fromPath(
-            'images',
-            image.path,
-          ),
-        );
+        request.files.add(await http.MultipartFile.fromPath('images', image.path));
       }
     }
-    final response = await request.send();
+    var response = await request.send();
     if (response.statusCode != 200) {
       throw Exception('Failed to update product: ${response.statusCode}');
     }
   }
 
   static Future<void> deleteProduct(String productId, BuildContext context) async {
-    final String url = '$HTTPS/api/products/delete?productId=$productId';
-    final response = await http.delete(Uri.parse(url));
+    String baseUrl = await HTTP();
+    var response = await http.delete(Uri.parse('$baseUrl$port/api/products/delete?productId=$productId'));
     if (response.statusCode == 200) {
       Functions.showSnackBar('Product successfully deleted', context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MyNavigationBar(initialScreenIndex: 1)),
+      );
+    } else {
+      throw Exception('Failed to delete product: ${response.statusCode}');
     }
-    else {
-      throw Exception('Failed to update product: ${response.statusCode}');
-    }
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const MyNavigationBar(initialScreenIndex: 1)),
-    );
   }
 
   static Future<List<Product>> fetchUserProducts(int page, int limit) async {
+    String baseUrl = await HTTP();
     final userId = Online.user.userID;
-    List<Product> products = [];
-    final response = await http.get(
-      Uri.parse('$HTTPS/api/products/get_my_products?userId=$userId&page=$page&limit=$limit'),
+    var response = await http.get(
+      Uri.parse('$baseUrl$port/api/products/get_my_products?userId=$userId&page=$page&limit=$limit'),
     );
     if (response.statusCode == 200) {
-      final List<dynamic> productData = json.decode(response.body);
-      for (int i = 0; i < productData.length; ++i) {
-        products.add(Product.fromJson(productData[i]));
-      }
+      var productData = json.decode(response.body) as List<dynamic>;
+      return productData.map((e) => Product.fromJson(e)).toList();
+    } else {
+      throw Exception('Error: ${response.statusCode}');
     }
-    else {
-      throw ErrorHint("Error : ${response.statusCode}");
-    }
-    return products;
   }
 
   static Future<List<Product>> fetchProducts(int page, int limit, String query) async {
-    List<Product> products = [];
-    final response = await http.get(
-      Uri.parse('$HTTPS/api/products/get_products?page=$page&limit=$limit&query=$query'),
+    String baseUrl = await HTTP();
+    var response = await http.get(
+      Uri.parse('$baseUrl$port/api/products/get_products?page=$page&limit=$limit&query=$query'),
     );
     if (response.statusCode == 200) {
-      final List<dynamic> productData = json.decode(response.body);
-      for (int i = 0; i < productData.length; ++i) {
-        products.add(Product.fromJson(productData[i]));
-      }
+      var productData = json.decode(response.body) as List<dynamic>;
+      return productData.map((e) => Product.fromJson(e)).toList();
+    } else {
+      throw Exception('Error: ${response.statusCode}');
     }
-    else {
-      throw ErrorHint("Error : ${response.statusCode}");
-    }
-    return products;
   }
 
   static Future<List<String>> fetchProductUrlList(String productId) async {
-    final response = await http.get(
-      Uri.parse('$HTTPS/api/products/get_product_image_list?productId=$productId'),
+    String baseUrl = await HTTP();
+    var response = await http.get(
+      Uri.parse('$baseUrl$port/api/products/get_product_image_list?productId=$productId'),
     );
     if (response.statusCode == 200) {
-      final List<dynamic> dynamicList = json.decode(response.body);
-      final List<String> urlList = List<String>.from(dynamicList); 
-      return urlList;
+      var dynamicList = json.decode(response.body) as List<dynamic>;
+      return List<String>.from(dynamicList);
     } else {
-      throw Exception('Failed to load product urlList: ${response.statusCode}');
+      throw Exception('Failed to load product URL list: ${response.statusCode}');
     }
   }
-
-
 }

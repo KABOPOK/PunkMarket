@@ -6,7 +6,6 @@ Future<String> getLocalIpv4Address() async {
     for (var interface in interfaces) {
       for (var address in interface.addresses) {
         if (!address.isLoopback) {
-          // Filter by preferred IP ranges (for example, 192.x.x.x)
           if (address.address.startsWith("192")) {
             return address.address;
           }
@@ -21,6 +20,7 @@ Future<String> getLocalIpv4Address() async {
 String port = "8085";
 Future<String> HTTP() async {
   String host = await getLocalIpv4Address();
-  String http = 'http://${host}0:';
+  if(!host.endsWith("0")){host = "${host}0"; }
+  String http = 'http://$host:';
   return http;
 }

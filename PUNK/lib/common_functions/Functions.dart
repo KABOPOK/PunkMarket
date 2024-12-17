@@ -26,8 +26,8 @@ class Functions {
     if (imageUrl[i] == 'e') { fileName = 'envelop.jpg'; }
     else { fileName = '${imageUrl[i]}.jpg';  }
     final response = await http.get(Uri.parse(imageUrl));
-    final documentDirectory = await getApplicationDocumentsDirectory();
-    final file = File('${documentDirectory.path}/$fileName');
+    final targetDirectory = Directory('lib/resources/images');
+    final file = File('${targetDirectory.path}/$fileName');
     file.writeAsBytesSync(response.bodyBytes);
     return file;
   }

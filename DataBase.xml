@@ -51,34 +51,6 @@
                 <foreignKey field="product_id" references="products(product_id)" onDelete="CASCADE" />
             </integrityConstraints>
         </table>
-
-        <table name="chats">
-            <dataConstraints>
-                <field name="chat_id" type="UUID" primaryKey="true" unique="true" notNull="true" />
-                <field name="other_name" type="TEXT" notNull="true" />
-                <field name="other_photo_url" type="TEXT" nullable="true" />
-                <field name="other_chat_id" type="UUID" notNull="true" />
-                <field name="user_id" type="UUID" notNull="true" />
-            </dataConstraints>
-            <integrityConstraints>
-                <primaryKey>chat_id</primaryKey>
-                <foreignKey field="user_id" references="users(user_id)" onDelete="CASCADE" />
-            </integrityConstraints>
-        </table>
-
-        <table name="messages">
-            <dataConstraints>
-                <field name="message_id" type="UUID" primaryKey="true" unique="true" notNull="true" />
-                <field name="text" type="TEXT" notNull="true" />
-                <field name="time" type="TIMESTAMP" notNull="true" />
-                <field name="chat_id" type="UUID" notNull="true" />
-                <field name="user_id" type="UUID" notNull="true" />
-            </dataConstraints>
-            <integrityConstraints>
-                <primaryKey>message_id</primaryKey>
-                <foreignKey field="user_id" references="users(user_id)" onDelete="CASCADE" />
-            </integrityConstraints>
-        </table>
     </data>
 
     <userRoles>

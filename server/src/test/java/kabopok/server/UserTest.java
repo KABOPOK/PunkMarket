@@ -8,17 +8,16 @@ import kabopok.server.mappers.UserMapper;
 import kabopok.server.minio.StorageService;
 import kabopok.server.repositories.UserRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -151,10 +150,27 @@ public class UserTest extends AbstractTest {
     userRepository.save(user);
     // When
     String url = "/api/users/delete?userId=" + user.getUserID();
-    ResponseEntity<Void> response = httpSteps.sendDeleteRequest(url);
+    ResponseEntity<Void> response = httpSteps.sendRequestWithoutBodyVoid(url, HttpMethod.DELETE);
     // Then
     assertEquals(200, response.getStatusCode().value());
     assertFalse(userRepository.existsById(user.getUserID()));
+  }
+
+  @Test
+  public void reportOnUserTest() {
+    // Given
+    User user = SampleObjectGenerator.createSampleUser();
+    Resource resource = new ClassPathResource("images/photo.jpg");
+    storageService.uploadFile("users", user.getUserID().toString(), resource);
+    user.setPhotoUrl(storageService.generateImageUrl("users", user.getUserID().toString()));
+    userRepository.save(user);
+    // When
+    String url = "/api/users/report?userId=" + user.getUserID();
+    ResponseEntity<Void> response = httpSteps.sendRequestWithoutBodyVoid(url, HttpMethod.PUT);
+    // Then
+    assertEquals(200, response.getStatusCode().value());
+    List<User> userList = userRepository.findAll();
+    assertTrue(userList.get(0).getIsReported());
   }
 
 }

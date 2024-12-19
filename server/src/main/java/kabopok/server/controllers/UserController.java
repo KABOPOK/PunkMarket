@@ -56,4 +56,9 @@ public class UserController implements UserApi {
     return productMapper.map(userService.getMyFavProducts(UUID.fromString(userId)));
   }
 
+  @Override
+  public void reportOnUser(UUID userId) {
+    userService.reportOnUser(userId);
+  }
+
 }

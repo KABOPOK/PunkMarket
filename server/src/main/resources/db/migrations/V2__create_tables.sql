@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS users (
     user_name TEXT NOT NULL,
     photo_url TEXT,
     location TEXT,
-    telegram_id TEXT
+    telegram_id TEXT,
+    is_reported BOOLEAN DEFAULT false
 );
 CREATE TABLE IF NOT EXISTS products (
     product_id UUID PRIMARY KEY,
@@ -19,6 +20,7 @@ CREATE TABLE IF NOT EXISTS products (
     category TEXT,
     user_id UUID NOT NULL,
     is_sold BOOLEAN DEFAULT false,
+    is_reported BOOLEAN DEFAULT false,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 -- CREATE TABLE IF NOT EXISTS chats (

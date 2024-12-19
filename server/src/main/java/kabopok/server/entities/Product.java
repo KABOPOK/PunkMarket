@@ -54,6 +54,9 @@ public class Product {
   @Column(name = "is_sold")
   private Boolean isSold;
 
+  @Column(name = "is_reported")
+  private Boolean isReported;
+
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "user_id")
   private User user;

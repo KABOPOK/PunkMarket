@@ -7,16 +7,14 @@ import kabopok.server.mappers.ProductMapper;
 import kabopok.server.repositories.ProductRepository;
 import kabopok.server.repositories.UserRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -29,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProductTest extends AbstractTest {
 
   @Autowired
@@ -48,7 +45,6 @@ public class ProductTest extends AbstractTest {
   }
 
   @Test
-  @Order(1)
   public void createProductDBTest() {
     // Given
     User user = createSampleUser();
@@ -92,7 +88,6 @@ public class ProductTest extends AbstractTest {
   // }
 
   @Test
-  @Order(2)
   public void deleteProductTest() {
     // Given
     User user = createSampleUser();
@@ -103,14 +98,13 @@ public class ProductTest extends AbstractTest {
     ProductDTO productDTO = productMapper.map(product);
     productDTO.setUserID(user.getUserID());
     String url = "/api/products/delete?productId=" + product.getProductID();
-    ResponseEntity<Void> response = httpSteps.sendDeleteRequest(url);
+    ResponseEntity<Void> response = httpSteps.sendRequestWithoutBodyVoid(url, HttpMethod.DELETE);
     // Then
     assertEquals(200, response.getStatusCode().value());
     assertFalse(productRepository.existsById(product.getProductID()));
   }
 
   @Test
-  @Order(3)
   public void updateProductTest() {
     // Given
     User user = createSampleUser();
@@ -138,7 +132,6 @@ public class ProductTest extends AbstractTest {
   }
 
   @Test
-  @Order(4)
   public void getProductsTest() {
     // Given
     User user = createSampleUser();
@@ -163,7 +156,6 @@ public class ProductTest extends AbstractTest {
   }
 
   @Test
-  @Order(5)
   public void getMyProductsTest() {
     // Given
     User user = createSampleUser();
@@ -200,7 +192,6 @@ public class ProductTest extends AbstractTest {
   }
 
   @Test
-  @Order(2)
   public void sellProductTest() {
     // Given
     User user = createSampleUser();
@@ -211,11 +202,29 @@ public class ProductTest extends AbstractTest {
     ProductDTO productDTO = productMapper.map(product);
     productDTO.setUserID(user.getUserID());
     String url = "/api/products/sell?productId=" + product.getProductID();
-    ResponseEntity<Void> response = httpSteps.sendSellRequest(url);
+    ResponseEntity<Void> response = httpSteps.sendRequestWithoutBodyVoid(url, HttpMethod.PUT);
     // Then
     assertEquals(200, response.getStatusCode().value());
     List<Product> productList = productRepository.findAll();
     assertTrue(productList.get(0).getIsSold());
+  }
+
+  @Test
+  public void reportOnProductTest() {
+    // Given
+    User user = createSampleUser();
+    userRepository.save(user);
+    Product product = createSampleProduct(user);
+    productRepository.save(product);
+    // When
+    ProductDTO productDTO = productMapper.map(product);
+    productDTO.setUserID(user.getUserID());
+    String url = "/api/products/report?productId=" + product.getProductID();
+    ResponseEntity<Void> response = httpSteps.sendRequestWithoutBodyVoid(url, HttpMethod.PUT);
+    // Then
+    assertEquals(200, response.getStatusCode().value());
+    List<Product> productList = productRepository.findAll();
+    assertTrue(productList.get(0).getIsReported());
   }
 
 }

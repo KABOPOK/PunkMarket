@@ -80,4 +80,10 @@ public class UserService extends DefaultService {
     return user.getProductsWish();
   }
 
+  public void reportOnUser(UUID userId) {
+    User user = getOrThrow(userId, userRepository::findById);
+    user.setIsReported(true);
+    userRepository.save(user);
+  }
+
 }

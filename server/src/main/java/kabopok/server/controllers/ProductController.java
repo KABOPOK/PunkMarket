@@ -59,6 +59,11 @@ public class ProductController implements ProductApi {
   }
 
   @Override
+  public void reportOnProduct(UUID productId) {
+    productService.reportOnProduct(productId);
+  }
+
+  @Override
   public void updateProduct(UUID productId, ProductDTO productDTO, List<MultipartFile> images) {
     Product updatedProduct = productMapper.map(productDTO);
     productService.updateProduct(productId, updatedProduct, images);

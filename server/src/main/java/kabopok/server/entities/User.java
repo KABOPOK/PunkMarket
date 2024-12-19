@@ -48,6 +48,9 @@ public class User {
   @Column(name = "telegram_id", length = 30)
   private String telegramID;
 
+  @Column(name = "is_reported")
+  private Boolean isReported;
+
   @OneToMany(mappedBy = "user")
   private List<Product> products;
 

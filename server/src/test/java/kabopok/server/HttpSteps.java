@@ -81,19 +81,10 @@ public class HttpSteps {
     );
   }
 
-  public ResponseEntity<Void> sendDeleteRequest(String url) {
+  public ResponseEntity<Void> sendRequestWithoutBodyVoid(String url, HttpMethod method) {
     return testRestTemplate.exchange(
             url,
-            HttpMethod.DELETE,
-            null,
-            Void.class
-    );
-  }
-
-  public ResponseEntity<Void> sendSellRequest(String url) {
-    return testRestTemplate.exchange(
-            url,
-            HttpMethod.PUT,
+            method,
             null,
             Void.class
     );

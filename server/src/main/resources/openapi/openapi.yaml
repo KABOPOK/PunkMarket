@@ -100,6 +100,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserDTO'
+  /api/users/report:
+    put:
+      tags:
+        - User
+      operationId: ReportOnUser
+      summary: Report on user by userId
+      description: Report on user by its unique `userId`.
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID (UUID) of the user to report.
+      responses:
+        '200':
+          description: User was Reported
+
   /api/products/create:
     post:
       tags:
@@ -340,7 +359,24 @@ paths:
       responses:
         '200':
           description: Product successfully sold
-
+  /api/products/report:
+    put:
+      tags:
+        - Product
+      operationId: ReportOnProduct
+      summary: Report on product by productId
+      description: Report on product by its unique `productId`.
+      parameters:
+        - in: query
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID (UUID) of the product to report.
+      responses:
+        '200':
+          description: Product was Reported
 components:
   schemas:
     UserDTO:
@@ -367,6 +403,9 @@ components:
         telegramID:
           type: string
           maxLength: 30
+        isReported:
+          type: boolean
+          description: Is it any reports on products
     IdDTO:
       type: object
       properties:
@@ -419,6 +458,9 @@ components:
           type: boolean
           description: Condition of product sold/not
           readOnly: true
+        isReported:
+          type: boolean
+          description: Is it any reports on products
         userID:
           type: string
           format: uuid

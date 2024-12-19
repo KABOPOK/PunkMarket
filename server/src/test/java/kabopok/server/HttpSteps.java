@@ -90,6 +90,15 @@ public class HttpSteps {
     );
   }
 
+  public ResponseEntity<Void> sendSellRequest(String url) {
+    return testRestTemplate.exchange(
+            url,
+            HttpMethod.PUT,
+            null,
+            Void.class
+    );
+  }
+
   public ResponseEntity<UserDTO> sendAuthorizeUserRequest(String url, LoginDataDTO loginData) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);

@@ -322,7 +322,24 @@ paths:
                 items:
                   type: string
                   description: List of URLs related to the product
-
+  /api/products/sell:
+    put:
+      tags:
+        - Product
+      operationId: sellProduct
+      summary: Sell Product by productId
+      description: Sell a product by its unique identifier (productId).
+      parameters:
+        - in: query
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID of the product to delete.
+      responses:
+        '200':
+          description: Product successfully sold
 
 components:
   schemas:
@@ -398,6 +415,10 @@ components:
         category:
           type: string
           description: Category of the product
+        isSold:
+          type: boolean
+          description: Condition of product sold/not
+          readOnly: true
         userID:
           type: string
           format: uuid

@@ -41,6 +41,11 @@ public class ProductController implements ProductApi {
   }
 
   @Override
+  public void sellProduct(UUID productId) {
+    productService.sellProduct(productId);
+  }
+
+  @Override
   @Transactional
   public List<String> getProductUrlList(String productId) {
     Product product = productService.getProduct(productId);

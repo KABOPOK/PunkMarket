@@ -72,4 +72,10 @@ public class ProductService extends DefaultService {
     return getOrThrow(UUID.fromString(productId), productRepository::findById);
   }
 
+  public void sellProduct(UUID productId) {
+    Product product  = getOrThrow(productId, productRepository::findById);
+    product.setIsSold(true);
+    productRepository.save(product);
+  }
+
 }

@@ -118,6 +118,28 @@ paths:
       responses:
         '200':
           description: User was Reported
+  /api/users/get_fav_products:
+    get:
+      tags:
+        - User
+      summary: Retrieve user's wishlist
+      operationId: getWishlist
+      parameters:
+        - name: userId
+          in: query
+          description: Unique identifier for the user
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved wishlist
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductDTO'
 
   /api/products/create:
     post:
@@ -267,28 +289,42 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/ProductDTO'
-  /api/users/get_fav_products:
-    get:
+  /api/products/sell:
+    put:
       tags:
-        - User
-      summary: Retrieve user's wishlist
-      operationId: getWishlist
+        - Product
+      operationId: sellProduct
+      summary: Sell Product by productId
+      description: Sell a product by its unique identifier (productId).
       parameters:
-        - name: userId
-          in: query
-          description: Unique identifier for the user
+        - in: query
+          name: productId
           required: true
           schema:
             type: string
+            format: uuid
+          description: The unique ID of the product to delete.
       responses:
         '200':
-          description: Successfully retrieved wishlist
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProductDTO'
+          description: Product successfully sold
+  /api/products/report:
+    put:
+      tags:
+        - Product
+      operationId: ReportOnProduct
+      summary: Report on product by productId
+      description: Report on product by its unique `productId`.
+      parameters:
+        - in: query
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID (UUID) of the product to report.
+      responses:
+        '200':
+          description: Product was Reported
 
   /api/users/add_to_wishlist:
     post:
@@ -341,42 +377,78 @@ paths:
                 items:
                   type: string
                   description: List of URLs related to the product
-  /api/products/sell:
-    put:
+
+
+
+  /api/moderator/login:
+    get:
       tags:
-        - Product
-      operationId: sellProduct
-      summary: Sell Product by productId
-      description: Sell a product by its unique identifier (productId).
+        - Moderator
+      operationId: isModerator
+      summary: check is it moderator
+      description: check is it moderator
       parameters:
         - in: query
-          name: productId
+          name: moderatorKey
           required: true
           schema:
             type: string
             format: uuid
-          description: The unique ID of the product to delete.
+          description: The moderator key
       responses:
         '200':
-          description: Product successfully sold
-  /api/products/report:
-    put:
+          description: Product successfully deleted
+          content:
+            application/json:
+              schema:
+                type: boolean
+                description: is it the moderator
+  /api/moderator/get_products:
+    get:
       tags:
-        - Product
-      operationId: ReportOnProduct
-      summary: Report on product by productId
-      description: Report on product by its unique `productId`.
+        - Moderator
+      summary: Retrieve list of reported products
+      operationId: getReportedProducts
       parameters:
-        - in: query
-          name: productId
+        - name: key
+          in: query
+          description: The user Id
           required: true
           schema:
             type: string
             format: uuid
-          description: The unique ID (UUID) of the product to report.
       responses:
         '200':
-          description: Product was Reported
+          description: A list of repoeted products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductDTO'
+  /api/moderator/get_users:
+    get:
+      tags:
+        - Moderator
+      summary: Retrieve list of reported users
+      operationId: getReportedUsers
+      parameters:
+        - name: key
+          in: query
+          description: The moderator key
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: A list of reported users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
 components:
   schemas:
     UserDTO:

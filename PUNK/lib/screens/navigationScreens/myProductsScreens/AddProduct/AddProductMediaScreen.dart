@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../../clases/Product.dart';
-import '../../../common_functions/Functions.dart';
-import '../../../services/ProductService.dart';
-import '../../../supplies/app_colors.dart';
-import '../../../widgets/barWidgets/MyNavigationBarWidget.dart';
+import '../../../../../clases/Product.dart';
+import '../../../../common_functions/Functions.dart';
+import '../../../../services/ProductService.dart';
+import '../../../../supplies/app_colors.dart';
+import '../../../../widgets/barWidgets/MyNavigationBarWidget.dart';
 
 class AddProductMediaScreen extends StatefulWidget {
   final Product product;

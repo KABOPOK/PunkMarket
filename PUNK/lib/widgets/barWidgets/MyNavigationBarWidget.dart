@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:punk/screens/navigationScreens/profileScreens/MyProfileScreen.dart';
-import 'package:punk/screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
+import 'package:punk/screens/navigationScreens/myProductsScreens/ProductsScreens/MyProductListScreen.dart';
 import 'package:punk/screens/navigationScreens/productListScreens/ProductListScreen.dart';
-import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductScreen.dart';
+import 'package:punk/screens/navigationScreens/myProductsScreens/AddProduct/AddProductScreen.dart';
 
 import '../../supplies/app_colors.dart';
 

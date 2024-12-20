@@ -100,7 +100,7 @@ class _ProductCardState extends State<ProductCard> {
                   child: ElevatedButton.icon(
                     onPressed: widget.onAddToCart,
                     icon: const Icon(Icons.add_shopping_cart, color: AppColors.icons,),
-                    label: const Text("Add to Cart", style: TextStyle(color: AppColors.primaryText)),
+                    label: const Text("Купить", style: TextStyle(color: AppColors.primaryText)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.accentHover,
                       shape: RoundedRectangleBorder(

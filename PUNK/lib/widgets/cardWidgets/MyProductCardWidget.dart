@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:punk/services/ProductService.dart';
 
 import '../../clases/Product.dart';
-import '../../screens/navigationScreens/myProductsScreens/EditProduct.dart';
+import '../../screens/navigationScreens/myProductsScreens/EditProduct/EditProduct.dart';
 import '../../supplies/app_colors.dart';
 
-class MyProduct extends StatelessWidget {
+class MyProduct extends StatefulWidget {
   final String photoUrl;
   final String title;
   final String price;
@@ -13,6 +13,7 @@ class MyProduct extends StatelessWidget {
   final String description;
   final String productID;
   final String userID;
+  final bool isSold;
 
   const MyProduct({
     Key? key,
@@ -23,75 +24,83 @@ class MyProduct extends StatelessWidget {
     required this.description,
     required this.productID,
     required this.userID,
+    required this.isSold,
   }) : super(key: key);
 
-  void _handleMenuSelection(String choice, String productId, BuildContext context) {
+  @override
+  _MyProductState createState() => _MyProductState();
+}
+
+class _MyProductState extends State<MyProduct> {
+  Future<bool> _handleMenuSelection(String choice, String productId, BuildContext context) async {
     switch (choice) {
       case 'edit':
-      // Navigate to the Edit Product Screen
-        Navigator.push(
+        final result = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ProductEditingScreen(
               product: Product(
-                productID: productID,
-                title: title,
-                price: price,
-                ownerName: owner,
-                description: description,
-                userID: userID,
-                photoUrl: photoUrl,
-                //category: null, // Use the actual category if available
-                location: '', // Use the actual location if available
-                //paymentMethod: null, // Use the actual payment method if available
+                productID: widget.productID,
+                title: widget.title,
+                price: widget.price,
+                ownerName: widget.owner,
+                description: widget.description,
+                userID: widget.userID,
+                photoUrl: widget.photoUrl,
+                location: '', // Add actual location if available
               ),
             ),
           ),
         );
-        break;
-      case 'reserve':
+        return result == true;
+
+      case 'sell':
+        ProductService.sellProduct(widget.productID, context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('RESERVE')),
+          const SnackBar(content: Text('Product moved to sold')),
         );
         break;
       case 'delete':
         _confirmDelete(productId, context);
         break;
     }
+    return false;
   }
 
-
-  void _confirmDelete(String product, BuildContext context) {
+  void _confirmDelete(String productId, BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: AppColors.secondaryBackground,
-          title: const Text('Подтверждение удаления',style: TextStyle(color: AppColors.primaryText),),
-          content: const Text('Вы точно хотите удалить этот товар?',style: TextStyle(color: AppColors.primaryText),),
+          title: const Text('Подтверждение удаления', style: TextStyle(color: AppColors.primaryText)),
+          content: const Text('Вы точно хотите удалить этот товар?', style: TextStyle(color: AppColors.primaryText)),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
+                setState(() {});
               },
-              child: const Text('Нет', style: TextStyle(color: AppColors.primaryText),),
+              child: const Text('Нет', style: TextStyle(color: AppColors.primaryText)),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                ProductService.deleteProduct(product, context); // Call delete
+                Navigator.of(context).pop();
+                ProductService.deleteProduct(productId, context);
+                setState(() {}); // Ensure UI updates after deletion
               },
-              child: const Text('Да', style: TextStyle(color: AppColors.primaryText),),
+              child: const Text('Да', style: TextStyle(color: AppColors.primaryText)),
             ),
           ],
         );
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final imageHeight = screenWidth * 0.5; // Adjust image height based on screen width
+    final imageHeight = screenWidth * 0.5;
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -105,40 +114,46 @@ class MyProduct extends StatelessWidget {
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                 child: Image.network(
-                  photoUrl,
+                  widget.photoUrl,
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: imageHeight,
                 ),
               ),
-              // Menu PopUp
               Positioned(
-                  top: 10,
-                  right: 10,
-                  child: PopupMenuButton<String>(
-                    color: AppColors.secondaryBackground,
-                    icon: const Icon(
-                      Icons.more_horiz_rounded,
-                      color: AppColors.icons,
+                top: 10,
+                right: 10,
+                child: widget.isSold
+                    ? Container() // Display nothing if the product is sold
+                    : PopupMenuButton<String>(
+                  color: AppColors.secondaryBackground,
+                  icon: const Icon(
+                    Icons.more_horiz_rounded,
+                    color: AppColors.icons,
+                  ),
+                  onSelected: (choice) async {
+                    final result = await _handleMenuSelection(choice, widget.productID, context);
+                    if (result) {
+                      setState(() {}); // Trigger UI update if necessary
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'edit',
+                      child: Text('Редактировать', style: TextStyle(color: AppColors.primaryText)),
                     ),
-                    onSelected: (choice) => _handleMenuSelection(choice, productID, context),
-                    itemBuilder: (BuildContext context)=><PopupMenuEntry<String>>[
-                      const PopupMenuItem<String>(
-                          value: 'edit',
-                          child: Text('Редактировать', style: TextStyle(color: AppColors.primaryText),)
-                      ),
-                      const PopupMenuItem<String>(
-                          value: 'reserve',
-                          child: Text('Забронировать', style: TextStyle(color: AppColors.primaryText),)
-                      ),
-                      const PopupMenuItem<String>(
-                          value: 'delete',
-                          child: Text('Удалить', style: TextStyle(color: AppColors.primaryText),)
-                      ),
-                    ],
-                  )
+                    const PopupMenuItem<String>(
+                      value: 'sell',
+                      child: Text('Архивировать', style: TextStyle(color: AppColors.primaryText)),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'delete',
+                      child: Text('Удалить', style: TextStyle(color: AppColors.primaryText)),
+                    ),
+                  ],
+                ),
               ),
-              //Price tag
+
               Positioned(
                 bottom: 10,
                 left: 10,
@@ -149,7 +164,7 @@ class MyProduct extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    price,
+                    widget.price,
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -160,14 +175,13 @@ class MyProduct extends StatelessWidget {
               ),
             ],
           ),
-
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  widget.title,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -178,7 +192,7 @@ class MyProduct extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  owner,
+                  widget.owner,
                   style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.secondaryText,
@@ -186,40 +200,12 @@ class MyProduct extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  description,
+                  widget.description,
                   style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.secondaryText,
                   ),
                   maxLines: 1,
-                ),
-                const SizedBox(height: 8),
-                // Menu PopUp
-                Positioned(
-                    top: 10,
-                    right: 10,
-                    child: PopupMenuButton<String>(
-                      color: AppColors.secondaryBackground,
-                      icon: const Icon(
-                        Icons.more_horiz_rounded,
-                        color: AppColors.icons,
-                      ),
-                      onSelected: (choice) => _handleMenuSelection(choice, productID, context),
-                      itemBuilder: (BuildContext context)=><PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
-                            value: 'edit',
-                            child: Text('Редактировать',style: TextStyle(color: AppColors.primaryText),)
-                        ),
-                        const PopupMenuItem<String>(
-                            value: 'reserve',
-                            child: Text('Забронировать',style: TextStyle(color: AppColors.primaryText),)
-                        ),
-                        const PopupMenuItem<String>(
-                            value: 'delete',
-                            child: Text('Удалить',style: TextStyle(color: AppColors.primaryText),)
-                        ),
-                      ],
-                    )
                 ),
               ],
             ),

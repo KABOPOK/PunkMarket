@@ -109,6 +109,15 @@ class ProductService {
       throw Exception('Failed to load product urlList: ${response.statusCode}');
     }
   }
-
+  static Future<void> sellProduct(String productId, BuildContext context) async {
+    final String url = '$HTTPS/api/products/sell?productId=$productId';
+    final response = await http.put(Uri.parse(url));
+    if (response.statusCode == 200) {
+      Functions.showSnackBar('Product successfully sold', context);
+    }
+    else {
+      throw Exception('Failed to sell product: ${response.statusCode}');
+    }
+  }
 
 }

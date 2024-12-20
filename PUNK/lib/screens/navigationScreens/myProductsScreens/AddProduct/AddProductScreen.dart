@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:punk/Online/Online.dart';
-import 'package:punk/screens/navigationScreens/myProductsScreens/AddProductMediaScreen.dart';
+import 'package:punk/screens/navigationScreens/myProductsScreens/AddProduct/AddProductMediaScreen.dart';
 import 'package:punk/clases/Product.dart';
 import 'package:punk/common_functions/Functions.dart';
 
-import '../../../supplies/app_colors.dart';
+import '../../../../supplies/app_colors.dart';
 
 class ProductAdditionScreen extends StatefulWidget {
   @override

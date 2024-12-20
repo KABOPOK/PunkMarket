@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:punk/clases/Product.dart';
 
-import '../../../Online/Online.dart';
-import '../../../supplies/app_colors.dart';
+import '../../../../Online/Online.dart';
+import '../../../../supplies/app_colors.dart';
 import 'EditProductMedia.dart';
 
 class ProductEditingScreen extends StatefulWidget {

@@ -54,7 +54,6 @@ class UserService {
   }
   static Future<List<Product>> fetchWishlistProducts(int page, int limit) async {
     final userId = Online.user.userID;
-    final productId = Online.user.userID;
     List<Product> products = [];
     final response = await http.get(
       Uri.parse('$HTTPS/api/users/get_fav_products?userId=$userId'),

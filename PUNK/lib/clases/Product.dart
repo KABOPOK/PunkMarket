@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../Online/Online.dart';
@@ -13,6 +15,8 @@ class Product {
   String description;
   String category;
   String userID;
+  bool isSold;
+  bool isReported;
 
   // Empty constructor
   Product({
@@ -25,6 +29,8 @@ class Product {
     this.description = '',
     this.category = '',
     this.userID = '',
+    this.isSold = false,
+    this.isReported = false,
   });
 
   // Method to convert Product object to JSON
@@ -39,6 +45,8 @@ class Product {
       'description': description,
       'category': category,
       'userID': Online.user.userID,
+      'isSold' : isSold,
+      'isReported' : isReported,
     };
   }
 
@@ -54,6 +62,8 @@ class Product {
       description: json['description'] ?? '',
       category: json['category'] ?? '',
       userID: json['userID'] ?? '',
+      isSold: json['isSold'] ?? '',
+      isReported: json['isReported'] ?? '',
     );
   }
 

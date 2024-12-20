@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:punk/services/UserService.dart';
+import 'package:punk/supplies/product_list.dart';
 import '../../../common_functions/Functions.dart';
 import '../../../services/ProductService.dart';
 import '../../../supplies/app_colors.dart';
@@ -10,6 +12,8 @@ class ProductScreen extends StatefulWidget {
   final String owner;
   final String description;
   final String productID;
+  final String userID;
+  final bool isReported;
 
   const ProductScreen({
     Key? key,
@@ -18,6 +22,8 @@ class ProductScreen extends StatefulWidget {
     required this.owner,
     required this.description,
     required this.productID,
+    required this.userID,
+    required this.isReported,
   }) : super(key: key);
 
   @override
@@ -88,6 +94,23 @@ class _ProductScreenState extends State<ProductScreen> {
     );
   }
 
+  void _handleMenuSelection(String choice, BuildContext context) {
+    switch (choice) {
+      case 'report_user':
+          UserService.reportUser(widget.userID, context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('The owner of this product had been reported')),
+          );
+        break;
+      case 'report_product':
+        ProductService.reportProduct(widget.productID, context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('This product had been reported')),
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,6 +130,27 @@ class _ProductScreenState extends State<ProductScreen> {
             Navigator.pop(context);
           },
         ),
+        actions: [
+          PopupMenuButton<String>(
+            color: AppColors.secondaryBackground,
+            icon: const Icon(
+              Icons.more_horiz_rounded,
+              color: AppColors.icons,
+              size: 30,
+            ),
+            onSelected: (choice) => _handleMenuSelection(choice, context),
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'report_user',
+                child: Text('Report owner', style: TextStyle(color: AppColors.primaryText),),
+              ),
+              const PopupMenuItem<String>(
+                value: 'report_product',
+                child: Text('Report product', style: TextStyle(color: AppColors.primaryText),),
+              ),
+            ],
+          ),
+        ],
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

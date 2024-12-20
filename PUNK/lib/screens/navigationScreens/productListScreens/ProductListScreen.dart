@@ -357,6 +357,8 @@ class _ProductListPageState extends State<ProductListPage> {
                             owner: product.ownerName,
                             description: product.description,
                             productID: product.productID,
+                            userID: product.userID,
+                            isReported: product.isReported,
                           ),
                         ),
                       );

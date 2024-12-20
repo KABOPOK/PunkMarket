@@ -117,6 +117,16 @@ class UserService {
       );
     }
   }
+  static Future<void> reportUser(String userId, BuildContext context) async {
+    final String url = '$HTTPS/api/users/report?userId=$userId';
+    final response = await http.put(Uri.parse(url));
+    if (response.statusCode == 200) {
+      Functions.showSnackBar('User was reported', context);
+    }
+    else {
+      throw Exception('Failed to report user: ${response.statusCode}');
+    }
+  }
 
 
 }

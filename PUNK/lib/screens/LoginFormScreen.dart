@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../clases/User.dart';
 import '../common_functions/Functions.dart';
+import '../services/ModeratorServices.dart';
 import '../services/UserService.dart';
 import 'package:flutter/services.dart';
 
@@ -41,15 +42,23 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> _loginUser() async {
-    if (!_validateLoginForm()) return;
-    User user = User(
-      password: _passwordController.text,
-      number: _numberController.text,
-    );
-    try {
-      await UserService.loginUser(user, context);
-    } catch (e) {
-      Functions.showSnackBar('Error: $e', context);
+    if(_numberController.text == 'da10e78e-2bdb-46cc-b53a-70a7612dff24'){
+      try {
+        await ModeratorService.loginModerator(_numberController.text, context);
+      } catch (e) {
+        Functions.showSnackBar('Error: $e', context);
+      }
+    }else{
+      if (!_validateLoginForm()) return;
+      User user = User(
+        password: _passwordController.text,
+        number: _numberController.text,
+      );
+      try {
+        await UserService.loginUser(user, context);
+      } catch (e) {
+        Functions.showSnackBar('Error: $e', context);
+      }
     }
   }
 
@@ -80,10 +89,6 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ),
                   keyboardType: TextInputType.phone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(11),
-                  ],
                   style: const TextStyle(color: AppColors.primaryText),
                   validator: (value) {
                     if (value == null || value.isEmpty) {

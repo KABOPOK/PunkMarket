@@ -148,7 +148,8 @@ class _WishListPageState extends State<WishListPage> {
                               description: product.description,
                               productID: product.productID,
                               title: product.title,
-                              //userID: product.userID,
+                              userID: product.userID,
+                              isReported: product.isReported,
                             ),
                           ),
                         );

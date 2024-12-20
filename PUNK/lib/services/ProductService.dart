@@ -120,4 +120,15 @@ class ProductService {
     }
   }
 
+  static Future<void> reportProduct(String productId, BuildContext context) async {
+    final String url = '$HTTPS/api/products/report?productId=$productId';
+    final response = await http.put(Uri.parse(url));
+    if (response.statusCode == 200) {
+      Functions.showSnackBar('Product was reported', context);
+    }
+    else {
+      throw Exception('Failed to report product: ${response.statusCode}');
+    }
+  }
+
 }

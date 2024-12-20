@@ -10,6 +10,7 @@ class User {
   String photoUrl;
   String location;
   String telegramID;
+  bool isReported;
 
   User({
     this.userID = '',
@@ -19,6 +20,7 @@ class User {
     this.photoUrl = '',
     this.location = '',
     this.telegramID = '',
+    this.isReported = false,
   });
 
   Map<String, dynamic> toUserDTO() {

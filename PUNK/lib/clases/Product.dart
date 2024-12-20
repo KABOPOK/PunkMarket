@@ -44,7 +44,7 @@ class Product {
       'location': location,
       'description': description,
       'category': category,
-      'userID': Online.user.userID,
+      'userID': userID,
       'isSold' : isSold,
       'isReported' : isReported,
     };

@@ -55,6 +55,7 @@ class _MyProductState extends State<MyProduct> {
         return result == true;
 
       case 'sell':
+        ProductService.sellProduct(widget.productID, context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Product moved to sold')),
         );

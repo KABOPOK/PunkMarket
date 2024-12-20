@@ -48,7 +48,8 @@ class _MyProductListPageState extends State<MyProductListPage> {
       _errorMessage = "";
     });
     try {
-      List<Product> products = await ProductService.fetchUserProducts(1, _limit);
+      List<Product> allProducts = await ProductService.fetchUserProducts(1, _limit);
+      List<Product> products = allProducts.where((product) => !product.isSold).toList();
       setState(() {
         _myProducts = products;
         _isLoading = false;

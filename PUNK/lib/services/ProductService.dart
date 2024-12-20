@@ -110,13 +110,13 @@ class ProductService {
     }
   }
   static Future<void> sellProduct(String productId, BuildContext context) async {
-    final String url = '$HTTPS/api/products/delete?productId=$productId';
-    final response = await http.delete(Uri.parse(url));
+    final String url = '$HTTPS/api/products/sell?productId=$productId';
+    final response = await http.put(Uri.parse(url));
     if (response.statusCode == 200) {
       Functions.showSnackBar('Product successfully sold', context);
     }
     else {
-      throw Exception('Failed to update product: ${response.statusCode}');
+      throw Exception('Failed to sell product: ${response.statusCode}');
     }
   }
 

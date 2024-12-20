@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../common_functions/Functions.dart';
-import '../../../services/ProductService.dart';
-import '../../../supplies/app_colors.dart';
-import '../../../widgets/cardWidgets/FullScreenImageView.dart';
+import '../../../../common_functions/Functions.dart';
+import '../../../../services/ProductService.dart';
+import '../../../../supplies/app_colors.dart';
+import '../../../../widgets/cardWidgets/FullScreenImageView.dart';
 
 class MyProductDetailScreen extends StatefulWidget {
   final String title;

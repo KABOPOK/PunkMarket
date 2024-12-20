@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:punk/clases/Product.dart';
-import '../../../services/UserService.dart';
-import '../../../widgets/cardWidgets/WishlistCardWidget.dart';
-import '../productListScreens/ProductDetailsScreen.dart';
+import '../../../../services/UserService.dart';
+import '../../../../widgets/cardWidgets/WishlistCardWidget.dart';
+import '../../productListScreens/ProductDetailsScreen.dart';
 
 
 class WishListPage extends StatefulWidget {

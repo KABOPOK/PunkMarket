@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../clases/Product.dart';
-import '../../screens/navigationScreens/myProductsScreens/MyProductListScreen.dart';
+import '../../screens/navigationScreens/myProductsScreens/ProductsScreens/MyProductListScreen.dart';
 import '../cardWidgets/MyProductCardWidget.dart';
 import '../cardWidgets/ProductCardWidget.dart';
 
@@ -50,6 +50,7 @@ class MyProductsContent extends StatelessWidget {
                   description: product.description,
                   productID: product.productID,
                   userID: product.userID,
+                  isSold: product.isSold,
               ),
             );
           },

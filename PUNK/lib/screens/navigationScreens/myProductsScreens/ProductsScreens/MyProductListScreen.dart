@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:punk/clases/Product.dart';
 import 'package:punk/services/ProductService.dart';
 import 'package:punk/services/UserService.dart';
-import '../productListScreens/ProductDetailsScreen.dart';
+import '../../productListScreens/ProductDetailsScreen.dart';
 import 'MyProductDetailScreen.dart';
 
-import '../../../supplies/app_colors.dart';
-import '../../../widgets/ProductContent/MyProductsContent.dart';
-import '../../../widgets/ProductContent/WishlistContent.dart';
+import '../../../../supplies/app_colors.dart';
+import '../../../../widgets/ProductContent/MyProductsContent.dart';
+import '../../../../widgets/ProductContent/WishlistContent.dart';
 
 class MyProductListPage extends StatefulWidget {
   final ValueNotifier<String> currentProductContent;
@@ -21,10 +21,13 @@ class MyProductListPage extends StatefulWidget {
 class _MyProductListPageState extends State<MyProductListPage> {
   List<Product> _myProducts = [];
   List<Product> _wishlistProducts = [];
+  List<Product> _soldProducts = [];
   bool _isLoading = true;
   bool _isWishlistLoading = true;
+  bool _isSoldLoading = true;
   String _errorMessage = "";
   String _wishlistErrorMessage = "";
+  String _soldErrorMessage = "";
   int _currentPage = 0;
 
   final int _limit = 20;
@@ -36,6 +39,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
     _pageController = PageController(initialPage: _currentPage);
     _fetchUserProducts();
     _fetchWishlistProducts();
+    _fetchSoldProducts();
   }
 
   Future<void> _fetchUserProducts() async {
@@ -76,12 +80,32 @@ class _MyProductListPageState extends State<MyProductListPage> {
     }
   }
 
+  Future<void> _fetchSoldProducts() async {
+    setState(() {
+      _isSoldLoading = true;
+      _soldErrorMessage = "";
+    });
+    try {
+      List<Product> products = await ProductService.fetchUserProducts(1, _limit);
+      List<Product> soldProducts = products.where((product) => product.isSold).toList();
+      setState(() {
+        _soldProducts = soldProducts;
+        _isSoldLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _soldErrorMessage = "Error: $e";
+        _isSoldLoading = false;
+      });
+    }
+  }
+
   void _onTabChanged(int pageIndex) {
     setState(() {
       _currentPage = pageIndex;
     });
     widget.currentProductContent.value =
-    pageIndex == 0 ? "MyProducts" : "Wishlist";
+    pageIndex == 0 ? "MyProducts" : pageIndex == 1 ? "Wishlist" : "MySoldProducts";
     _pageController.jumpToPage(pageIndex);
   }
 
@@ -99,6 +123,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
       ),
     );
   }
+
   void _navigateToWishlistProductDetailScreen(BuildContext context, Product product) {
     Navigator.push(
       context,
@@ -153,6 +178,21 @@ class _MyProductListPageState extends State<MyProductListPage> {
                   ),
                 ),
               ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => _onTabChanged(2),
+                  child: Container(
+                    color: _currentPage == 2
+                        ? AppColors.accentHover
+                        : AppColors.accent,
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    child: Icon(Icons.check_circle,
+                        color: _currentPage == 2
+                            ? AppColors.icons
+                            : AppColors.icons2),
+                  ),
+                ),
+              ),
             ],
           ),
 
@@ -178,6 +218,14 @@ class _MyProductListPageState extends State<MyProductListPage> {
                   myProducts: _wishlistProducts,
                   onProductTap: (product) {
                     _navigateToWishlistProductDetailScreen(context, product);
+                  },
+                ),
+                MyProductsContent(
+                  isLoading: _isSoldLoading,
+                  errorMessage: _soldErrorMessage,
+                  myProducts: _soldProducts,
+                  onProductTap: (product ) {
+                    _navigateToProductDetailScreen(context, product);
                   },
                 ),
               ],

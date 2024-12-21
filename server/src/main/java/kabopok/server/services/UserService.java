@@ -86,4 +86,10 @@ public class UserService extends DefaultService {
     userRepository.save(user);
   }
 
+  public void declineReportOnUser(UUID userId) {
+    User user = getOrThrow(userId, userRepository::findById);
+    user.setIsReported(false);
+    userRepository.save(user);
+  }
+
 }

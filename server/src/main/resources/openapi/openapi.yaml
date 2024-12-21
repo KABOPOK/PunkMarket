@@ -449,6 +449,42 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserDTO'
+  /api/moderator/decline_report_product:
+    put:
+      tags:
+        - Moderator
+      operationId: declineReportProduct
+      summary: declineReport on product by productId
+      description: declineReport on product by its unique `productId`.
+      parameters:
+        - in: query
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID (UUID) of the product for declineReport.
+      responses:
+        '200':
+          description: Product was unreported
+  /api/moderator/decline_report_user:
+    put:
+      tags:
+        - Moderator
+      operationId: declineReportUser
+      summary: declineReport on User by userId
+      description: declineReport on user by its unique `userId`.
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The unique ID (UUID) of the user for declineReport.
+      responses:
+        '200':
+          description: User was unreported
 components:
   schemas:
     UserDTO:

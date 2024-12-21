@@ -7,6 +7,8 @@ import kabopok.server.mappers.ProductMapper;
 import kabopok.server.mappers.UserMapper;
 import kabopok.server.repositories.ProductRepository;
 import kabopok.server.repositories.UserRepository;
+import kabopok.server.services.ProductService;
+import kabopok.server.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,8 +22,20 @@ public class ModeratorController implements ModeratorApi {
 
   private final ProductRepository productRepository;
   private final UserRepository userRepository;
+  private final UserService userService;
+  private final ProductService productService;
   private final ProductMapper productMapper;
   private final UserMapper userMapper;
+
+  @Override
+  public void declineReportProduct(UUID productId) {
+    productService.declineReportOnProduct(productId);
+  }
+
+  @Override
+  public void declineReportUser(UUID userId) {
+    userService.declineReportOnUser(userId);
+  }
 
   @Override
   public List<ProductDTO> getReportedProducts(UUID key) {

@@ -84,4 +84,10 @@ public class ProductService extends DefaultService {
     productRepository.save(product);
   }
 
+  public void declineReportOnProduct(UUID productId) {
+    Product product  = getOrThrow(productId, productRepository::findById);
+    product.setIsReported(false);
+    productRepository.save(product);
+  }
+
 }

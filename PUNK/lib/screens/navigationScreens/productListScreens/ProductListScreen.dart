@@ -238,7 +238,7 @@ class _ProductListPageState extends State<ProductListPage> {
       List<Product> products = await ProductService.fetchProducts(_page, _limit, query);
 
       List<Product> visibleProducts = products.where((product) {
-        return product.ownerName != Online.user.userName;
+        return product.ownerName != Online.user.userName && product.isSold != true;
       }).toList();
 
       setState(() {
@@ -372,7 +372,7 @@ class _ProductListPageState extends State<ProductListPage> {
                       description: product.description,
                       isInWishlist: isInWishlist,
                       onAddToCart: () {
-                        _addToWishlist(product.productID);
+                        //_addToWishlist(product.productID);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('${product.title} added to cart!'),

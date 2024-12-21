@@ -77,7 +77,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     radius: 18,
                     child: Icon(
                       Icons.message,
-                      color: AppColors.secondaryText,
+                      color: AppColors.icons,
                       size: 20,
                     ),
                   ),

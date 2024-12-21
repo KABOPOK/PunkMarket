@@ -66,5 +66,25 @@ class ModeratorService {
     }
     return products;
   }
+  static Future<void> DeclineUserReport(String userId, BuildContext context) async {
+    final String url = '$HTTPS /api/moderator/decline_report_user?userId=$userId';
+    final response = await http.put(Uri.parse(url));
+    if (response.statusCode == 200) {
+      Functions.showSnackBar('Product was reported', context);
+    }
+    else {
+      throw Exception('Failed to report product: ${response.statusCode}');
+    }
+  }
 
+  static Future<void> DeclineProductReport(String productId, BuildContext context) async {
+    final String url = '$HTTPS /api/moderator/decline_report_product?productId=$productId';
+    final response = await http.put(Uri.parse(url));
+    if (response.statusCode == 200) {
+      Functions.showSnackBar('Product was reported', context);
+    }
+    else {
+      throw Exception('Failed to report product: ${response.statusCode}');
+    }
+  }
 }

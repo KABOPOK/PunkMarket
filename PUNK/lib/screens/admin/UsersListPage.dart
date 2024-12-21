@@ -105,7 +105,10 @@ class _UserListScreenState extends State<UserListScreen> {
             TextButton(
               onPressed: () {
                 UserService.deleteUser(userId, context);
-                Navigator.of(context).pop();
+                setState(() {
+                  filteredUsers.removeWhere((u) => u.userID == userId);
+                });
+                //Navigator.of(context).pop();
               },
               child: const Text('Да', style: TextStyle(color: AppColors.primaryText),),
             ),
@@ -115,7 +118,7 @@ class _UserListScreenState extends State<UserListScreen> {
     );
   }
 
-  void _confirmUnreport(User user, String userName, BuildContext context) {
+  void _DeclineReport(User user, String userName, BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -135,8 +138,11 @@ class _UserListScreenState extends State<UserListScreen> {
             ),
             TextButton(
               onPressed: () {
-                user.isReported = false;
-
+                ModeratorService.DeclineUserReport(user.userID, context);
+                setState(() {
+                  filteredUsers.removeWhere((u) => u.userID == user.userID);
+                });
+                Navigator.of(context).pop();
               },
               child: const Text('Да', style: TextStyle(color: AppColors.primaryText),),
             ),
@@ -234,7 +240,7 @@ class _UserListScreenState extends State<UserListScreen> {
                 IconButton(
                   icon: Icon(Icons.check, color: AppColors.priceTag),
                   onPressed: () {
-                    _confirmUnreport(user, user.userName, context);
+                    _DeclineReport(user, user.userName, context);
                   },
                 ),
                 IconButton(

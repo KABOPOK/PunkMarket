@@ -91,7 +91,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: AppColors.secondaryBackground,
-          title: const Text('Подтверждение удаления', style: TextStyle(color: AppColors.primaryText),),
+          title: const Text(
+            'Подтверждение удаления',
+            style: TextStyle(color: AppColors.primaryText),
+          ),
           content: Text(
             'Вы точно хотите удалить продукт $productName?',
             style: const TextStyle(color: AppColors.primaryText),
@@ -99,17 +102,27 @@ class _ProductListScreenState extends State<ProductListScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                ProductService.reportProduct(productId, context);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close dialog
               },
-              child: const Text('Нет', style: TextStyle(color: AppColors.primaryText),),
+              child: const Text(
+                'Нет',
+                style: TextStyle(color: AppColors.primaryText),
+              ),
             ),
             TextButton(
-              onPressed: () {
-                ProductService.deleteProduct(productId, context);
-                Navigator.of(context).pop();
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close dialog
+                final result = await ProductService.deleteProduct(productId, context);
+
+                  setState(() {
+                    filteredProducts.removeWhere((product) => product.productID == productId);
+                  });
+
               },
-              child: const Text('Да', style: TextStyle(color: AppColors.primaryText),),
+              child: const Text(
+                'Да',
+                style: TextStyle(color: AppColors.primaryText),
+              ),
             ),
           ],
         );
@@ -117,13 +130,16 @@ class _ProductListScreenState extends State<ProductListScreen> {
     );
   }
 
-  void _confirmUnreport(Product product, String productName, BuildContext context) {
+  void _DeclineReport(Product product, String productName, BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: AppColors.secondaryBackground,
-          title: const Text('Подтверждение отказа репорта', style: TextStyle(color: AppColors.primaryText),),
+          title: const Text(
+            'Подтверждение отказа репорта',
+            style: TextStyle(color: AppColors.primaryText),
+          ),
           content: Text(
             'Вы точно хотите сохранить товар $productName?',
             style: const TextStyle(color: AppColors.primaryText),
@@ -131,16 +147,27 @@ class _ProductListScreenState extends State<ProductListScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close dialog
               },
-              child: const Text('Нет', style: TextStyle(color: AppColors.primaryText),),
+              child: const Text(
+                'Нет',
+                style: TextStyle(color: AppColors.primaryText),
+              ),
             ),
             TextButton(
-              onPressed: () {
-                product.isReported = false;
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close dialog
+                final result = await ModeratorService.DeclineProductReport(product.productID, context);
+
+                  setState(() {
+                    filteredProducts.removeWhere((p) => p.productID == product.productID);
+                  });
 
               },
-              child: const Text('Да', style: TextStyle(color: AppColors.primaryText),),
+              child: const Text(
+                'Да',
+                style: TextStyle(color: AppColors.primaryText),
+              ),
             ),
           ],
         );
@@ -150,6 +177,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
@@ -242,7 +270,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 IconButton(
                   icon: Icon(Icons.check, color: AppColors.priceTag),
                   onPressed: () {
-                    _confirmUnreport(product, product.title, context);
+                    _DeclineReport(product, product.title, context);
                   },
                 ),
                 IconButton(

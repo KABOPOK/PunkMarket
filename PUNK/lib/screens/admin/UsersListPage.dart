@@ -6,6 +6,7 @@ import 'package:punk/supplies/app_colors.dart';
 import '../../clases/User.dart';
 import '../../services/ModeratorServices.dart';
 import '../WelcomeScreen.dart';
+import '../navigationScreens/profileScreens/UserProfileScreen.dart';
 
 
 class UserListScreen extends StatefulWidget {
@@ -96,6 +97,7 @@ class _UserListScreenState extends State<UserListScreen> {
           actions: [
             TextButton(
               onPressed: () {
+                UserService.reportUser(userId, context);
                 Navigator.of(context).pop();
               },
               child: const Text('Нет', style: TextStyle(color: AppColors.primaryText),),
@@ -103,6 +105,7 @@ class _UserListScreenState extends State<UserListScreen> {
             TextButton(
               onPressed: () {
                 UserService.deleteUser(userId, context);
+                Navigator.of(context).pop();
               },
               child: const Text('Да', style: TextStyle(color: AppColors.primaryText),),
             ),
@@ -120,7 +123,7 @@ class _UserListScreenState extends State<UserListScreen> {
           backgroundColor: AppColors.secondaryBackground,
           title: const Text('Подтверждение отказа репорта', style: TextStyle(color: AppColors.primaryText),),
           content: Text(
-            'Вы точно хотите созранить пользователя $userName?',
+            'Вы точно хотите соxранить пользователя $userName?',
             style: const TextStyle(color: AppColors.primaryText),
           ),
           actions: [
@@ -188,13 +191,25 @@ class _UserListScreenState extends State<UserListScreen> {
           ),
         ],
       ),
+
       body: ListView.builder(
+
         itemCount: filteredUsers.length,
         itemBuilder: (context, index) {
           final user = filteredUsers[index];
           return ListTile(
-            leading: CircleAvatar(
-              radius: 10,
+            subtitle: const SizedBox(height: 8.0),
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserProfileScreen(user: user),
+                ),
+              );
+            },
+            child: CircleAvatar(
+              radius: 50,
               backgroundColor: AppColors.icons2,
               backgroundImage: ((){
                 if(user.photoUrl != null){
@@ -211,6 +226,7 @@ class _UserListScreenState extends State<UserListScreen> {
               )
                   : null,
             ),
+          ),
             title: Text(user.userName, style: TextStyle(color: AppColors.primaryText),),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,

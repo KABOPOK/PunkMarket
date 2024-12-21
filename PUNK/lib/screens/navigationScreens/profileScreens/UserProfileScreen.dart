@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../../Online/Online.dart';
+import '../../../clases/User.dart';
+import '../../../supplies/app_colors.dart';
 import '../messangerScreens/ChatScreen.dart';
 import 'ProfileSettingsScreen.dart';
 
+import 'package:flutter/material.dart';
+import '../../../Online/Online.dart';
+import '../messangerScreens/ChatScreen.dart';
+
 class UserProfileScreen extends StatefulWidget {
+  final User user;
+
+  const UserProfileScreen({Key? key, required this.user}) : super(key: key);
+
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
 }
@@ -12,24 +22,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.primaryBackground,
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: AppColors.accent,
         title: Text(
           'PUNK MARKET',
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.primaryText,
             fontWeight: FontWeight.bold,
           ),
         ),
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            backgroundColor: Colors.black,
-            child: Text(
-              'LOGO',
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: AppColors.icons),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Column(
@@ -40,36 +45,39 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundColor: Colors.grey[300],
-                child: Icon(
+                backgroundColor: AppColors.accentBackground,
+                backgroundImage: widget.user.photoUrl != null
+                    ? NetworkImage(widget.user.photoUrl!)
+                    : null,
+                child: widget.user.photoUrl == null
+                    ? Icon(
                   Icons.person,
                   size: 50,
-                  color: Colors.grey[700],
-                ),
+                  color: AppColors.icons2,
+                )
+                    : null,
               ),
               Positioned(
                 bottom: 0,
                 right: 0,
                 child: GestureDetector(
                   onTap: () async {
-                    // Await result from ProfileSettingsScreen
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ChatScreen(),
                       ),
                     );
-                    // If result is true, refresh the UI with setState
                     if (result == true) {
                       setState(() {});
                     }
                   },
                   child: CircleAvatar(
-                    backgroundColor: Colors.orange,
+                    backgroundColor: AppColors.accent,
                     radius: 18,
                     child: Icon(
                       Icons.message,
-                      color: Colors.white,
+                      color: AppColors.secondaryText,
                       size: 20,
                     ),
                   ),
@@ -79,10 +87,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
           SizedBox(height: 10),
           Text(
-            'ACCOUNT NAME',
+            widget.user.userName,
             style: TextStyle(
               fontSize: 18,
-              color: Colors.orange,
+              color: AppColors.accent,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -91,24 +99,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             padding: EdgeInsets.all(16),
             margin: EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color:  AppColors.secondaryBackground,
               borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 3,
-                  blurRadius: 5,
-                ),
-              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ProfileInfoRow(label: 'Full Name:', value: Online.user.userName),
-                ProfileInfoRow(label: 'Phone Number:', value: Online.user.number),
-                ProfileInfoRow(label: 'Telegram:', value: Online.user.telegramID),
-                ProfileInfoRow(label: 'Address:', value: Online.user.location),
-                ProfileInfoRow(label: 'PhotoUrl:', value: Online.user.photoUrl),
+                ProfileInfoRow(label: 'Full Name:', value: widget.user.userName),
+                ProfileInfoRow(label: 'Phone Number:', value: widget.user.number),
+                ProfileInfoRow(label: 'Telegram:', value: widget.user.telegramID),
+                ProfileInfoRow(label: 'Address:', value: widget.user.location),
               ],
             ),
           ),

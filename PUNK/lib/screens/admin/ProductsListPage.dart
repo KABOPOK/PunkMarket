@@ -6,6 +6,9 @@ import '../../clases/Product.dart';
 import '../../services/ModeratorServices.dart';
 import '../../services/ProductService.dart';
 import '../WelcomeScreen.dart';
+import '../navigationScreens/productListScreens/ProductDetailsScreen.dart';
+import 'ProductScreen.dart';
+import 'UsersListPage.dart';
 
 
 class ProductListScreen extends StatefulWidget {
@@ -104,6 +107,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             TextButton(
               onPressed: () {
                 ProductService.deleteProduct(productId, context);
+                Navigator.of(context).pop();
               },
               child: const Text('Да', style: TextStyle(color: AppColors.primaryText),),
             ),
@@ -157,6 +161,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        flexibleSpace: const SizedBox(height: 8.0),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
@@ -194,7 +199,24 @@ class _ProductListScreenState extends State<ProductListScreen> {
         itemBuilder: (context, index) {
           final product = filteredProducts[index];
           return ListTile(
-            leading: CircleAvatar(
+            subtitle: const SizedBox(height: 8.0),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdminProductScreen(
+                      title: product.title,
+                      price: product.price,
+                      owner: product.ownerName,
+                      description: product.description,
+                      productID: product.productID,
+                      userID: product.userID,
+                    ),
+                  ),
+                );
+              },
+            child: CircleAvatar(
               radius: 50,
               backgroundColor: AppColors.icons2,
               backgroundImage: ((){
@@ -211,6 +233,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 color: AppColors.primaryBackground,
               )
                   : null,
+            ),
             ),
             title: Text(product.title, style: TextStyle(color: AppColors.primaryText),),
             trailing: Row(

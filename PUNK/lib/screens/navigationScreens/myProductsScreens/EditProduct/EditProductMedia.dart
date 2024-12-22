@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:punk/supplies/app_colors.dart';
 import '../../../../services/ProductService.dart';
 import '../../../../common_functions/Functions.dart';
@@ -22,6 +23,7 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
   final ImagePicker _picker = ImagePicker();
   List<String> existingImageUrls = [];
   List<File?> newImages = List<File?>.filled(10, null);
+  List<File?> displayImages = List<File?>.filled(10, null);
   bool isLoading = true;
   Product product;
   _EditProductMediaScreenState({required this.product});
@@ -29,23 +31,92 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
   @override
   void initState() {
     super.initState();
+    newImages = List<File?>.filled(_maxImages, null);
+    displayImages = List<File?>.filled(10, null);
     _loadExistingImages();
+  }
+
+  Future<void> _pickImage(int index) async {
+
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      try {
+        // Get project directory
+        final directory = Directory('${Directory.current.path}/supplies');
+        if (!directory.existsSync()) {
+          directory.createSync(recursive: true);
+        }
+
+        // Define custom file name and path
+        final customFileName = index == 0 ? 'envelop.jpg' : '$index.jpg';
+        final customFilePath = '${directory.path}/$customFileName';
+
+        // Delete existing file at the target path (if any)
+        final existingFile = File(customFilePath);
+        if (existingFile.existsSync()) {
+          existingFile.deleteSync();
+        }
+
+        // Copy the picked file to the target path
+        final copiedFile = await File(pickedFile.path).copy(customFilePath);
+
+        // Update the image list and UI
+        setState(() {
+          newImages[index] = copiedFile;
+          displayImages[index] = File(pickedFile.path);
+        });
+
+        // Log the updated file path
+        debugPrint('Image copied to: ${copiedFile.path}');
+      } catch (e) {
+        Functions.showSnackBar('Error copying image: $e', context);
+      }
+    }
+  }
+
+  Future<void> _clearSuppliesFolder() async {
+    final directory = Directory('${Directory.current.path}/supplies');
+    if (directory.existsSync()) {
+      try {
+        for (var file in directory.listSync()) {
+          if (file is File) {
+            file.deleteSync();
+          }
+        }
+        debugPrint('Supplies folder cleared');
+      } catch (e) {
+        Functions.showSnackBar('Error clearing folder: $e', context);
+      }
+    }
+    // Reset in-memory state
+    setState(() {
+      newImages = List<File?>.filled(_maxImages, null);
+      displayImages = List<File?>.filled(10, null);
+    });
   }
 
   Future<void> _loadExistingImages() async {
     try {
+      await _clearSuppliesFolder();
+
+      newImages = List<File?>.filled(_maxImages, null);
+      displayImages = List<File?>.filled(10, null);
       List<String> fetchedUrls = await ProductService.fetchProductUrlList(product.productID);
+      final directory = Directory('${Directory.current.path}/supplies');
+
       setState(() {
         existingImageUrls = fetchedUrls;
       });
+
       for (int i = 0; i < existingImageUrls.length; ++i) {
         File file = await Functions.urlToFile(existingImageUrls[i]);
-        int index = 0;
-        int j = 0;
-        while(file.path[j+1] != '.') { ++j; } // set index from filenames for valid order
-        if (file.path[j] != 'p') { index = int.parse(file.path[j]); }
-        newImages[index] = file;
+        final copiedFile = await file.copy('${directory.path}/${product.productID}_$i.jpg');
+        setState(() {
+          newImages[i] = copiedFile;
+          displayImages[i] = copiedFile;
+        });
       }
+
       setState(() {
         isLoading = false;
       });
@@ -54,23 +125,6 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
       setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  Future<void> _pickImage(int index) async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        // Rename the file for backend logic and update the image list
-        String customFileName = index == 0 ? 'envelop.jpg' : '$index.jpg';
-        File customFile = File(pickedFile.path).renameSync(
-          pickedFile.path.replaceAll(pickedFile.name, customFileName),
-        );
-        newImages[index] = customFile;
-      });
-
-      // Optional: Log or print the updated list for debugging
-      debugPrint('Updated Images: ${newImages.map((file) => file?.path).toList()}');
     }
   }
 
@@ -132,8 +186,8 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
                       border: Border.all(color: AppColors.accentBackground),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: newImages[index] != null
-                        ? Image.file(newImages[index]!, fit: BoxFit.cover)
+                    child: displayImages[index] != null
+                        ? Image.file(displayImages[index]!, fit: BoxFit.cover)
                         : const Icon(Icons.add),
                   ),
                 );

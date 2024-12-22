@@ -21,6 +21,7 @@ class MyProductListPage extends StatefulWidget {
 class _MyProductListPageState extends State<MyProductListPage> {
   List<Product> _myProducts = [];
   List<Product> _wishlistProducts = [];
+  List<String> _wishlistProductIDs = [];
   List<Product> _soldProducts = [];
   bool _isLoading = true;
   bool _isWishlistLoading = true;
@@ -71,6 +72,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
       List<Product> products = await UserService.fetchWishlistProducts(1, _limit);
       setState(() {
         _wishlistProducts = products;
+        _wishlistProductIDs = products.map((product) => product.productID).toList();
         _isWishlistLoading = false;
       });
     } catch (e) {
@@ -104,6 +106,9 @@ class _MyProductListPageState extends State<MyProductListPage> {
   void _onTabChanged(int pageIndex) {
     setState(() {
       _currentPage = pageIndex;
+      _fetchSoldProducts();
+      _fetchUserProducts();
+      _fetchWishlistProducts();
     });
     widget.currentProductContent.value =
     pageIndex == 0 ? "MyProducts" : pageIndex == 1 ? "Wishlist" : "MySoldProducts";
@@ -219,6 +224,7 @@ class _MyProductListPageState extends State<MyProductListPage> {
                   isLoading: _isWishlistLoading,
                   errorMessage: _wishlistErrorMessage,
                   myProducts: _wishlistProducts,
+                  wishlistProductIDs: _wishlistProductIDs,
                   onProductTap: (product) {
                     _navigateToWishlistProductDetailScreen(context, product);
                   },

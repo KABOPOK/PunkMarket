@@ -20,8 +20,9 @@ class Functions {
     if (imageUrl[i] == 'p') { fileName = 'envelop.jpg'; }
     else { fileName = '${imageUrl[i]}.jpg';  }
     final response = await http.get(Uri.parse(imageUrl));
-    final documentDirectory = await getApplicationDocumentsDirectory();
-    final file = File('${documentDirectory.path}/$fileName');
+    //final documentDirectory = await getApplicationDocumentsDirectory();
+    final directory = Directory('${Directory.current.path}/supplies');
+    final file = File('${directory.path}/$fileName');
     file.writeAsBytesSync(response.bodyBytes);
     return file;
   }

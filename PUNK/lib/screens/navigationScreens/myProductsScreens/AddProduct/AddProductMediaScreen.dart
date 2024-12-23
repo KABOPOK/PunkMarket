@@ -1,6 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../../../../clases/Product.dart';
 import '../../../../common_functions/Functions.dart';
 import '../../../../services/ProductService.dart';
@@ -19,9 +21,19 @@ class AddProductMediaScreen extends StatefulWidget {
 class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
   final int _maxImages = 10;
   List<File?> _productImages = List<File?>.filled(11, null); // Index 0 for cover image
+  List<File?> displayImages = List<File?>.filled(10, null);
   final ImagePicker _picker = ImagePicker();
   Product product;
   _AddProductMediaScreenState({required this.product});
+
+  @override
+  void initState() {
+    super.initState();
+
+    _productImages = List<File?>.filled(_maxImages, null);
+    displayImages = List<File?>.filled(10, null);
+    _clearSuppliesFolder();
+  }
 
   Future<void> _sendProduct(Product product, List<File?> images) async {
     try {
@@ -35,22 +47,56 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
     }
   }
 
-  Future<void> _pickImage(int index) async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        String customFileName;
-        if(index == 0){
-          customFileName = 'envelop.jpg';
-        } else {
-          customFileName = '${index}.jpg';
+  Future<void> _clearSuppliesFolder() async {
+    final directory = Directory('${Directory.current.path}/supplies');
+    if (directory.existsSync()) {
+      try {
+        for (var file in directory.listSync()) {
+          if (file is File) {
+            file.deleteSync();
+          }
         }
-        File customFile = File(pickedFile.path).renameSync(pickedFile.path.replaceAll(pickedFile.name, customFileName));
-        _productImages[index] = customFile;
-      } else {
-        print('No image selected.');
+        debugPrint('Supplies folder cleared');
+      } catch (e) {
+        Functions.showSnackBar('Error clearing folder: $e', context);
       }
+    }
+    setState(() {
+      _productImages = List<File?>.filled(_maxImages, null);
+      displayImages = List<File?>.filled(10, null);
     });
+  }
+  Future<void> _pickImage(int index) async {
+
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      try {
+        setState(() {
+          displayImages[index] = File(pickedFile.path);
+        });
+        final directory = Directory('${Directory.current.path}/supplies');
+        if (!directory.existsSync()) {
+          directory.createSync(recursive: true);
+        }
+
+        final customFileName = index == 0 ? 'envelop.jpg' : '$index.jpg';
+        final customFilePath = '${directory.path}/$customFileName';
+
+          final existingFile = File(customFilePath);
+          if (existingFile.existsSync()) {
+            existingFile.deleteSync();
+          }
+          final copiedFile = await File(pickedFile.path).copy(customFilePath);
+
+          setState(() {
+            _productImages[index] = copiedFile;
+            //displayImages[index] = File(copiedFile.path);
+          });
+
+      } catch (e) {
+        Functions.showSnackBar('Error copying image: $e', context);
+      }
+    }
   }
 
   @override
@@ -90,8 +136,8 @@ class _AddProductMediaScreenState extends State<AddProductMediaScreen> {
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: _productImages.length > index && _productImages[index] != null
-                        ? Image.file(_productImages[index]!, fit: BoxFit.cover)
+                    child: displayImages.length > index && displayImages[index] != null
+                        ? Image.file(displayImages[index]!, fit: BoxFit.cover)
                         : const Icon(Icons.add),
                   ),
                 );

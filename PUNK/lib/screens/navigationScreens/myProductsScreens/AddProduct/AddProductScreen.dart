@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:punk/Online/Online.dart';
-import 'package:punk/screens/navigationScreens/myProductsScreens/AddProduct/AddProductMediaScreen.dart';
 import 'package:punk/clases/Product.dart';
 import 'package:punk/common_functions/Functions.dart';
+import 'package:punk/screens/navigationScreens/myProductsScreens/AddProduct/AddProductMediaScreen.dart';
 
 import '../../../../supplies/app_colors.dart';
 
@@ -105,7 +105,11 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
               items: ['Electronics', 'Clothing', 'Furniture']
                   .map((category) {
                 return DropdownMenuItem(
-                  child: Text(category),
+                  child: Text(
+                    category,
+                    style: const TextStyle(color: AppColors.primaryText),
+                ),
+
                   value: category,
                 );
               }).toList(),

@@ -1,11 +1,12 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:punk/supplies/app_colors.dart';
-import '../../../../services/ProductService.dart';
-import '../../../../common_functions/Functions.dart';
+
 import '../../../../../clases/Product.dart';
+import '../../../../common_functions/Functions.dart';
+import '../../../../services/ProductService.dart';
 import '../../../../widgets/barWidgets/MyNavigationBarWidget.dart';
 
 class EditProductMediaScreen extends StatefulWidget {
@@ -41,32 +42,26 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       try {
-        // Get project directory
         final directory = Directory('${Directory.current.path}/supplies');
         if (!directory.existsSync()) {
           directory.createSync(recursive: true);
         }
 
-        // Define custom file name and path
         final customFileName = index == 0 ? 'envelop.jpg' : '$index.jpg';
         final customFilePath = '${directory.path}/$customFileName';
 
-        // Delete existing file at the target path (if any)
         final existingFile = File(customFilePath);
         if (existingFile.existsSync()) {
           existingFile.deleteSync();
         }
 
-        // Copy the picked file to the target path
         final copiedFile = await File(pickedFile.path).copy(customFilePath);
 
-        // Update the image list and UI
         setState(() {
           newImages[index] = copiedFile;
           displayImages[index] = File(pickedFile.path);
         });
 
-        // Log the updated file path
         debugPrint('Image copied to: ${copiedFile.path}');
       } catch (e) {
         Functions.showSnackBar('Error copying image: $e', context);
@@ -88,7 +83,6 @@ class _EditProductMediaScreenState extends State<EditProductMediaScreen> {
         Functions.showSnackBar('Error clearing folder: $e', context);
       }
     }
-    // Reset in-memory state
     setState(() {
       newImages = List<File?>.filled(_maxImages, null);
       displayImages = List<File?>.filled(10, null);

@@ -90,7 +90,7 @@ class _ProductAdditionScreenState extends State<ProductAdditionScreen> {
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
-
+              dropdownColor: AppColors.secondaryBackground,
               decoration: const InputDecoration(
                 labelText: 'Category',
                 border: OutlineInputBorder(),

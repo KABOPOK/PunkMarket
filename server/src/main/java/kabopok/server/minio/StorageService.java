@@ -97,7 +97,7 @@ public class StorageService {
   }
 
   public String generateImageUrl(String bucketName, String objectName) {
-    String url = MinioConfig.networkUrl + "9005";
+    String url = MinioConfig.networkUrl + port;
     MinioClient outsideMinioClient = MinioClient.builder()
             .endpoint(url)
             .credentials("minioadmin", "minioadmin")

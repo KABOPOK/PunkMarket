@@ -1,14 +1,15 @@
 SERVER_PORT: 8021
-
 PORT_DB: 5421
+HOST: localhost
+EXTERNAL_MINIO_PORT: 9009
+POSTGRES_HOST: localhost
 POSTGRESQL_DATABASE: postgres
 POSTGRESQL_USERNAME: postgres
 POSTGRESQL_PASSWORD: 9
-POSTGRES_HOST: localhost
-
 spring:
   docker:
     compose:
       file: local/docker-compose.yaml
 minio:
-  url : http://localhost:9009
+  url : http://${HOST}}:${EXTERNAL_MINIO_PORT}
+  port : ${EXTERNAL_MINIO_PORT}

@@ -16,15 +16,11 @@ spring:
   flyway:
     user: ${POSTGRESQL_USERNAME}
     password: ${POSTGRESQL_PASSWORD}
-    url: jdbc:postgresql://${POSTGRES_HOST}:${PORT_DB}/${POSTGRESQL_USERNAME}  # Updated to use the service name
+    url: jdbc:postgresql://${POSTGRES_HOST}:${PORT_DB}/${POSTGRESQL_USERNAME}
     locations: classpath:db/migrations
     schemas: public
     table: flyway_schema_history
     baseline-on-migrate: true
-
-#  web:
-#    locale: en
-#    locale-resolver: fixed
 minio:
   url : http://${MINIO_HOST}:${MINIO_PORT}
   port : ${MINIO_EXTERNAL_PORT}
